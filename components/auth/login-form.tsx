@@ -49,7 +49,11 @@ export const LoginForm = () => {
   const passwordRegister = register("password");
 
   return (
-    <CardWrapper headerLabel="Welcome back">
+    <CardWrapper
+      backButtonLabel="Don't have account? Register"
+      backButtonHref="/auth/register"
+      headerLabel="Login"
+    >
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col items-start gap-4"
@@ -103,7 +107,7 @@ export const LoginForm = () => {
           isLoading={isPending}
           isDisabled={!isValid || isPending}
           type="submit"
-          className="w-full bg-[#7D1F1F] font-semibold text-white"
+          className="mt-4 w-full bg-[#7D1F1F] font-semibold text-white"
         >
           Login
         </Button>

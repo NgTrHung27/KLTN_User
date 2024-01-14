@@ -1,7 +1,8 @@
 import { LoginForm } from "@/components/auth/login-form";
+import { RegisterForm } from "@/components/auth/register-form";
 import { Image } from "@nextui-org/react";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   return (
     <>
       <Image
@@ -11,11 +12,11 @@ const LoginPage = () => {
         className="absolute m-4"
       />
       <div className="flex h-full items-center justify-around gap-x-4 p-4">
-        <LoginForm />
-        <Image width={300} alt="Login" src="/login.png" />
+        <Image width={300} alt="Login" src="/register.png" />
+        <RegisterForm />
       </div>
     </>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

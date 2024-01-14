@@ -10,17 +10,18 @@ const font = Poppins({
 
 interface HeaderProps {
   label: string;
+  subLabel?: string;
 }
 
-export const Header = ({ label }: HeaderProps) => {
+export const Header = ({ label, subLabel }: HeaderProps) => {
   return (
     <div className="flex w-full flex-col items-center justify-center gap-y-4">
       <h1
         className={cn("text-3xl font-semibold text-[#7D1F1F]", font.className)}
       >
-        🔐 Login
+        🔐 {label}
       </h1>
-      <p className="text-muted-foreground text-sm">{label}</p>
+      {subLabel && <p className="text-muted-foreground text-sm">{subLabel}</p>}
     </div>
   );
 };
