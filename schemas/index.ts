@@ -83,9 +83,53 @@ export const RegisterSchema = z
     ),
     languageImg: z.optional(z.string()),
     gradeType: z.optional(z.enum([GradeType.GPA, GradeType.CGPA])),
-    gradeScore: z.optional(z.number()),
+    gradeScore: z.optional(z.string()),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords mismatch",
     path: ["confirmPassword"],
-  });
+  })
+  .refine(
+    (data) => {
+      if (data.schoolName && !data.programName) {
+        return false;
+      }
+
+      return true;
+    },
+    {
+      message: "Program is required",
+      path: ["programName"],
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.gradeType === GradeType.GPA) {
+        if (data.gradeScore && parseInt(data.gradeScore) > 4) {
+          return false;
+        }
+
+        if (data.gradeScore && parseInt(data.gradeScore) < 0) {
+          return false;
+        }
+
+        return true;
+      }
+
+      if (data.gradeType === GradeType.CGPA) {
+        if (data.gradeScore && parseInt(data.gradeScore) > 10) {
+          return false;
+        }
+
+        if (data.gradeScore && parseInt(data.gradeScore) < 0) {
+          return false;
+        }
+
+        return true;
+      }
+    },
+    {
+      message: "Invalid grade score (maximum is 4 or 10)",
+      path: ["gradeScore"],
+    },
+  );

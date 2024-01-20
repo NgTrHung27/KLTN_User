@@ -1,13 +1,19 @@
 import { LoginForm } from "@/components/auth/login-form";
-import { Image } from "@nextui-org/react";
+import Image from "next/image";
 
 const LoginPage = () => {
   return (
-    <>
-      <div className="flex h-full items-center justify-around gap-x-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white to-black p-4">
+    <div className="relative h-full w-full">
+      <Image
+        fill
+        src={"/login.jpg"}
+        alt="register"
+        className="absolute object-fill blur"
+      />
+      <div className="relative z-50 flex h-full items-center justify-evenly gap-x-4 p-4">
         <LoginForm />
       </div>
-    </>
+    </div>
   );
 };
 
