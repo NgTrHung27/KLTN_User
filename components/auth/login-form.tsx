@@ -65,7 +65,7 @@ export const LoginForm = () => {
             labelPlacement="outside"
             type="email"
             variant="bordered"
-            size="sm"
+            size="lg"
             placeholder="Enter your email"
             startContent={<Mail className="h-4 w-4" />}
             errorMessage={errors.email?.message}
@@ -79,7 +79,7 @@ export const LoginForm = () => {
             labelPlacement="outside"
             type={isVisible ? "text" : "password"}
             variant="bordered"
-            size="sm"
+            size="lg"
             placeholder="Enter your password"
             startContent={<Key className="h-4 w-4" />}
             endContent={

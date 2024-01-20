@@ -1,21 +1,21 @@
-import { LoginForm } from "@/components/auth/login-form";
+"use client";
+
 import { RegisterForm } from "@/components/auth/register-form";
-import { Image } from "@nextui-org/react";
+import Image from "next/image";
 
 const RegisterPage = () => {
   return (
-    <>
+    <div className="relative h-full w-full">
       <Image
-        width={50}
-        src="/logo-red.png"
-        alt="logo"
-        className="absolute m-4"
+        fill
+        src={"/register.jpg"}
+        alt="register"
+        className="absolute object-fill blur"
       />
-      <div className="flex h-full items-center justify-around gap-x-4 p-4">
-        <Image width={300} alt="Login" src="/register.png" />
+      <div className="relative z-50 flex h-full items-center justify-evenly gap-x-4 p-4">
         <RegisterForm />
       </div>
-    </>
+    </div>
   );
 };
 

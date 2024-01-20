@@ -24,3 +24,10 @@ export const apiAuthPrefix = "/api/auth";
  * @type {string}
  */
 export const DEFAULT_LOGIN_REDIRECT = "/student";
+
+/**
+ * The prefix for API upload files with edgestore routes
+ * Routes that start with this prefix are used for API upload files purposes
+ * @type {string}
+ */
+export const apiEdgestorePrefix = "/api/edgestore";

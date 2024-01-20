@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Providers } from "@/components/providers/providers";
 import "react-day-picker/dist/style.css";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { EdgeStoreProvider } from "@/lib/edgestore";
+import { ModalProvider } from "@/components/providers/modal-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +21,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <EdgeStoreProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <ModalProvider />
+            {children}
+          </ThemeProvider>
+        </EdgeStoreProvider>
       </body>
     </html>
   );

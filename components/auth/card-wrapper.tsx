@@ -26,7 +26,7 @@ export const CardWrapper = ({
   backButtonLabel,
 }: CardWrapperProps) => {
   return (
-    <Card className="w-[400px] light">
+    <Card className="w-[500px] px-3 py-4">
       <CardHeader>
         <Header label={headerLabel} subLabel={subLabel} />
       </CardHeader>

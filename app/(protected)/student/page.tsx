@@ -1,10 +1,11 @@
 import { auth, signOut } from "@/auth";
+import { ModeToggle } from "@/components/theme-switcher";
 
 const StudentPage = async () => {
   const session = await auth();
 
   return (
-    <div>
+    <div className="h-full w-full">
       {JSON.stringify(session)}
       <form
         action={async () => {
@@ -15,6 +16,7 @@ const StudentPage = async () => {
       >
         <button type="submit">Sign out</button>
       </form>
+      <ModeToggle />
     </div>
   );
 };

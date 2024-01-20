@@ -22,7 +22,9 @@ export default function Home() {
         <Button>
           <Link href="/auth/login">Đăng nhập</Link>
         </Button>
-        <Button color="warning">Đăng ký</Button>
+        <Button color="warning">
+          <Link href="/auth/register">Đăng ký</Link>
+        </Button>
       </div>
     </main>
   );
