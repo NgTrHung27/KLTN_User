@@ -70,7 +70,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     data: {
       studentCode: studentCode,
       address,
-      gradeScore: parseInt(gradeScore),
+      gradeScore: parseFloat(gradeScore),
       schoolId: existingSchool.id,
       studentProgram: {
         create: {
