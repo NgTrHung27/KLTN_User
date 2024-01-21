@@ -10,11 +10,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum GradeType {
+  GPA
+  CGPA
+}
+
+enum CertificateType {
+  IELTS
+  TOEFL
+}
+
+enum DegreeType {
+  HIGHSCHOOL
+  UNIVERSITY
+}
+
 model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String
+  id              String           @id @default(cuid())
+  name            String
+  email           String           @unique
+  emailVerified   DateTime?
+  image           String?
+  password        String
+  GradeType       GradeType?
+  DegreeType      DegreeType?
+  CertificateType CertificateType?
 }

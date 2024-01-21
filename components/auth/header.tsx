@@ -17,11 +17,16 @@ export const Header = ({ label, subLabel }: HeaderProps) => {
   return (
     <div className="flex w-full flex-col items-center justify-center gap-y-4">
       <h1
-        className={cn("text-3xl font-semibold text-[#7D1F1F]", font.className)}
+        className={cn(
+          "text-center text-3xl font-semibold text-[#7D1F1F]",
+          font.className,
+        )}
       >
-        🔐 {label}
+        {label}
       </h1>
-      {subLabel && <p className="text-muted-foreground text-sm">{subLabel}</p>}
+      {subLabel && (
+        <p className="text-muted-foreground text-center text-sm">{subLabel}</p>
+      )}
     </div>
   );
 };

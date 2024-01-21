@@ -1,11 +1,31 @@
 "use client";
 
-import { Button, Input, Radio, RadioGroup, Tab, Tabs } from "@nextui-org/react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Button,
+  Image,
+  Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Radio,
+  RadioGroup,
+  Select,
+  SelectItem,
+  Spinner,
+  Tab,
+  Tabs,
+  Tooltip,
+} from "@nextui-org/react";
 import { CardWrapper } from "./card-wrapper";
 import {
+  Calendar,
   Eye,
   EyeOff,
+  File,
   GraduationCap,
+  Home,
   Key,
   Mail,
   NotebookText,
@@ -14,8 +34,8 @@ import {
   Tag,
   User,
 } from "lucide-react";
-import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState, useTransition } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { RegisterSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -23,73 +43,125 @@ import { register as registerAction } from "@/action/register";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 import "react-day-picker/dist/style.css";
+import { useCities, useDistricts, useWards } from "@/hooks/use-country";
+import { BiSolidCity } from "react-icons/bi";
+import { GiStreetLight } from "react-icons/gi";
+import { FaStreetView } from "react-icons/fa6";
+import { getSchools } from "@/data/schools";
+import { DayPicker } from "react-day-picker";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
-import { DatePicker } from "../date-picker";
+import { vi } from "date-fns/locale/vi";
+import { CertificateType, DegreeType, GradeType } from "@prisma/client";
+import { CertificateImageModal } from "../modals/certificate-image-modal";
+import { useEdgeStore } from "@/lib/edgestore";
 
 export const RegisterForm = () => {
+  const [mounted, setMounted] = useState(false);
+
+  const { edgestore } = useEdgeStore();
+
+  const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const [isVisible, setIsVisible] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  const [dob, setDob] = useState<Date | undefined>(new Date("2006-01-01"));
-  const [gender, setGender] = useState("Male");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [idCardNumber, setIdCardNumber] = useState<string>("");
+  const oldestMonth = new Date("1970-01-01");
+  const latestMonth = new Date("2006-12-01");
+  const [month, setMonth] = useState<Date>(new Date(latestMonth));
 
-  const toggleVisibility = () => setIsVisible(!isVisible);
+  useEffect(() => {
+    setMounted(true);
+  }, [mounted]);
 
-  const onDaySelected = (day: Date | undefined) => {
-    if (day) {
-      setDob(new Date(day));
-    }
+  const footer = (
+    <div className="mt-4 flex items-center justify-between">
+      <Button onClick={() => setMonth(oldestMonth)} size="sm">
+        Go to oldest
+      </Button>
+      <Button onClick={() => setMonth(latestMonth)} size="sm">
+        Go to latest
+      </Button>
+    </div>
+  );
 
-    return;
+  const toggleVisibility = () => {
+    setIsVisible(!isVisible);
   };
 
   const {
-    register,
+    control,
     handleSubmit,
+    getValues,
+    watch,
     setValue,
-    formState: { errors, isValid },
+    formState: { isValid },
   } = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     mode: "onBlur",
     defaultValues: {
-      email,
-      password,
-      confirmPassword,
-      name,
-      dob,
-      gender: gender,
-      phoneNumber,
-      idCardNumber,
+      email: "",
+      password: "",
+      confirmPassword: "",
+      name: "",
+      dob: new Date("2006-01-01"),
+      gender: "Male",
+      phoneNumber: "",
+      idCardNumber: "",
+      city: "",
+      district: "",
+      ward: "",
+      addressLine: "",
+      gradeType: GradeType.GPA,
     },
   });
+
+  watch("city");
+  watch("district");
+  watch("ward");
+  watch("schoolName");
+  watch("languageType");
+  watch("languageImg");
+  watch("gradeType");
+
+  const cities = useCities() || [];
+  const districts = useDistricts(getValues("city")) || [];
+  const wards = useWards(getValues("city"), getValues("district")) || [];
+
+  const schools = getSchools();
+  const programs = schools.find(
+    (school) => school.name === getValues("schoolName"),
+  )?.programs;
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
     setError("");
     setSuccess("");
 
-    startTransition(() => {
-      registerAction(values).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
-      });
-    });
+    console.log(values);
+
+    // startTransition(() => {
+    //   registerAction(values).then((data) => {
+    //     setError(data.error);
+    //     setSuccess(data.success);
+    //   });
+    // });
   };
 
-  const emailRegister = register("email");
-  const passwordRegister = register("password");
-  const confirmPasswordRegister = register("confirmPassword");
-  const nameRegister = register("name");
-  const phoneNumberRegister = register("phoneNumber");
-  const idCardNumberRegister = register("idCardNumber");
+  const onUpload = async (file?: File) => {
+    setIsUploading(true);
+    if (file) {
+      const res = await edgestore.publicFiles.upload({ file });
+
+      const pathname = new URL(res.url).pathname;
+
+      const fileName = pathname.split("/").pop();
+
+      setValue("languageImg", fileName);
+    }
+    setOpen(false);
+    setIsUploading(false);
+  };
 
   return (
     <CardWrapper
@@ -98,230 +170,830 @@ export const RegisterForm = () => {
       backButtonHref="/auth/login"
       subLabel="Create account to manange your account today"
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col items-center justify-center">
-          <Tabs
-            size="sm"
-            color="primary"
-            variant="bordered"
-            aria-label="Options"
-            classNames={{
-              cursor: "bg-[#7D1f1F]",
-            }}
-          >
-            <Tab
-              key="account"
-              title={
-                <div className="flex items-center space-x-2">
-                  <User className="h-4 w-4" />
-                  <span>Account</span>
-                </div>
-              }
-              className="w-full"
+      {!mounted ? (
+        <Spinner label="Please wait while loading..." />
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col items-center justify-center">
+            <Tabs
+              size="md"
+              color="primary"
+              variant="bordered"
+              aria-label="Options"
+              classNames={{
+                cursor: "bg-[#7D1f1F]",
+                tabList: "mb-3",
+                tabContent: "group-data-[selected=true]:dark:text-primary",
+              }}
             >
-              <div className="space-y-8">
-                <Input
-                  value={email}
-                  isDisabled={isPending}
-                  label="Email"
-                  labelPlacement="outside"
-                  type="email"
-                  variant="bordered"
-                  size="sm"
-                  placeholder="Enter your email"
-                  startContent={<Mail className="h-4 w-4" />}
-                  errorMessage={errors.email?.message}
-                  isInvalid={!!errors.email?.message}
-                  isRequired
-                  onValueChange={(value) => setEmail(value)}
-                  {...emailRegister}
-                />
-                <Input
-                  value={password}
-                  isDisabled={isPending}
-                  label="Password"
-                  labelPlacement="outside"
-                  type={isVisible ? "text" : "password"}
-                  variant="bordered"
-                  size="sm"
-                  placeholder="Enter your password"
-                  startContent={<Key className="h-4 w-4" />}
-                  endContent={
-                    <button
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={toggleVisibility}
-                    >
-                      {isVisible ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </button>
-                  }
-                  errorMessage={errors.password?.message}
-                  isInvalid={!!errors.password?.message}
-                  isRequired
-                  onValueChange={(value) => setPassword(value)}
-                  {...passwordRegister}
-                />
-                <Input
-                  value={confirmPassword}
-                  isDisabled={isPending}
-                  label="Confirm password"
-                  labelPlacement="outside"
-                  type={isVisible ? "text" : "password"}
-                  variant="bordered"
-                  size="sm"
-                  placeholder="Re-enter your password"
-                  startContent={<Key className="h-4 w-4" />}
-                  endContent={
-                    <button
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={toggleVisibility}
-                    >
-                      {isVisible ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </button>
-                  }
-                  errorMessage={errors.confirmPassword?.message}
-                  isInvalid={!!errors.confirmPassword?.message}
-                  isRequired
-                  onValueChange={(value) => setConfirmPassword(value)}
-                  {...confirmPasswordRegister}
-                />
-                <Input
-                  value={name}
-                  isDisabled={isPending}
-                  label="Fullname"
-                  labelPlacement="outside"
-                  variant="bordered"
-                  size="sm"
-                  placeholder="Enter your fullname"
-                  startContent={<Tag className="h-4 w-4" />}
-                  errorMessage={errors.name?.message}
-                  isInvalid={!!errors.name?.message}
-                  isRequired
-                  onValueChange={(value) => setName(value)}
-                  {...nameRegister}
-                />
-              </div>
-            </Tab>
-            <Tab
-              key="profile"
-              title={
-                <div className="flex items-center space-x-2">
-                  <NotepadText className="h-4 w-4" />
-                  <span>Profile</span>
-                </div>
-              }
-              className="w-full"
-            >
-              <div className="space-y-4">
-                <div className="flex justify-between gap-x-4">
-                  <Input
-                    readOnly
-                    value={format(dob ?? "", "dd MMM, yyyy", { locale: vi })}
-                    isDisabled={isPending}
-                    label="Date of birth"
-                    labelPlacement="outside"
-                    variant="bordered"
-                    size="sm"
-                    placeholder="Enter your email"
-                    endContent={
-                      <DatePicker
-                        onDaySelected={onDaySelected}
-                        defaultMonth={dob}
+              {/* Account */}
+              <Tab
+                key="account"
+                title={
+                  <div className="flex items-center space-x-2">
+                    <User className="h-4 w-4" />
+                    <span>Account</span>
+                  </div>
+                }
+                className="w-full"
+              >
+                <div className="space-y-8">
+                  {/* Email Field */}
+                  <Controller
+                    name="email"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Input
+                        {...field}
+                        onValueChange={(e) => field.onChange(e)}
+                        isDisabled={isPending}
+                        label="Email"
+                        labelPlacement="outside"
+                        type="email"
+                        variant="bordered"
+                        size="md"
+                        placeholder="Enter your email"
+                        startContent={<Mail className="h-4 w-4" />}
+                        errorMessage={fieldState.error?.message}
+                        isInvalid={!!fieldState.error}
+                        isRequired
+                        isClearable
                       />
-                    }
-                    errorMessage={errors.dob?.message}
-                    isInvalid={!!errors.dob?.message}
-                    isRequired
-                    className="max-w-[150px]"
+                    )}
                   />
-                  <RadioGroup
-                    isRequired
-                    orientation="horizontal"
-                    size="sm"
-                    label="Gender"
-                    defaultValue={gender}
-                    value={gender}
-                    isInvalid={!!errors.gender}
-                    errorMessage={errors.gender?.message}
-                    onValueChange={(value) => {
-                      if (gender !== value) {
-                        setGender(value);
-                        setValue("gender", value);
-                      }
-                    }}
-                    classNames={{
-                      label: "text-xs text-foreground",
-                    }}
-                  >
-                    <Radio value="Male">Male</Radio>
-                    <Radio value="Female">Female</Radio>
-                  </RadioGroup>
-                </div>
-                <div className="flex justify-between gap-x-4">
-                  <Input
-                    value={phoneNumber}
-                    isDisabled={isPending}
-                    label="Phone Number"
-                    labelPlacement="outside"
-                    variant="bordered"
-                    size="sm"
-                    placeholder="Enter your phone number"
-                    startContent={<Phone className="h-4 w-4" />}
-                    errorMessage={errors.phoneNumber?.message}
-                    isInvalid={!!errors.phoneNumber?.message}
-                    isRequired
-                    onValueChange={(value) => setPhoneNumber(value)}
-                    {...phoneNumberRegister}
+                  {/* Password */}
+                  <Controller
+                    name="password"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Input
+                        {...field}
+                        onValueChange={(e) => field.onChange(e)}
+                        isDisabled={isPending}
+                        label="Password"
+                        labelPlacement="outside"
+                        type="password"
+                        variant="bordered"
+                        size="md"
+                        placeholder="Enter your password"
+                        startContent={<Key className="h-4 w-4" />}
+                        endContent={
+                          <button
+                            className="focus:outline-none"
+                            type="button"
+                            onClick={toggleVisibility}
+                          >
+                            {isVisible ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </button>
+                        }
+                        errorMessage={fieldState.error?.message}
+                        isInvalid={!!fieldState.error}
+                        isRequired
+                      />
+                    )}
                   />
-                  <Input
-                    value={idCardNumber}
-                    isDisabled={isPending}
-                    label="Identity Card Number"
-                    labelPlacement="outside"
-                    variant="bordered"
-                    size="sm"
-                    placeholder="Enter your ID Card Number"
-                    startContent={<NotebookText className="h-4 w-4" />}
-                    errorMessage={errors.idCardNumber?.message}
-                    isInvalid={!!errors.idCardNumber?.message}
-                    isRequired
-                    onValueChange={(value) => setIdCardNumber(value)}
-                    {...idCardNumberRegister}
+                  {/* Confirm Password */}
+                  <Controller
+                    name="confirmPassword"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Input
+                        {...field}
+                        onValueChange={(e) => field.onChange(e)}
+                        isDisabled={isPending}
+                        label="Confirm Password"
+                        labelPlacement="outside"
+                        type="password"
+                        variant="bordered"
+                        size="md"
+                        placeholder="Re-enter your password"
+                        startContent={<Key className="h-4 w-4" />}
+                        endContent={
+                          <button
+                            className="focus:outline-none"
+                            type="button"
+                            onClick={toggleVisibility}
+                          >
+                            {isVisible ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </button>
+                        }
+                        errorMessage={fieldState.error?.message}
+                        isInvalid={!!fieldState.error}
+                        isRequired
+                      />
+                    )}
+                  />
+                  {/* Name */}
+                  <Controller
+                    name="name"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Input
+                        {...field}
+                        onValueChange={(e) => field.onChange(e)}
+                        isDisabled={isPending}
+                        label="Fullname"
+                        labelPlacement="outside"
+                        variant="bordered"
+                        size="md"
+                        placeholder="Enter your fullname"
+                        startContent={<Tag className="h-4 w-4" />}
+                        errorMessage={fieldState.error?.message}
+                        isInvalid={!!fieldState.error}
+                        isRequired
+                        isClearable
+                      />
+                    )}
                   />
                 </div>
-              </div>
-            </Tab>
-            <Tab
-              key="education"
-              title={
-                <div className="flex items-center space-x-2">
-                  <GraduationCap className="h-4 w-4" />
-                  <span>Education</span>
+              </Tab>
+              {/* Profile */}
+              <Tab
+                key="profile"
+                title={
+                  <div className="flex items-center space-x-2">
+                    <NotepadText className="h-4 w-4" />
+                    <span>Profile</span>
+                  </div>
+                }
+                className="w-full"
+              >
+                <div className="space-y-4 ">
+                  <div className="grid grid-cols-2 gap-x-4">
+                    {/* Date of birth */}
+                    <Controller
+                      name="dob"
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <Popover
+                          placement="right"
+                          showArrow
+                          offset={10}
+                          backdrop="transparent"
+                        >
+                          <PopoverTrigger>
+                            <Input
+                              readOnly
+                              value={
+                                field.value
+                                  ? format(field.value, "dd MMMM, yyyy", {
+                                      locale: vi,
+                                    })
+                                  : "Pick a date"
+                              }
+                              isDisabled={isPending}
+                              label="Date of birth"
+                              labelPlacement="outside"
+                              variant="bordered"
+                              size="md"
+                              startContent={<Calendar className="h-4 w-4" />}
+                              errorMessage={fieldState.error?.message}
+                              isInvalid={!!fieldState.error}
+                              isRequired
+                            />
+                          </PopoverTrigger>
+                          <PopoverContent className="w-full">
+                            <DayPicker
+                              styles={{
+                                dropdown: {
+                                  background: "black",
+                                  border: "1px solid black",
+                                },
+                                caption: { color: "white" },
+                                caption_label: {
+                                  background: "#18181b",
+                                },
+                              }}
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              mode="single"
+                              month={month}
+                              captionLayout="dropdown-buttons"
+                              showOutsideDays
+                              fixedWeeks
+                              fromYear={1970}
+                              toYear={2006}
+                              footer={footer}
+                              onMonthChange={setMonth}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                    />
+                    {/* Gender */}
+                    <Controller
+                      name="gender"
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <RadioGroup
+                          {...field}
+                          onValueChange={(e) => field.onChange(e)}
+                          orientation="horizontal"
+                          isDisabled={isPending}
+                          label="Gender"
+                          size="md"
+                          defaultValue={field.value}
+                          errorMessage={fieldState.error?.message}
+                          isInvalid={!!fieldState.error}
+                          isRequired
+                          classNames={{
+                            label: "text-sm text-primary",
+                          }}
+                        >
+                          <Radio value="Male">Male</Radio>
+                          <Radio value="Female">Female</Radio>
+                        </RadioGroup>
+                      )}
+                    />
+                  </div>
+                  <div className="flex justify-between gap-x-4">
+                    {/* Phone Number */}
+                    <Controller
+                      name="phoneNumber"
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <Input
+                          {...field}
+                          onValueChange={(e) => field.onChange(e)}
+                          isDisabled={isPending}
+                          label="Phone Number"
+                          labelPlacement="outside"
+                          variant="bordered"
+                          size="md"
+                          placeholder="Enter your phone number"
+                          startContent={<Phone className="h-4 w-4" />}
+                          errorMessage={fieldState.error?.message}
+                          isInvalid={!!fieldState.error}
+                          isRequired
+                          isClearable
+                        />
+                      )}
+                    />
+                    {/* Id Card Number */}
+                    <Controller
+                      name="idCardNumber"
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <Input
+                          {...field}
+                          onValueChange={(e) => field.onChange(e)}
+                          isDisabled={isPending}
+                          label="Identity Card Number"
+                          labelPlacement="outside"
+                          variant="bordered"
+                          size="md"
+                          placeholder="Enter your identity card number"
+                          startContent={<NotebookText className="h-4 w-4" />}
+                          errorMessage={fieldState.error?.message}
+                          isInvalid={!!fieldState.error}
+                          isRequired
+                          isClearable
+                        />
+                      )}
+                    />
+                  </div>
+                  <h1 className=" text-xl">Address</h1>
+                  {/* Select city */}
+                  <Controller
+                    name="city"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Autocomplete
+                        {...field}
+                        defaultItems={cities}
+                        onSelectionChange={(e) => {
+                          field.onChange(e);
+                        }}
+                        selectedKey={field.value}
+                        isDisabled={isPending}
+                        label="City"
+                        labelPlacement="outside"
+                        variant="bordered"
+                        size="md"
+                        placeholder="Choose a city"
+                        startContent={
+                          <BiSolidCity className="text-xl font-thin" />
+                        }
+                        errorMessage={fieldState.error?.message}
+                        isInvalid={!!fieldState.error}
+                        isRequired
+                        listboxProps={{
+                          itemClasses: {
+                            base: [
+                              "rounded-medium",
+                              "text-default-500",
+                              "transition-opacity",
+                              "data-[hover=true]:text-foreground",
+                              "data-[pressed=true]:opacity-70",
+                              "data-[hover=true]:bg-default-200",
+                              "data-[selectable=true]:focus:bg-default-100",
+                              "data-[focus-visible=true]:ring-default-500",
+                            ],
+                          },
+                        }}
+                      >
+                        {(item) => (
+                          <AutocompleteItem key={item.Name}>
+                            {item.Name}
+                          </AutocompleteItem>
+                        )}
+                      </Autocomplete>
+                    )}
+                  />
+
+                  <div className="flex justify-between gap-x-4">
+                    {/* Select district */}
+                    <Controller
+                      name="district"
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <Autocomplete
+                          {...field}
+                          defaultItems={districts}
+                          onSelectionChange={(e) => {
+                            field.onChange(e);
+                          }}
+                          selectedKey={field.value}
+                          isDisabled={isPending}
+                          label="District"
+                          labelPlacement="outside"
+                          variant="bordered"
+                          size="md"
+                          placeholder="Choose a district"
+                          startContent={
+                            <GiStreetLight className="text-xl font-thin" />
+                          }
+                          errorMessage={fieldState.error?.message}
+                          isInvalid={!!fieldState.error}
+                          isRequired
+                          listboxProps={{
+                            itemClasses: {
+                              base: [
+                                "rounded-medium",
+                                "text-default-500",
+                                "transition-opacity",
+                                "data-[hover=true]:text-foreground",
+                                "data-[pressed=true]:opacity-70",
+                                "data-[hover=true]:bg-default-200",
+                                "data-[selectable=true]:focus:bg-default-100",
+                                "data-[focus-visible=true]:ring-default-500",
+                              ],
+                            },
+                          }}
+                        >
+                          {districts.length > 0 ? (
+                            (item) => (
+                              <AutocompleteItem key={item.Name}>
+                                {item.Name}
+                              </AutocompleteItem>
+                            )
+                          ) : (
+                            <AutocompleteItem key={"Empty"}>
+                              <span>Please choose a city first</span>
+                            </AutocompleteItem>
+                          )}
+                        </Autocomplete>
+                      )}
+                    />
+
+                    {/* Select a ward */}
+                    <Controller
+                      name="ward"
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <Autocomplete
+                          {...field}
+                          defaultItems={wards}
+                          onSelectionChange={(e) => {
+                            field.onChange(e);
+                          }}
+                          selectedKey={field.value}
+                          isDisabled={isPending}
+                          label="Ward"
+                          labelPlacement="outside"
+                          variant="bordered"
+                          size="md"
+                          placeholder="Choose a ward"
+                          startContent={
+                            <FaStreetView className="text-xl font-thin" />
+                          }
+                          errorMessage={fieldState.error?.message}
+                          isInvalid={!!fieldState.error}
+                          isRequired
+                          listboxProps={{
+                            itemClasses: {
+                              base: [
+                                "rounded-medium",
+                                "text-default-500",
+                                "transition-opacity",
+                                "data-[hover=true]:text-foreground",
+                                "data-[pressed=true]:opacity-70",
+                                "data-[hover=true]:bg-default-200",
+                                "data-[selectable=true]:focus:bg-default-100",
+                                "data-[focus-visible=true]:ring-default-500",
+                              ],
+                            },
+                          }}
+                        >
+                          {wards.length > 0 ? (
+                            (item) => (
+                              <AutocompleteItem key={item.Name}>
+                                {item.Name}
+                              </AutocompleteItem>
+                            )
+                          ) : (
+                            <AutocompleteItem key={"Empty"}>
+                              <span>Please choose a city/district first</span>
+                            </AutocompleteItem>
+                          )}
+                        </Autocomplete>
+                      )}
+                    />
+                  </div>
+
+                  {/* Address Line */}
+                  <Controller
+                    name="addressLine"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Input
+                        {...field}
+                        onValueChange={(e) => field.onChange(e)}
+                        isDisabled={isPending}
+                        label="Address Line"
+                        labelPlacement="outside"
+                        variant="bordered"
+                        size="md"
+                        placeholder="Enter your address line"
+                        startContent={<Home className="h-4 w-4" />}
+                        errorMessage={fieldState.error?.message}
+                        isInvalid={!!fieldState.error}
+                        isRequired
+                        isClearable
+                        className="pt-6"
+                      />
+                    )}
+                  />
                 </div>
-              }
-            ></Tab>
-          </Tabs>
-          <FormError message={error} />
-          <FormSuccess message={success} />
-          <Button
-            isLoading={isPending}
-            isDisabled={!isValid || isPending}
-            type="submit"
-            className="mt-4 w-full bg-[#7D1F1F] font-semibold text-white"
-          >
-            Sign Up
-          </Button>
-        </div>
-      </form>
+              </Tab>
+              <Tab
+                key="education"
+                title={
+                  <div className="flex items-center space-x-2">
+                    <GraduationCap className="h-4 w-4" />
+                    <span>Education</span>
+                  </div>
+                }
+                className="w-full"
+              >
+                <div className="space-y-6">
+                  {/* School Name */}
+                  <Controller
+                    name="schoolName"
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete
+                        {...field}
+                        defaultItems={schools}
+                        onSelectionChange={(e) => {
+                          if (e === null) {
+                            field.onChange(undefined);
+                            setValue("programName", undefined);
+                            return;
+                          }
+
+                          field.onChange(e);
+                        }}
+                        selectedKey={field.value}
+                        isDisabled={isPending}
+                        label="School"
+                        labelPlacement="outside"
+                        variant="bordered"
+                        size="md"
+                        placeholder="Choose a school"
+                        startContent={
+                          field.value && (
+                            <Image
+                              width={30}
+                              src={
+                                schools.find(
+                                  (school) => school.name === field.value,
+                                )?.logoUrl
+                              }
+                              alt="Logo"
+                            />
+                          )
+                        }
+                        listboxProps={{
+                          itemClasses: {
+                            base: [
+                              "rounded-medium",
+                              "text-default-500",
+                              "transition-opacity",
+                              "data-[hover=true]:text-foreground",
+                              "data-[pressed=true]:opacity-70",
+                              "data-[hover=true]:bg-default-200",
+                              "data-[selectable=true]:focus:bg-default-100",
+                              "data-[focus-visible=true]:ring-default-500",
+                            ],
+                          },
+                        }}
+                      >
+                        {(item) => (
+                          <AutocompleteItem
+                            key={item.name}
+                            startContent={
+                              <Image
+                                width={30}
+                                src={
+                                  schools.find(
+                                    (school) => school.name === item.name,
+                                  )?.logoUrl
+                                }
+                                alt="Logo"
+                              />
+                            }
+                          >
+                            {item.name}
+                          </AutocompleteItem>
+                        )}
+                      </Autocomplete>
+                    )}
+                  />
+
+                  {/* Program Name */}
+                  {getValues("schoolName") && (
+                    <Controller
+                      name="programName"
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <Autocomplete
+                          {...field}
+                          defaultItems={programs}
+                          onSelectionChange={(e) => {
+                            if (e === null) {
+                              field.onChange(undefined);
+                              return;
+                            }
+                            field.onChange(e);
+                          }}
+                          selectedKey={field.value}
+                          isDisabled={isPending}
+                          label="Program"
+                          labelPlacement="outside"
+                          variant="bordered"
+                          size="md"
+                          placeholder="Choose a program"
+                          errorMessage={fieldState.error?.message}
+                          isInvalid={fieldState.invalid}
+                          listboxProps={{
+                            itemClasses: {
+                              base: [
+                                "rounded-medium",
+                                "text-default-500",
+                                "transition-opacity",
+                                "data-[hover=true]:text-foreground",
+                                "data-[pressed=true]:opacity-70",
+                                "data-[hover=true]:bg-default-200",
+                                "data-[selectable=true]:focus:bg-default-100",
+                                "data-[focus-visible=true]:ring-default-500",
+                              ],
+                            },
+                          }}
+                        >
+                          {(item) => (
+                            <AutocompleteItem key={item.name}>
+                              {item.name}
+                            </AutocompleteItem>
+                          )}
+                        </Autocomplete>
+                      )}
+                    />
+                  )}
+
+                  {/* degreeName */}
+                  <Controller
+                    name="degreeType"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <div className="pt-0.5">
+                        <Select
+                          {...field}
+                          selectionMode="single"
+                          onSelectionChange={(e) => {
+                            field.onChange(e);
+                          }}
+                          selectedKeys={field.value && [field.value]}
+                          isDisabled={isPending}
+                          label="Degree"
+                          labelPlacement="outside"
+                          variant="bordered"
+                          size="md"
+                          placeholder="Choose a degree"
+                          errorMessage={fieldState.error?.message}
+                          isInvalid={!!fieldState.error}
+                          classNames={{
+                            value: "text-prismary",
+                          }}
+                          listboxProps={{
+                            itemClasses: {
+                              base: [
+                                "rounded-medium",
+                                "text-default-500",
+                                "transition-opacity",
+                                "data-[hover=true]:text-foreground",
+                                "data-[pressed=true]:opacity-70",
+                                "data-[hover=true]:bg-default-200",
+                                "data-[selectable=true]:focus:bg-default-100",
+                                "data-[focus-visible=true]:ring-default-500",
+                              ],
+                            },
+                          }}
+                        >
+                          <SelectItem
+                            key={DegreeType.HIGHSCHOOL}
+                            value={DegreeType.HIGHSCHOOL}
+                          >
+                            Highschool
+                          </SelectItem>
+                          <SelectItem
+                            key={DegreeType.UNIVERSITY}
+                            value={DegreeType.UNIVERSITY}
+                          >
+                            University
+                          </SelectItem>
+                        </Select>
+                      </div>
+                    )}
+                  />
+
+                  <div className="flex items-end gap-x-4">
+                    {/* Language Type */}
+                    <Controller
+                      name="languageType"
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <Select
+                          {...field}
+                          onSelectionChange={(e) => {
+                            field.onChange(e);
+                            setValue("languageImg", "");
+                          }}
+                          selectedKeys={field.value && [field.value]}
+                          isDisabled={isPending}
+                          label="Language Certificate"
+                          labelPlacement="outside"
+                          variant="bordered"
+                          size="md"
+                          placeholder="Choose a certificate"
+                          errorMessage={fieldState.error?.message}
+                          isInvalid={!!fieldState.error}
+                          classNames={{
+                            value: "text-primary",
+                          }}
+                          listboxProps={{
+                            itemClasses: {
+                              base: [
+                                "rounded-medium",
+                                "text-default-500",
+                                "transition-opacity",
+                                "data-[hover=true]:text-foreground",
+                                "data-[pressed=true]:opacity-70",
+                                "data-[hover=true]:bg-default-200",
+                                "data-[selectable=true]:focus:bg-default-100",
+                                "data-[focus-visible=true]:ring-default-500",
+                              ],
+                            },
+                          }}
+                        >
+                          <SelectItem
+                            key={CertificateType.IELTS}
+                            value={CertificateType.IELTS}
+                          >
+                            {CertificateType.IELTS}
+                          </SelectItem>
+                          <SelectItem
+                            key={CertificateType.TOEFL}
+                            value={CertificateType.TOEFL}
+                          >
+                            TOEFL
+                          </SelectItem>
+                        </Select>
+                      )}
+                    />
+                    {/* Language Image URL */}
+                    {getValues("languageType") != null &&
+                      (getValues("languageImg") != "" ? (
+                        <Tooltip content={getValues("languageImg")} size="md">
+                          <Input
+                            readOnly={true}
+                            label="Image Url"
+                            labelPlacement="outside"
+                            size="md"
+                            variant="faded"
+                            placeholder="Hover to see image detail"
+                            classNames={{
+                              input: "cursor-default",
+                            }}
+                          />
+                        </Tooltip>
+                      ) : (
+                        <>
+                          <Button
+                            onClick={() => setOpen((v) => !v)}
+                            isDisabled={isPending}
+                            variant="bordered"
+                            startContent={<File className="h-4 w-4" />}
+                            size="md"
+                            className="w-full p-4"
+                          >
+                            Upload file here
+                          </Button>
+                          <CertificateImageModal
+                            onUpload={onUpload}
+                            isOpen={open}
+                            isUploading={isUploading}
+                          />
+                        </>
+                      ))}
+                  </div>
+
+                  <div className="flex items-center gap-x-4">
+                    {/* Overall Score */}
+                    <Controller
+                      name="gradeType"
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <RadioGroup
+                          {...field}
+                          onValueChange={(e) => field.onChange(e)}
+                          orientation="horizontal"
+                          isDisabled={isPending}
+                          label="Overall Score"
+                          size="md"
+                          defaultValue={field.value}
+                          errorMessage={fieldState.error?.message}
+                          isInvalid={!!fieldState.error}
+                          classNames={{
+                            label: "text-sm text-primary",
+                          }}
+                        >
+                          <Radio value={GradeType.GPA}>GPA (?/4.0)</Radio>
+                          <Radio value={GradeType.CGPA}>CGPA (?/10.0)</Radio>
+                        </RadioGroup>
+                      )}
+                    />
+
+                    {/* Grade Score */}
+                    <Controller
+                      name="gradeScore"
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <Input
+                          {...field}
+                          isDisabled={isPending}
+                          defaultValue={"1"}
+                          type="number"
+                          min={0}
+                          max={
+                            getValues("gradeType") === GradeType.GPA ? 4 : 10
+                          }
+                          step={0.1}
+                          label=""
+                          labelPlacement="outside"
+                          variant="bordered"
+                          size="md"
+                          errorMessage={fieldState.error?.message}
+                          isInvalid={!!fieldState.error}
+                          className="w-full max-w-[150px] pt-6"
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+              </Tab>
+            </Tabs>
+            <FormError message={error} />
+            <FormSuccess message={success} />
+            <Button
+              isLoading={isPending}
+              isDisabled={isPending || !isValid}
+              type="submit"
+              className="mt-4 w-full bg-[#7D1F1F] font-semibold text-white"
+            >
+              Sign Up
+            </Button>
+          </div>
+        </form>
+      )}
     </CardWrapper>
   );
 };
