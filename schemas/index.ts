@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { CertificateType, DegreeType, GradeType } from "@prisma/client";
+import { CertificateType, DegreeType, Gender, GradeType } from "@prisma/client";
 
 export const LoginSchema = z.object({
   email: z
@@ -39,10 +39,12 @@ export const RegisterSchema = z
       .min(new Date("1970-01-01"), {
         message: "Your age is too old",
       })
-      .max(new Date("2006-01-01"), {
+      .max(new Date("2006-31-12"), {
         message: "Your age is too young",
       }),
-    gender: z.enum(["Male", "Female"]),
+    gender: z.enum([Gender.MALE, Gender.FEMALE], {
+      invalid_type_error: "Invalid type, please reselect",
+    }),
     phoneNumber: z
       .string({
         invalid_type_error: "Invalid phone number",
@@ -73,35 +75,51 @@ export const RegisterSchema = z
     addressLine: z.string().min(1, {
       message: "Address line is required",
     }),
-    schoolName: z.optional(z.string()),
-    programName: z.optional(z.string()),
-    degreeType: z.optional(
-      z.enum([DegreeType.HIGHSCHOOL, DegreeType.UNIVERSITY]),
-    ),
-    languageType: z.optional(
-      z.enum([CertificateType.IELTS, CertificateType.TOEFL]),
-    ),
-    languageImg: z.optional(z.string()),
-    gradeType: z.optional(z.enum([GradeType.GPA, GradeType.CGPA])),
-    gradeScore: z.optional(z.string()),
+    schoolName: z
+      .string({
+        required_error: "School is required",
+      })
+      .min(1, {
+        message: "School is required",
+      }),
+    programName: z
+      .string({
+        required_error: "Program is required",
+      })
+      .min(1, {
+        message: "Program is required",
+      }),
+    degreeType: z.enum([DegreeType.HIGHSCHOOL, DegreeType.UNIVERSITY], {
+      required_error: "Degree type is required",
+      invalid_type_error: "Invalid type, please reselect",
+    }),
+    certificateType: z.enum([CertificateType.IELTS, CertificateType.TOEFL], {
+      required_error: "Certificate type is required",
+      invalid_type_error: "Invalid type, please reselect",
+    }),
+    certificateImg: z
+      .string({
+        required_error: "Certificate image is required",
+      })
+      .min(1, {
+        message: "Certificate image is required",
+      }),
+    gradeType: z.enum([GradeType.GPA, GradeType.CGPA], {
+      required_error: "Grade type is required",
+      invalid_type_error: "Invalid type, please reselect",
+    }),
+    gradeScore: z
+      .string({
+        required_error: "Grade score is required",
+      })
+      .min(1, {
+        message: "Grade score is required",
+      }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords mismatch",
     path: ["confirmPassword"],
   })
-  .refine(
-    (data) => {
-      if (data.schoolName && !data.programName) {
-        return false;
-      }
-
-      return true;
-    },
-    {
-      message: "Program is required",
-      path: ["programName"],
-    },
-  )
   .refine(
     (data) => {
       if (data.gradeType === GradeType.GPA) {

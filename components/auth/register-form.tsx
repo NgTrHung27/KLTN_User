@@ -16,7 +16,6 @@ import {
   Spinner,
   Tab,
   Tabs,
-  Tooltip,
 } from "@nextui-org/react";
 import { CardWrapper } from "./card-wrapper";
 import {
@@ -46,15 +45,27 @@ import { useCities, useDistricts, useWards } from "@/hooks/use-country";
 import { BiSolidCity } from "react-icons/bi";
 import { GiStreetLight } from "react-icons/gi";
 import { FaStreetView } from "react-icons/fa6";
-import { getSchools } from "@/data/schools";
 import { DayPicker } from "react-day-picker";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale/vi";
-import { CertificateType, DegreeType, GradeType } from "@prisma/client";
+import { CertificateType, DegreeType, Gender, GradeType } from "@prisma/client";
 import { CertificateImageModal } from "../modals/certificate-image-modal";
 import { useEdgeStore } from "@/lib/edgestore";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
+import { register } from "@/action/register";
+import { SchoolWithPrograms } from "@/types";
 
-export const RegisterForm = () => {
+interface RegisterFormProps {
+  schools:
+    | Pick<SchoolWithPrograms, "name" | "logoUrl" | "programs">[]
+    | undefined;
+}
+
+export const RegisterForm = ({ schools }: RegisterFormProps) => {
   const [mounted, setMounted] = useState(false);
 
   const { edgestore } = useEdgeStore();
@@ -105,14 +116,19 @@ export const RegisterForm = () => {
       confirmPassword: "",
       name: "",
       dob: new Date("2006-01-01"),
-      gender: "Male",
+      gender: Gender.MALE,
       phoneNumber: "",
       idCardNumber: "",
       city: "",
       district: "",
       ward: "",
       addressLine: "",
+      schoolName: "",
+      programName: "",
+      degreeType: undefined,
+      certificateType: undefined,
       gradeType: GradeType.GPA,
+      gradeScore: "1",
     },
   });
 
@@ -120,16 +136,15 @@ export const RegisterForm = () => {
   watch("district");
   watch("ward");
   watch("schoolName");
-  watch("languageType");
-  watch("languageImg");
+  watch("certificateType");
+  watch("certificateImg");
   watch("gradeType");
 
   const cities = useCities() || [];
   const districts = useDistricts(getValues("city")) || [];
   const wards = useWards(getValues("city"), getValues("district")) || [];
 
-  const schools = getSchools();
-  const programs = schools.find(
+  const programs = schools?.find(
     (school) => school.name === getValues("schoolName"),
   )?.programs;
 
@@ -137,12 +152,12 @@ export const RegisterForm = () => {
     setError("");
     setSuccess("");
 
-    // startTransition(() => {
-    //   registerAction(values).then((data) => {
-    //     setError(data.error);
-    //     setSuccess(data.success);
-    //   });
-    // });
+    startTransition(() => {
+      register(values).then((data) => {
+        setError(data.error);
+        setSuccess(data.success);
+      });
+    });
   };
 
   const onUpload = async (file?: File) => {
@@ -150,15 +165,13 @@ export const RegisterForm = () => {
     if (file) {
       const res = await edgestore.publicFiles.upload({ file });
 
-      const pathname = new URL(res.url).pathname;
-
-      const fileName = pathname.split("/").pop();
-
-      setValue("languageImg", fileName);
+      setValue("certificateImg", res.url);
     }
     setOpen(false);
     setIsUploading(false);
   };
+
+  console.log(programs);
 
   return (
     <CardWrapper
@@ -359,16 +372,6 @@ export const RegisterForm = () => {
                           </PopoverTrigger>
                           <PopoverContent className="w-full">
                             <DayPicker
-                              styles={{
-                                dropdown: {
-                                  background: "black",
-                                  border: "1px solid black",
-                                },
-                                caption: { color: "white" },
-                                caption_label: {
-                                  background: "#18181b",
-                                },
-                              }}
                               selected={field.value}
                               onSelect={field.onChange}
                               mode="single"
@@ -380,6 +383,17 @@ export const RegisterForm = () => {
                               toYear={2006}
                               footer={footer}
                               onMonthChange={setMonth}
+                              locale={vi}
+                              classNames={{
+                                table: "w-full mx-auto",
+                                caption_dropdowns: "text-primary",
+                                caption_label: "hidden",
+                                nav: "text-primary",
+                                cell: "text-primary",
+                                dropdown:
+                                  "relative z-1 inline-flex items-center m-0 p-2 whitespace-nowrap text-priamry border-2 border-transparent text-lg font-bold dark:bg-[#18181b]",
+                                head_row: "text-primary",
+                              }}
                             />
                           </PopoverContent>
                         </Popover>
@@ -405,8 +419,8 @@ export const RegisterForm = () => {
                             label: "text-sm text-primary",
                           }}
                         >
-                          <Radio value="Male">Male</Radio>
-                          <Radio value="Female">Female</Radio>
+                          <Radio value={Gender.MALE}>Male</Radio>
+                          <Radio value={Gender.FEMALE}>Female</Radio>
                         </RadioGroup>
                       )}
                     />
@@ -641,6 +655,7 @@ export const RegisterForm = () => {
                   />
                 </div>
               </Tab>
+              {/* Education */}
               <Tab
                 key="education"
                 title={
@@ -656,17 +671,15 @@ export const RegisterForm = () => {
                   <Controller
                     name="schoolName"
                     control={control}
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <Autocomplete
                         {...field}
                         defaultItems={schools}
                         onSelectionChange={(e) => {
                           if (e === null) {
                             field.onChange(undefined);
-                            setValue("programName", undefined);
                             return;
                           }
-
                           field.onChange(e);
                         }}
                         selectedKey={field.value}
@@ -681,7 +694,7 @@ export const RegisterForm = () => {
                             <Image
                               width={30}
                               src={
-                                schools.find(
+                                schools?.find(
                                   (school) => school.name === field.value,
                                 )?.logoUrl
                               }
@@ -689,6 +702,8 @@ export const RegisterForm = () => {
                             />
                           )
                         }
+                        errorMessage={fieldState.error?.message}
+                        isInvalid={fieldState.invalid}
                         listboxProps={{
                           itemClasses: {
                             base: [
@@ -711,7 +726,7 @@ export const RegisterForm = () => {
                               <Image
                                 width={30}
                                 src={
-                                  schools.find(
+                                  schools?.find(
                                     (school) => school.name === item.name,
                                   )?.logoUrl
                                 }
@@ -726,255 +741,286 @@ export const RegisterForm = () => {
                     )}
                   />
 
-                  {/* Program Name */}
                   {getValues("schoolName") && (
-                    <Controller
-                      name="programName"
-                      control={control}
-                      render={({ field, fieldState }) => (
-                        <Autocomplete
-                          {...field}
-                          defaultItems={programs}
-                          onSelectionChange={(e) => {
-                            if (e === null) {
-                              field.onChange(undefined);
-                              return;
-                            }
-                            field.onChange(e);
-                          }}
-                          selectedKey={field.value}
-                          isDisabled={isPending}
-                          label="Program"
-                          labelPlacement="outside"
-                          variant="bordered"
-                          size="md"
-                          placeholder="Choose a program"
-                          errorMessage={fieldState.error?.message}
-                          isInvalid={fieldState.invalid}
-                          listboxProps={{
-                            itemClasses: {
-                              base: [
-                                "rounded-medium",
-                                "text-default-500",
-                                "transition-opacity",
-                                "data-[hover=true]:text-foreground",
-                                "data-[pressed=true]:opacity-70",
-                                "data-[hover=true]:bg-default-200",
-                                "data-[selectable=true]:focus:bg-default-100",
-                                "data-[focus-visible=true]:ring-default-500",
-                              ],
-                            },
-                          }}
-                        >
-                          {(item) => (
-                            <AutocompleteItem key={item.name}>
-                              {item.name}
-                            </AutocompleteItem>
-                          )}
-                        </Autocomplete>
-                      )}
-                    />
-                  )}
-
-                  {/* degreeName */}
-                  <Controller
-                    name="degreeType"
-                    control={control}
-                    render={({ field, fieldState }) => (
-                      <div className="pt-0.5">
-                        <Select
-                          {...field}
-                          selectionMode="single"
-                          onSelectionChange={(e) => {
-                            field.onChange(e);
-                          }}
-                          selectedKeys={field.value && [field.value]}
-                          isDisabled={isPending}
-                          label="Degree"
-                          labelPlacement="outside"
-                          variant="bordered"
-                          size="md"
-                          placeholder="Choose a degree"
-                          errorMessage={fieldState.error?.message}
-                          isInvalid={!!fieldState.error}
-                          classNames={{
-                            value: "text-prismary",
-                          }}
-                          listboxProps={{
-                            itemClasses: {
-                              base: [
-                                "rounded-medium",
-                                "text-default-500",
-                                "transition-opacity",
-                                "data-[hover=true]:text-foreground",
-                                "data-[pressed=true]:opacity-70",
-                                "data-[hover=true]:bg-default-200",
-                                "data-[selectable=true]:focus:bg-default-100",
-                                "data-[focus-visible=true]:ring-default-500",
-                              ],
-                            },
-                          }}
-                        >
-                          <SelectItem
-                            key={DegreeType.HIGHSCHOOL}
-                            value={DegreeType.HIGHSCHOOL}
-                          >
-                            Highschool
-                          </SelectItem>
-                          <SelectItem
-                            key={DegreeType.UNIVERSITY}
-                            value={DegreeType.UNIVERSITY}
-                          >
-                            University
-                          </SelectItem>
-                        </Select>
-                      </div>
-                    )}
-                  />
-
-                  <div className="flex items-end gap-x-4">
-                    {/* Language Type */}
-                    <Controller
-                      name="languageType"
-                      control={control}
-                      render={({ field, fieldState }) => (
-                        <Select
-                          {...field}
-                          onSelectionChange={(e) => {
-                            field.onChange(e);
-                            setValue("languageImg", "");
-                          }}
-                          selectedKeys={field.value && [field.value]}
-                          isDisabled={isPending}
-                          label="Language Certificate"
-                          labelPlacement="outside"
-                          variant="bordered"
-                          size="md"
-                          placeholder="Choose a certificate"
-                          errorMessage={fieldState.error?.message}
-                          isInvalid={!!fieldState.error}
-                          classNames={{
-                            value: "text-primary",
-                          }}
-                          listboxProps={{
-                            itemClasses: {
-                              base: [
-                                "rounded-medium",
-                                "text-default-500",
-                                "transition-opacity",
-                                "data-[hover=true]:text-foreground",
-                                "data-[pressed=true]:opacity-70",
-                                "data-[hover=true]:bg-default-200",
-                                "data-[selectable=true]:focus:bg-default-100",
-                                "data-[focus-visible=true]:ring-default-500",
-                              ],
-                            },
-                          }}
-                        >
-                          <SelectItem
-                            key={CertificateType.IELTS}
-                            value={CertificateType.IELTS}
-                          >
-                            {CertificateType.IELTS}
-                          </SelectItem>
-                          <SelectItem
-                            key={CertificateType.TOEFL}
-                            value={CertificateType.TOEFL}
-                          >
-                            TOEFL
-                          </SelectItem>
-                        </Select>
-                      )}
-                    />
-                    {/* Language Image URL */}
-                    {getValues("languageType") != null &&
-                      (getValues("languageImg") != "" ? (
-                        <Tooltip content={getValues("languageImg")} size="md">
-                          <Input
-                            readOnly={true}
-                            label="Image Url"
-                            labelPlacement="outside"
-                            size="md"
-                            variant="faded"
-                            placeholder="Hover to see image detail"
-                            classNames={{
-                              input: "cursor-default",
+                    <>
+                      {/* Program Name */}
+                      <Controller
+                        name="programName"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                          <Autocomplete
+                            {...field}
+                            defaultItems={programs ? programs : []}
+                            onSelectionChange={(e) => {
+                              if (e === null) {
+                                field.onChange(undefined);
+                                return;
+                              }
+                              field.onChange(e);
                             }}
-                          />
-                        </Tooltip>
-                      ) : (
-                        <>
-                          <Button
-                            onClick={() => setOpen((v) => !v)}
+                            selectedKey={field.value}
                             isDisabled={isPending}
+                            label="Program"
+                            labelPlacement="outside"
                             variant="bordered"
-                            startContent={<File className="h-4 w-4" />}
                             size="md"
-                            className="w-full p-4"
+                            placeholder="Choose a program"
+                            errorMessage={fieldState.error?.message}
+                            isInvalid={fieldState.invalid}
+                            listboxProps={{
+                              itemClasses: {
+                                base: [
+                                  "rounded-medium",
+                                  "text-default-500",
+                                  "transition-opacity",
+                                  "data-[hover=true]:text-foreground",
+                                  "data-[pressed=true]:opacity-70",
+                                  "data-[hover=true]:bg-default-200",
+                                  "data-[selectable=true]:focus:bg-default-100",
+                                  "data-[focus-visible=true]:ring-default-500",
+                                ],
+                              },
+                            }}
                           >
-                            Upload file here
-                          </Button>
-                          <CertificateImageModal
-                            onUpload={onUpload}
-                            isOpen={open}
-                            isUploading={isUploading}
-                          />
-                        </>
-                      ))}
-                  </div>
+                            {(item) => (
+                              <AutocompleteItem key={item.name}>
+                                {item.name}
+                              </AutocompleteItem>
+                            )}
+                          </Autocomplete>
+                        )}
+                      />
+                      {/* degreeName */}
+                      <Controller
+                        name="degreeType"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                          <div className="pt-0.5">
+                            <Select
+                              {...field}
+                              selectionMode="single"
+                              onSelectionChange={(e) => {
+                                field.onChange(e);
+                              }}
+                              selectedKeys={field.value && [field.value]}
+                              isDisabled={isPending}
+                              label="Degree"
+                              labelPlacement="outside"
+                              variant="bordered"
+                              size="md"
+                              placeholder="Choose a degree"
+                              errorMessage={fieldState.error?.message}
+                              isInvalid={!!fieldState.error}
+                              classNames={{
+                                value: "text-prismary",
+                              }}
+                              listboxProps={{
+                                itemClasses: {
+                                  base: [
+                                    "rounded-medium",
+                                    "text-default-500",
+                                    "transition-opacity",
+                                    "data-[hover=true]:text-foreground",
+                                    "data-[pressed=true]:opacity-70",
+                                    "data-[hover=true]:bg-default-200",
+                                    "data-[selectable=true]:focus:bg-default-100",
+                                    "data-[focus-visible=true]:ring-default-500",
+                                  ],
+                                },
+                              }}
+                            >
+                              <SelectItem
+                                key={DegreeType.HIGHSCHOOL}
+                                value={DegreeType.HIGHSCHOOL}
+                              >
+                                Highschool
+                              </SelectItem>
+                              <SelectItem
+                                key={DegreeType.UNIVERSITY}
+                                value={DegreeType.UNIVERSITY}
+                              >
+                                University
+                              </SelectItem>
+                            </Select>
+                          </div>
+                        )}
+                      />
 
-                  <div className="flex items-center gap-x-4">
-                    {/* Overall Score */}
-                    <Controller
-                      name="gradeType"
-                      control={control}
-                      render={({ field, fieldState }) => (
-                        <RadioGroup
-                          {...field}
-                          onValueChange={(e) => field.onChange(e)}
-                          orientation="horizontal"
-                          isDisabled={isPending}
-                          label="Overall Score"
-                          size="md"
-                          defaultValue={field.value}
-                          errorMessage={fieldState.error?.message}
-                          isInvalid={!!fieldState.error}
-                          classNames={{
-                            label: "text-sm text-primary",
-                          }}
-                        >
-                          <Radio value={GradeType.GPA}>GPA (?/4.0)</Radio>
-                          <Radio value={GradeType.CGPA}>CGPA (?/10.0)</Radio>
-                        </RadioGroup>
-                      )}
-                    />
-
-                    {/* Grade Score */}
-                    <Controller
-                      name="gradeScore"
-                      control={control}
-                      render={({ field, fieldState }) => (
-                        <Input
-                          {...field}
-                          isDisabled={isPending}
-                          defaultValue={"1"}
-                          type="number"
-                          min={0}
-                          max={
-                            getValues("gradeType") === GradeType.GPA ? 4 : 10
-                          }
-                          step={0.1}
-                          label=""
-                          labelPlacement="outside"
-                          variant="bordered"
-                          size="md"
-                          errorMessage={fieldState.error?.message}
-                          isInvalid={!!fieldState.error}
-                          className="w-full max-w-[150px] pt-6"
+                      <div className="flex items-end gap-x-4">
+                        {/* Language Type */}
+                        <Controller
+                          name="certificateType"
+                          control={control}
+                          render={({ field, fieldState }) => (
+                            <Select
+                              {...field}
+                              onSelectionChange={(e) => {
+                                field.onChange(e);
+                                setValue("certificateImg", "");
+                              }}
+                              selectedKeys={field.value && [field.value]}
+                              isDisabled={isPending}
+                              label="Language Certificate"
+                              labelPlacement="outside"
+                              variant="bordered"
+                              size="md"
+                              placeholder="Choose a certificate"
+                              errorMessage={fieldState.error?.message}
+                              isInvalid={!!fieldState.error}
+                              classNames={{
+                                value: "text-primary",
+                              }}
+                              listboxProps={{
+                                itemClasses: {
+                                  base: [
+                                    "rounded-medium",
+                                    "text-default-500",
+                                    "transition-opacity",
+                                    "data-[hover=true]:text-foreground",
+                                    "data-[pressed=true]:opacity-70",
+                                    "data-[hover=true]:bg-default-200",
+                                    "data-[selectable=true]:focus:bg-default-100",
+                                    "data-[focus-visible=true]:ring-default-500",
+                                  ],
+                                },
+                              }}
+                            >
+                              <SelectItem
+                                key={CertificateType.IELTS}
+                                value={CertificateType.IELTS}
+                              >
+                                {CertificateType.IELTS}
+                              </SelectItem>
+                              <SelectItem
+                                key={CertificateType.TOEFL}
+                                value={CertificateType.TOEFL}
+                              >
+                                TOEFL
+                              </SelectItem>
+                            </Select>
+                          )}
                         />
-                      )}
-                    />
-                  </div>
+                        {/* Language Image URL */}
+                        {getValues("certificateType") != null &&
+                          (getValues("certificateImg") != "" ? (
+                            <Controller
+                              name="certificateImg"
+                              control={control}
+                              render={({ field, fieldState }) => (
+                                <HoverCard>
+                                  <HoverCardTrigger>
+                                    <Input
+                                      {...field}
+                                      onValueChange={field.onChange}
+                                      value="Hover to see detail"
+                                      readOnly={true}
+                                      label="Image Url"
+                                      labelPlacement="outside"
+                                      size="md"
+                                      variant="faded"
+                                      errorMessage={fieldState.error?.message}
+                                      isInvalid={fieldState.invalid}
+                                      classNames={{
+                                        input: "cursor-default",
+                                      }}
+                                      isClearable
+                                    />
+                                  </HoverCardTrigger>
+                                  <HoverCardContent
+                                    align="center"
+                                    alignOffset={10}
+                                    className="flex w-80 items-center justify-center rounded-md"
+                                  >
+                                    <Image
+                                      width={300}
+                                      src={field.value}
+                                      alt="certificate-image"
+                                      isZoomed
+                                      isBlurred
+                                      shadow="md"
+                                    />
+                                  </HoverCardContent>
+                                </HoverCard>
+                              )}
+                            />
+                          ) : (
+                            <>
+                              <Button
+                                onClick={() => setOpen((v) => !v)}
+                                isDisabled={isPending}
+                                variant="bordered"
+                                startContent={<File className="h-4 w-4" />}
+                                size="md"
+                                className="w-full p-4"
+                              >
+                                Upload file here
+                              </Button>
+                              <CertificateImageModal
+                                onUpload={onUpload}
+                                isOpen={open}
+                                isUploading={isUploading}
+                              />
+                            </>
+                          ))}
+                      </div>
+                      <div className="flex items-center gap-x-4">
+                        {/* Overall Score */}
+                        <Controller
+                          name="gradeType"
+                          control={control}
+                          render={({ field, fieldState }) => (
+                            <RadioGroup
+                              {...field}
+                              onValueChange={(e) => field.onChange(e)}
+                              orientation="horizontal"
+                              isDisabled={isPending}
+                              label="Overall Score"
+                              size="md"
+                              defaultValue={field.value}
+                              errorMessage={fieldState.error?.message}
+                              isInvalid={!!fieldState.error}
+                              classNames={{
+                                label: "text-sm text-primary",
+                              }}
+                            >
+                              <Radio value={GradeType.GPA}>GPA (?/4.0)</Radio>
+                              <Radio value={GradeType.CGPA}>
+                                CGPA (?/10.0)
+                              </Radio>
+                            </RadioGroup>
+                          )}
+                        />
+
+                        {/* Grade Score */}
+                        <Controller
+                          name="gradeScore"
+                          control={control}
+                          render={({ field, fieldState }) => (
+                            <Input
+                              {...field}
+                              isDisabled={isPending}
+                              defaultValue={"1"}
+                              type="number"
+                              min={0}
+                              max={
+                                getValues("gradeType") === GradeType.GPA
+                                  ? 4
+                                  : 10
+                              }
+                              step={0.1}
+                              label=""
+                              labelPlacement="outside"
+                              variant="bordered"
+                              size="md"
+                              errorMessage={fieldState.error?.message}
+                              isInvalid={!!fieldState.error}
+                              className="w-full max-w-[150px] pt-6"
+                            />
+                          )}
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               </Tab>
             </Tabs>

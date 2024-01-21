@@ -26,9 +26,9 @@ export const {
     async signIn({ user }) {
       const existingUser = await getUserById(user.id);
 
-      if (!existingUser || !existingUser.emailVerified) {
-        return false;
-      }
+      // if (!existingUser || !existingUser.emailVerified) {
+      //   return false;
+      // }
 
       return true;
     },
@@ -44,6 +44,7 @@ export const {
       return session;
     },
     async jwt({ token }) {
+      console.log(token);
       if (!token.sub) return token;
 
       const existingUser = await getUserById(token.sub);
