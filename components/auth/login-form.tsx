@@ -11,8 +11,9 @@ import { useState, useTransition } from "react";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 import { login } from "@/action/login";
+import { DictionaryLanguage } from "@/data/dictionaries";
 
-export const LoginForm = () => {
+export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -50,9 +51,9 @@ export const LoginForm = () => {
 
   return (
     <CardWrapper
-      backButtonLabel="Don't have account? Register"
+      backButtonLabel={dict.Authentication.No_Account}
       backButtonHref="/auth/register"
-      headerLabel="Login"
+      headerLabel={dict.Authentication.Login_Header}
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -61,12 +62,12 @@ export const LoginForm = () => {
         <div className="flex w-full flex-col gap-4">
           <Input
             isDisabled={isPending}
-            label="Email"
+            label={dict.Authentication.Email_Label}
             labelPlacement="outside"
             type="email"
             variant="bordered"
             size="lg"
-            placeholder="Enter your email"
+            placeholder={dict.Authentication.Email_Placeholder}
             startContent={<Mail className="h-4 w-4" />}
             errorMessage={errors.email?.message}
             isInvalid={!!errors.email?.message}
@@ -75,12 +76,12 @@ export const LoginForm = () => {
           />
           <Input
             isDisabled={isPending}
-            label="Password"
+            label={dict.Authentication.Password_Label}
             labelPlacement="outside"
             type={isVisible ? "text" : "password"}
             variant="bordered"
             size="lg"
-            placeholder="Enter your password"
+            placeholder={dict.Authentication.Password_Placeholder}
             startContent={<Key className="h-4 w-4" />}
             endContent={
               <button
@@ -109,7 +110,7 @@ export const LoginForm = () => {
           type="submit"
           className="mt-4 w-full bg-[#7D1F1F] font-semibold text-white"
         >
-          Login
+          {dict.Authentication.Login_Button}
         </Button>
       </form>
     </CardWrapper>

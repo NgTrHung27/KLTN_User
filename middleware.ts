@@ -8,12 +8,31 @@ import {
   authRoutes,
   publicRoutes,
 } from "@/routes";
+import Negotiator from "negotiator";
+import { match } from "@formatjs/intl-localematcher";
 
 const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
+  const locales = ["en", "vi"];
+  const defaultLocale = "en";
+
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
+
+  const getLocale = () => {
+    const headers = { "accept-language": "en" };
+    let languages = new Negotiator({ headers }).languages();
+    return match(languages, locales, defaultLocale); // -> 'en'
+  };
+
+  const isLocalePathname = locales.some(
+    (locale) =>
+      nextUrl.pathname.startsWith(`/${locale}`) ||
+      nextUrl.pathname === `${locale}`,
+  );
+
+  const locale = getLocale();
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isApiEdgestoreRoute = nextUrl.pathname.startsWith(apiEdgestorePrefix);
@@ -24,6 +43,10 @@ export default auth((req) => {
     return null;
   }
 
+  if (!isLocalePathname) {
+    return Response.redirect(new URL(`/${locale}${nextUrl.pathname}`, nextUrl));
+  }
+
   if (isAuthRoute) {
     if (isLoggedIn) {
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
@@ -31,8 +54,11 @@ export default auth((req) => {
     return null;
   }
 
+  console.log(nextUrl.pathname);
+
   if (!isLoggedIn && !isPublicRoute) {
-    return Response.redirect(new URL("/auth/login", nextUrl));
+    console.log("meomeo");
+    return Response.redirect(new URL(`/${locale}/auth/login`, nextUrl));
   }
 
   return null;

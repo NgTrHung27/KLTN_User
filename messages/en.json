@@ -1,0 +1,20 @@
+{
+  "Authentication": {
+    "Login_Header": "Login",
+    "Login_Button": "Login",
+    "Register_Button": "Register",
+    "Email_Placeholder": "Enter your email",
+    "Password_Placeholder": "Enter your password",
+    "Email_Label": "Email",
+    "Password_Label": "Password",
+    "No_Account": "Don't have account? Register"
+  },
+  "Home": {
+    "Title": "Canadian Student Management Center"
+  },
+  "Theme": {
+    "Light": "Light",
+    "Dark": "Dark",
+    "System": "System"
+  }
+}
