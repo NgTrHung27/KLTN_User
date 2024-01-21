@@ -1,3 +1,5 @@
+import { Program, School } from "@prisma/client";
+
 export type Ward = {
   Id: string;
   Name: string;
@@ -19,3 +21,5 @@ export type City = {
   Name: string;
   Districts: District[];
 };
+
+export type SchoolWithPrograms = School & { programs: Program[] };

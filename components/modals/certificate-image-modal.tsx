@@ -27,10 +27,10 @@ export const CertificateImageModal = ({
   const { onOpenChange } = useDisclosure();
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={true}>
       <ModalContent>
         <ModalHeader>
-          <h2 className="text-center text-lg font-semibold">
+          <h2 className="text-center text-lg font-semibold text-primary">
             {" "}
             Certificate Image
           </h2>
