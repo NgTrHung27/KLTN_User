@@ -10,6 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
 enum GradeType {
   GPA
   CGPA
@@ -25,14 +30,94 @@ enum DegreeType {
   UNIVERSITY
 }
 
+enum UserRole {
+  ADMIN
+  STUDENT
+}
+
 model User {
-  id              String           @id @default(cuid())
-  name            String
-  email           String           @unique
-  emailVerified   DateTime?
-  image           String?
-  password        String
-  GradeType       GradeType?
-  DegreeType      DegreeType?
-  CertificateType CertificateType?
+  id            String    @id @default(cuid())
+  studentCode   String
+  // Account
+  email         String    @unique
+  emailVerified DateTime?
+  password      String
+  name          String
+  // Profile
+  dob           DateTime
+  gender        Gender
+  phoneNumber   String
+  idCardNumber  String    @unique
+  address       String
+
+  image    String?
+  // Education
+  schoolId String?
+  school   School? @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  studentProgram StudentProgram?
+
+  degreeType DegreeType?
+
+  certificateType CertificateType?
+
+  gradeType  GradeType?
+  gradeScore Float
+
+  // Role-based authentication
+  role UserRole @default(STUDENT)
+
+  createdAt DateTime @default(now())
+  upadtedAt DateTime @updatedAt
+
+  @@index([studentCode, schoolId])
+}
+
+model School {
+  id            String  @id @default(cuid())
+  logoUrl       String
+  backgroundUrl String
+  name          String
+  colorValue    String
+  isPublished   Boolean @default(false)
+
+  users User[]
+
+  programs Program[]
+
+  createdAt DateTime @default(now())
+  upadtedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+model Program {
+  id          String  @id @default(cuid())
+  name        String
+  description String
+  coverImage  String?
+  isPublished Boolean @default(false)
+
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id])
+
+  createdAt DateTime @default(now())
+  upadtedAt DateTime @updatedAt
+
+  studentPrograms StudentProgram[]
+
+  @@index([name])
+}
+
+model StudentProgram {
+  id String @id @default(cuid())
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  programId String
+  program   Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, programId])
+  @@index([userId, programId])
 }

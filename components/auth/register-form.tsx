@@ -39,7 +39,6 @@ import { Controller, useForm } from "react-hook-form";
 import { RegisterSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { register as registerAction } from "@/action/register";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 import "react-day-picker/dist/style.css";
@@ -137,8 +136,6 @@ export const RegisterForm = () => {
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
     setError("");
     setSuccess("");
-
-    console.log(values);
 
     // startTransition(() => {
     //   registerAction(values).then((data) => {
