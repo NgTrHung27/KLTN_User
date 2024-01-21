@@ -1,0 +1,20 @@
+{
+  "Authentication": {
+    "Login_Header": "Đăng nhập",
+    "Login_Button": "Đăng nhập",
+    "Register_Button": "Đăng ký",
+    "Email_Placeholder": "Nhập email của bạn",
+    "Password_Placeholder": "Nhập mật khẩu của bạn",
+    "Email_Label": "Email",
+    "Password_Label": "Mật khẩu",
+    "No_Account": "Không có tài khoản? Đăng ký ngay"
+  },
+  "Home": {
+    "Title": "Trung tâm quản lý du học sinh Canada"
+  },
+  "Theme": {
+    "Light": "Sáng",
+    "Dark": "Tối",
+    "System": "Hệ thống"
+  }
+}
