@@ -162,3 +162,17 @@ export const ResetSchema = z.object({
       message: "Invalid type of email",
     }),
 });
+
+export const NewPasswordSchema = z
+  .object({
+    password: z.string().min(1, {
+      message: "Password is required",
+    }),
+    confirmPassword: z.string().min(1, {
+      message: "Confirm password is required",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords mismatch",
+    path: ["confirmPassword"],
+  });
