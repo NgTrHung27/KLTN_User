@@ -32,19 +32,40 @@ export default auth((req) => {
       nextUrl.pathname === `${locale}`,
   );
 
+  const isPublicPath = (path: string) => {
+    const checkPath = path.replace(/^\/[a-zA-Z]{2}/, "");
+
+    if (checkPath == "") return true;
+
+    return publicRoutes.includes(checkPath);
+  };
+
+  const isAuthPath = (path: string) => {
+    const checkPath = path.replace(/^\/[a-zA-Z]{2}/, "");
+
+    return authRoutes.includes(checkPath);
+  };
+
   const locale = getLocale();
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isApiEdgestoreRoute = nextUrl.pathname.startsWith(apiEdgestorePrefix);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+  const isPublicRoute = isPublicPath(nextUrl.pathname);
+  const isAuthRoute = isAuthPath(nextUrl.pathname);
+
+  const token = nextUrl.searchParams.get("token");
 
   if (isApiAuthRoute || isApiEdgestoreRoute) {
     return null;
   }
 
   if (!isLocalePathname) {
-    return Response.redirect(new URL(`/${locale}${nextUrl.pathname}`, nextUrl));
+    return Response.redirect(
+      new URL(
+        `/${locale}${nextUrl.pathname}${token ? `?token=${token}` : ""}`,
+        nextUrl,
+      ),
+    );
   }
 
   if (isAuthRoute) {
@@ -54,10 +75,7 @@ export default auth((req) => {
     return null;
   }
 
-  console.log(nextUrl.pathname);
-
   if (!isLoggedIn && !isPublicRoute) {
-    console.log("meomeo");
     return Response.redirect(new URL(`/${locale}/auth/login`, nextUrl));
   }
 

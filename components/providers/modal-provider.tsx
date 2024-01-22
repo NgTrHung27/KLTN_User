@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CertificateImageModal } from "../modals/certificate-image-modal";
 
 export const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -14,9 +13,5 @@ export const ModalProvider = () => {
     return null;
   }
 
-  return (
-    <>
-      <CertificateImageModal />
-    </>
-  );
+  return <></>;
 };

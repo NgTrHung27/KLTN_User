@@ -151,3 +151,14 @@ export const RegisterSchema = z
       path: ["gradeScore"],
     },
   );
+
+export const ResetSchema = z.object({
+  email: z
+    .string()
+    .min(1, {
+      message: "Email is required",
+    })
+    .email({
+      message: "Invalid type of email",
+    }),
+});
