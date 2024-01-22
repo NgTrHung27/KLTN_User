@@ -74,12 +74,12 @@ export const VerificationEmail: React.FC<Readonly<VerificationEmailProps>> = ({
               </Row>
             </Section>
             <Section className="mb-[32px] mt-[32px] text-center">
-              <Button
+              <Link
                 className="rounded bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
                 href={confirmLink}
               >
                 Join the team
-              </Button>
+              </Link>
             </Section>
             <Text className="text-[14px] leading-[24px] text-black">
               or copy and paste this URL into your browser:{" "}

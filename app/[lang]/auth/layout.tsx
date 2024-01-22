@@ -12,7 +12,7 @@ const AuthLayout = async ({
 }) => {
   const dict = await getDictionary(lang);
   return (
-    <div className="h-full w-full bg-white">
+    <div className="relative flex h-full w-full items-center justify-center bg-background">
       <Image
         width={85}
         src="/logo-red.png"

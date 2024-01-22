@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  params: { lang },
+  params,
 }: {
   children: React.ReactNode;
   params: {
@@ -23,7 +23,7 @@ export default function RootLayout({
   };
 }) {
   return (
-    <html lang={lang}>
+    <html lang={params.lang}>
       <body className={inter.className}>
         <EdgeStoreProvider>
           <ThemeProvider

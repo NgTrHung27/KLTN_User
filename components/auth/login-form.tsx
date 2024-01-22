@@ -10,8 +10,9 @@ import { Eye, EyeOff, Key, Mail } from "lucide-react";
 import { useState, useTransition } from "react";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
-import { login } from "@/action/login";
+import { login } from "@/actions/login";
 import { DictionaryLanguage } from "@/data/dictionaries";
+import { useRouter } from "next/navigation";
 
 export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
   const [error, setError] = useState<string | undefined>("");

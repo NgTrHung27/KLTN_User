@@ -1,8 +1,14 @@
 import { auth, signOut } from "@/auth";
 import { ModeToggle } from "@/components/theme-switcher";
+import { Lang, getDictionary } from "@/data/dictionaries";
 
-const StudentPage = async () => {
+const StudentPage = async ({
+  params: { lang },
+}: {
+  params: { lang: Lang };
+}) => {
   const session = await auth();
+  const dict = await getDictionary(lang);
 
   return (
     <div className="h-full w-full">
@@ -16,7 +22,7 @@ const StudentPage = async () => {
       >
         <button type="submit">Sign out</button>
       </form>
-      <ModeToggle />
+      <ModeToggle dict={dict} />
     </div>
   );
 };

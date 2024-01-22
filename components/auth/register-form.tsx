@@ -56,7 +56,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "../ui/hover-card";
-import { register } from "@/action/register";
+import { register } from "@/actions/register";
 import { SchoolWithPrograms } from "@/types";
 
 interface RegisterFormProps {
@@ -173,8 +173,6 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
     setOpen(false);
     setIsUploading(false);
   };
-
-  console.log(programs);
 
   return (
     <CardWrapper

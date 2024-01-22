@@ -91,7 +91,6 @@ export const {
         }
       }
 
-      console.log(session);
       return session;
     },
     async jwt({ token }) {
