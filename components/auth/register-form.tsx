@@ -98,9 +98,6 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
-    const toggleVisibility = () => {
-      setIsVisible(!isVisible);
-    };
   };
 
   const {
