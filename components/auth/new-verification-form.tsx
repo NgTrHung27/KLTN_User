@@ -17,7 +17,6 @@ export const NewVerificationForm = () => {
 
   const onSubmit = useCallback(() => {
     if (success || error) return;
-    console.log(token);
     if (!token) {
       setError("Missing token");
       return;
