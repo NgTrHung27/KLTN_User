@@ -8,7 +8,8 @@ import { getUserByEmail } from "@/data/user";
 import { db } from "@/lib/db";
 import { getSchoolByName } from "@/data/school";
 import { getProgramByName } from "@/data/program";
-import { generateStudentCode } from "@/lib/tokens";
+import { generateStudentCode, generateVerificationToken } from "@/lib/tokens";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   const validatedFields = RegisterSchema.safeParse(values);
@@ -66,7 +67,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
 
   const studentCode = generateStudentCode(value.degreeType);
 
-  await db.user.create({
+  const user = await db.user.create({
     data: {
       studentCode: studentCode,
       address,
@@ -81,7 +82,14 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     },
   });
 
-  // TODO: Send verification token email
+  const verificationToken = await generateVerificationToken(value.email);
 
-  return { success: "User created!" };
+  await sendVerificationEmail(
+    user.name,
+    process.env.NODE_SENDER_EMAIL!,
+    verificationToken.email,
+    verificationToken.token,
+  );
+
+  return { success: "Confirmation email sent!" };
 };

@@ -15,6 +15,8 @@ export const authRoutes = [
   "/en/auth/register",
   "/vi/auth/login",
   "/vi/auth/register",
+  "/en/auth/error",
+  "/vi/auth/error",
 ];
 
 /**

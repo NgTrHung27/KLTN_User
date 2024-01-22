@@ -20,13 +20,10 @@ import {
 import { CardWrapper } from "./card-wrapper";
 import {
   Calendar,
-  Calendar,
   Eye,
   EyeOff,
   File,
-  File,
   GraduationCap,
-  Home,
   Home,
   Key,
   Mail,
@@ -36,8 +33,6 @@ import {
   Tag,
   User,
 } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
-import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { RegisterSchema } from "@/schemas";
@@ -100,43 +95,20 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
       </Button>
     </div>
   );
-  const [isUploading, setIsUploading] = useState(false);
-
-  const oldestMonth = new Date("1970-01-01");
-  const latestMonth = new Date("2006-12-01");
-  const [month, setMonth] = useState<Date>(new Date(latestMonth));
-
-  useEffect(() => {
-    setMounted(true);
-  }, [mounted]);
-
-  const footer = (
-    <div className="mt-4 flex items-center justify-between">
-      <Button onClick={() => setMonth(oldestMonth)} size="sm">
-        Go to oldest
-      </Button>
-      <Button onClick={() => setMonth(latestMonth)} size="sm">
-        Go to latest
-      </Button>
-    </div>
-  );
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible);
+    const toggleVisibility = () => {
+      setIsVisible(!isVisible);
+    };
   };
 
   const {
     control,
-    control,
     handleSubmit,
     getValues,
     watch,
-    getValues,
-    watch,
     setValue,
-    formState: { isValid },
     formState: { isValid },
   } = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
