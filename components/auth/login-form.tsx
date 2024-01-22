@@ -5,14 +5,13 @@ import { CardWrapper } from "./card-wrapper";
 import { z } from "zod";
 import { LoginSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input, Link } from "@nextui-org/react";
 import { Eye, EyeOff, Key, Mail } from "lucide-react";
 import { useState, useTransition } from "react";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 import { login } from "@/actions/login";
 import { DictionaryLanguage } from "@/data/dictionaries";
-import { useRouter } from "next/navigation";
 
 export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
   const [error, setError] = useState<string | undefined>("");
@@ -102,6 +101,14 @@ export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
             isRequired
             {...passwordRegister}
           />
+          <Link
+            size="sm"
+            underline="hover"
+            className="italic hover:cursor-pointer"
+            href="/auth/reset"
+          >
+            {dict.Authentication.Forgot_Password}
+          </Link>
         </div>
         <FormError message={error} />
         <FormSuccess message={success} />

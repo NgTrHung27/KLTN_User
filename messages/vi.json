@@ -7,7 +7,8 @@
     "Password_Placeholder": "Nhập mật khẩu của bạn",
     "Email_Label": "Email",
     "Password_Label": "Mật khẩu",
-    "No_Account": "Không có tài khoản? Đăng ký ngay"
+    "No_Account": "Không có tài khoản? Đăng ký ngay",
+    "Forgot_Password": "Forgot password?"
   },
   "Home": {
     "Title": "Trung tâm quản lý du học sinh Canada"
