@@ -12,19 +12,23 @@ const AuthLayout = async ({
 }) => {
   const dict = await getDictionary(lang);
   return (
-    <div className="relative flex h-full w-full items-center justify-center bg-background">
-      <Image
-        width={85}
-        src="/logo-red.png"
-        alt="logo"
-        className="absolute m-4"
-      />
-      {children}
-      <div className="absolute right-0 top-0 z-[99999] m-4 flex items-center gap-x-4">
-        <LanguageToggle />
-        <ModeToggle dict={dict} className=" text-black dark:text-white" />
+    <>
+      <div className="absolute flex w-full items-center justify-between">
+        <Image
+          width={85}
+          src="/logo-red.png"
+          alt="logo"
+          className="m-4 flex-1"
+        />
+        <div className="mx-4 flex items-center gap-x-2">
+          <LanguageToggle />
+          <ModeToggle dict={dict} className=" text-black dark:text-white" />
+        </div>
       </div>
-    </div>
+      <div className="flex h-full items-center justify-center bg-background">
+        {children}
+      </div>
+    </>
   );
 };
 

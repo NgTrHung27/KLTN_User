@@ -16,6 +16,7 @@ import {
   Spinner,
   Tab,
   Tabs,
+  useDisclosure,
 } from "@nextui-org/react";
 import { CardWrapper } from "./card-wrapper";
 import {
@@ -70,7 +71,6 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
 
   const { edgestore } = useEdgeStore();
 
-  const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -160,6 +160,8 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
     });
   };
 
+  const { isOpen, onOpenChange, onOpen } = useDisclosure();
+
   const onUpload = async (file?: File) => {
     setIsUploading(true);
     if (file) {
@@ -167,7 +169,6 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
 
       setValue("certificateImg", res.url);
     }
-    setOpen(false);
     setIsUploading(false);
   };
 
@@ -793,54 +794,50 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
                         name="degreeType"
                         control={control}
                         render={({ field, fieldState }) => (
-                          <div className="pt-0.5">
-                            <Select
-                              {...field}
-                              selectionMode="single"
-                              onSelectionChange={(e) => {
-                                field.onChange(e);
-                              }}
-                              selectedKeys={field.value && [field.value]}
-                              isDisabled={isPending}
-                              label="Degree"
-                              labelPlacement="outside"
-                              variant="bordered"
-                              size="md"
-                              placeholder="Choose a degree"
-                              errorMessage={fieldState.error?.message}
-                              isInvalid={!!fieldState.error}
-                              classNames={{
-                                value: "text-prismary",
-                              }}
-                              listboxProps={{
-                                itemClasses: {
-                                  base: [
-                                    "rounded-medium",
-                                    "text-default-500",
-                                    "transition-opacity",
-                                    "data-[hover=true]:text-foreground",
-                                    "data-[pressed=true]:opacity-70",
-                                    "data-[hover=true]:bg-default-200",
-                                    "data-[selectable=true]:focus:bg-default-100",
-                                    "data-[focus-visible=true]:ring-default-500",
-                                  ],
-                                },
-                              }}
-                            >
-                              <SelectItem
-                                key={DegreeType.HIGHSCHOOL}
-                                value={DegreeType.HIGHSCHOOL}
-                              >
-                                Highschool
-                              </SelectItem>
-                              <SelectItem
-                                key={DegreeType.UNIVERSITY}
-                                value={DegreeType.UNIVERSITY}
-                              >
-                                University
-                              </SelectItem>
-                            </Select>
-                          </div>
+                          <Autocomplete
+                            {...field}
+                            defaultItems={[
+                              DegreeType.HIGHSCHOOL,
+                              DegreeType.UNIVERSITY,
+                            ]}
+                            onSelectionChange={(e) => {
+                              if (e === null) {
+                                field.onChange(undefined);
+                                return;
+                              }
+                              field.onChange(e);
+                            }}
+                            selectedKey={field.value}
+                            isDisabled={isPending}
+                            label="Degree"
+                            labelPlacement="outside"
+                            variant="bordered"
+                            size="md"
+                            placeholder="Choose a degree"
+                            errorMessage={fieldState.error?.message}
+                            isInvalid={fieldState.invalid}
+                            listboxProps={{
+                              itemClasses: {
+                                base: [
+                                  "rounded-medium",
+                                  "text-default-500",
+                                  "transition-opacity",
+                                  "data-[hover=true]:text-foreground",
+                                  "data-[pressed=true]:opacity-70",
+                                  "data-[hover=true]:bg-default-200",
+                                  "data-[selectable=true]:focus:bg-default-100",
+                                  "data-[focus-visible=true]:ring-default-500",
+                                ],
+                              },
+                            }}
+                          >
+                            <AutocompleteItem key={DegreeType.HIGHSCHOOL}>
+                              Highschool
+                            </AutocompleteItem>
+                            <AutocompleteItem key={DegreeType.UNIVERSITY}>
+                              University
+                            </AutocompleteItem>
+                          </Autocomplete>
                         )}
                       />
 
@@ -850,13 +847,20 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
                           name="certificateType"
                           control={control}
                           render={({ field, fieldState }) => (
-                            <Select
+                            <Autocomplete
                               {...field}
+                              defaultItems={[
+                                CertificateType.IELTS,
+                                CertificateType.TOEFL,
+                              ]}
                               onSelectionChange={(e) => {
+                                if (e === null) {
+                                  field.onChange(undefined);
+                                  return;
+                                }
                                 field.onChange(e);
-                                setValue("certificateImg", "");
                               }}
-                              selectedKeys={field.value && [field.value]}
+                              selectedKey={field.value}
                               isDisabled={isPending}
                               label="Language Certificate"
                               labelPlacement="outside"
@@ -864,10 +868,7 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
                               size="md"
                               placeholder="Choose a certificate"
                               errorMessage={fieldState.error?.message}
-                              isInvalid={!!fieldState.error}
-                              classNames={{
-                                value: "text-primary",
-                              }}
+                              isInvalid={fieldState.invalid}
                               listboxProps={{
                                 itemClasses: {
                                   base: [
@@ -883,28 +884,22 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
                                 },
                               }}
                             >
-                              <SelectItem
-                                key={CertificateType.IELTS}
-                                value={CertificateType.IELTS}
-                              >
-                                {CertificateType.IELTS}
-                              </SelectItem>
-                              <SelectItem
-                                key={CertificateType.TOEFL}
-                                value={CertificateType.TOEFL}
-                              >
+                              <AutocompleteItem key={CertificateType.IELTS}>
+                                IELTS
+                              </AutocompleteItem>
+                              <AutocompleteItem key={CertificateType.TOEFL}>
                                 TOEFL
-                              </SelectItem>
-                            </Select>
+                              </AutocompleteItem>
+                            </Autocomplete>
                           )}
                         />
                         {/* Language Image URL */}
                         {getValues("certificateType") != null &&
-                          (getValues("certificateImg") != "" ? (
+                          (getValues("certificateImg") != null ? (
                             <Controller
                               name="certificateImg"
                               control={control}
-                              render={({ field, fieldState }) => (
+                              render={({ field }) => (
                                 <HoverCard>
                                   <HoverCardTrigger>
                                     <Input
@@ -916,8 +911,6 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
                                       labelPlacement="outside"
                                       size="md"
                                       variant="faded"
-                                      errorMessage={fieldState.error?.message}
-                                      isInvalid={fieldState.invalid}
                                       classNames={{
                                         input: "cursor-default",
                                       }}
@@ -943,25 +936,41 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
                             />
                           ) : (
                             <>
-                              <Button
-                                onClick={() => setOpen((v) => !v)}
-                                isDisabled={isPending}
-                                variant="bordered"
-                                startContent={<File className="h-4 w-4" />}
-                                size="md"
-                                className="w-full p-4"
-                              >
-                                Upload file here
-                              </Button>
+                              <Controller
+                                name="certificateImg"
+                                control={control}
+                                render={({ field, fieldState }) => (
+                                  <Input
+                                    {...field}
+                                    onClick={onOpen}
+                                    role="button"
+                                    value="Upload an image"
+                                    readOnly={true}
+                                    label="Image Url"
+                                    labelPlacement="outside"
+                                    size="md"
+                                    variant="faded"
+                                    startContent={
+                                      <File className="mr-2 h-4 w-4" />
+                                    }
+                                    errorMessage={fieldState.error?.message}
+                                    isInvalid={fieldState.invalid}
+                                    classNames={{
+                                      input: "cursor-default",
+                                    }}
+                                  />
+                                )}
+                              />
                               <CertificateImageModal
                                 onUpload={onUpload}
-                                isOpen={open}
+                                isOpen={isOpen}
+                                onOpenChange={onOpenChange}
                                 isUploading={isUploading}
                               />
                             </>
                           ))}
                       </div>
-                      <div className="flex items-center gap-x-4">
+                      <div className="flex items-center justify-between gap-x-4">
                         {/* Overall Score */}
                         <Controller
                           name="gradeType"
@@ -979,6 +988,7 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
                               isInvalid={!!fieldState.error}
                               classNames={{
                                 label: "text-sm text-primary",
+                                wrapper: "gap-x-4",
                               }}
                             >
                               <Radio value={GradeType.GPA}>GPA (?/4.0)</Radio>
@@ -1026,7 +1036,7 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
             <FormSuccess message={success} />
             <Button
               isLoading={isPending}
-              isDisabled={isPending || !isValid}
+              isDisabled={isPending}
               type="submit"
               className="mt-4 w-full bg-[#7D1F1F] font-semibold text-white"
             >

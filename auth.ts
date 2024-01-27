@@ -89,6 +89,9 @@ export const {
         if (token.gradeScore) {
           session.user.gradeScore = token.gradeScore as number;
         }
+        if (token.role) {
+          session.user.role = token.role as UserRole;
+        }
       }
 
       return session;

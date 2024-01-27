@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import "react-day-picker/dist/style.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
@@ -8,7 +8,7 @@ import { ModalProvider } from "@/components/providers/modal-provider";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 
-const inter = Inter({ subsets: ["latin"] });
+const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -29,7 +29,7 @@ export default async function RootLayout({
   return (
     <SessionProvider session={session}>
       <html lang={params.lang}>
-        <body className={inter.className}>
+        <body className={montserrat.className}>
           <EdgeStoreProvider>
             <ThemeProvider
               attribute="class"
