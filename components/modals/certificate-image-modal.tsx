@@ -15,19 +15,19 @@ interface CertificateImageModalProps {
   onUpload: () => void;
   isOpen: boolean;
   isUploading: boolean;
+  onOpenChange: () => void;
 }
 
 export const CertificateImageModal = ({
   onUpload,
   isOpen,
   isUploading,
+  onOpenChange,
 }: CertificateImageModalProps) => {
   const [file, setFile] = useState<File>();
 
-  const { onOpenChange } = useDisclosure();
-
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={true}>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
         <ModalHeader>
           <h2 className="text-center text-lg font-semibold text-primary">
