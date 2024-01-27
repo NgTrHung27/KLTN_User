@@ -949,7 +949,7 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
                                 variant="bordered"
                                 startContent={<File className="h-4 w-4" />}
                                 size="md"
-                                className="w-full p-4"
+                                className="w-full justify-start p-4"
                               >
                                 Upload file here
                               </Button>
@@ -961,7 +961,7 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
                             </>
                           ))}
                       </div>
-                      <div className="flex items-center gap-x-4">
+                      <div className="flex items-center justify-between gap-x-4">
                         {/* Overall Score */}
                         <Controller
                           name="gradeType"
@@ -979,6 +979,7 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
                               isInvalid={!!fieldState.error}
                               classNames={{
                                 label: "text-sm text-primary",
+                                wrapper: "gap-x-4",
                               }}
                             >
                               <Radio value={GradeType.GPA}>GPA (?/4.0)</Radio>

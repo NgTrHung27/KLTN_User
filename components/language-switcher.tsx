@@ -40,9 +40,13 @@ export function LanguageToggle({ className }: LanguageToggleProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className={className}>
-        <Button variant="outline" size="icon" className="block">
+        <Button
+          variant="outline"
+          size="icon"
+          className="z-[99999] block rounded-[10px]"
+        >
           <ReactCountryFlag
-            className="emojiFlag text-3xl"
+            className="emojiFlag text-2xl"
             countryCode={isEnglish ? "US" : "VN"}
             svg
           />
