@@ -1,12 +1,14 @@
 import { LoginForm } from "@/components/auth/login-form";
 import { getDictionary } from "@/data/dictionaries";
 import Image from "next/image";
+import { metadata } from "../../layout";
 
 const LoginPage = async ({
   params: { lang },
 }: {
   params: { lang: "en" | "vi" };
 }) => {
+  metadata.title = "Login";
   const dict = await getDictionary(lang);
   return (
     <div className="relative h-full w-full">
