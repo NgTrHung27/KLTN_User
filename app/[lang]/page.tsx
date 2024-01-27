@@ -1,8 +1,6 @@
-import { Button, Link, cn } from "@nextui-org/react";
+import { Button, Link } from "@nextui-org/react";
 import { getDictionary } from "@/data/dictionaries";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {};
+import { metadata } from "./layout";
 
 export default async function Home({
   params: { lang },
