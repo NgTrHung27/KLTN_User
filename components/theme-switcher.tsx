@@ -5,13 +5,13 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { DictionaryLanguage } from "@/data/dictionaries";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/react";
 
 interface ModeToggleProps {
   className?: string;
@@ -22,8 +22,8 @@ export function ModeToggle({ className, dict }: ModeToggleProps) {
   const { setTheme } = useTheme();
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild className={className}>
+    <Dropdown>
+      <DropdownTrigger className={className}>
         <Button
           variant="outline"
           size="icon"
@@ -33,18 +33,18 @@ export function ModeToggle({ className, dict }: ModeToggleProps) {
           <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
+      </DropdownTrigger>
+      <DropdownMenu>
+        <DropdownItem onClick={() => setTheme("light")}>
           {dict.Theme.Light}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
+        </DropdownItem>
+        <DropdownItem onClick={() => setTheme("dark")}>
           {dict.Theme.Dark}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
+        </DropdownItem>
+        <DropdownItem onClick={() => setTheme("system")}>
           {dict.Theme.System}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
   );
 }

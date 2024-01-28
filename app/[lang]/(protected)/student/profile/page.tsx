@@ -2,10 +2,10 @@
 
 import { useCurrentUser } from "@/hooks/use-current-user";
 
-const StudentSettingsPage = () => {
+const StudentProfilePage = () => {
   const currentUser = useCurrentUser();
 
-  return <div>Settings</div>;
+  return <div>Profile</div>;
 };
 
-export default StudentSettingsPage;
+export default StudentProfilePage;
