@@ -14,6 +14,7 @@ import {
 
 export type ExtendedUser = DefaultSession["user"] & {
   role: UserRole;
+  studentCode: string;
   dob: Date;
   gender: Gender;
   phoneNumber: string;
@@ -57,6 +58,9 @@ export const {
       if (session.user) {
         if (token.sub) {
           session.user.id = token.sub;
+        }
+        if (token.studentCode) {
+          session.user.studentCode = token.studentCode as string;
         }
         if (token.dob) {
           session.user.dob = token.dob as Date;
@@ -103,6 +107,7 @@ export const {
 
       if (!existingUser) return token;
 
+      token.studentCode = existingUser.studentCode;
       token.dob = existingUser.dob;
       token.gender = existingUser.gender;
       token.phoneNumber = existingUser.phoneNumber;
