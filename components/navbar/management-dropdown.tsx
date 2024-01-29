@@ -41,7 +41,7 @@ export const ManagementDropdown = () => {
             radius="sm"
             variant="light"
             className={cn(
-              "text-medium",
+              "text-md text-[#7D1F1F] dark:text-primary",
               pathname.includes("/management") && "font-semibold",
             )}
           >

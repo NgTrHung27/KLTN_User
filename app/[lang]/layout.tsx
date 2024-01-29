@@ -28,14 +28,14 @@ export default async function RootLayout({
 
   return (
     <SessionProvider session={session}>
-      <html lang={params.lang}>
+      <html lang={params.lang} suppressHydrationWarning>
         <body className={montserrat.className}>
           <EdgeStoreProvider>
             <ThemeProvider
+              storageKey="theme"
               attribute="class"
               defaultTheme="system"
               enableSystem
-              disableTransitionOnChange
             >
               <ModalProvider />
               {children}

@@ -1,6 +1,6 @@
 "use client";
 
-import { DropdownItem, DropdownMenu } from "@nextui-org/react";
+import { DropdownItem, DropdownMenu, Link } from "@nextui-org/react";
 import {
   Calendar,
   ChevronDown,
@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   Megaphone,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const icons = {
   chevron: <ChevronDown className="h-4 w-4" />,
@@ -19,7 +18,6 @@ const icons = {
 };
 
 export const ManagementItems = () => {
-  const router = useRouter();
   return (
     <>
       <DropdownMenu
@@ -28,15 +26,17 @@ export const ManagementItems = () => {
         itemClasses={{ base: "gap-4" }}
       >
         <DropdownItem
-          onClick={() => router.push("/student/management/dashboard")}
+          as={Link}
           key="dashboard"
           description="Overall scores, notifications and more"
           startContent={icons.dashboard}
+          href="/student/management/dashboard"
         >
           Dashboard
         </DropdownItem>
         <DropdownItem
-          onClick={() => router.push("/student/management/annoucement")}
+          as={Link}
+          href="/student/management/annoucement"
           key="annoucement"
           description="Overall scores, notifications and more"
           startContent={icons.annoucement}
@@ -44,7 +44,8 @@ export const ManagementItems = () => {
           Annoucement
         </DropdownItem>
         <DropdownItem
-          onClick={() => router.push("/student/management/schedule")}
+          as={Link}
+          href="/student/management/schedule"
           key="schedule"
           description="Overall scores, notifications and more"
           startContent={icons.schedule}
@@ -52,7 +53,8 @@ export const ManagementItems = () => {
           Schedule
         </DropdownItem>
         <DropdownItem
-          onClick={() => router.push("/student/management/score")}
+          as={Link}
+          href="/student/management/score"
           key="score"
           description="Overall scores, notifications and more"
           startContent={icons.score}

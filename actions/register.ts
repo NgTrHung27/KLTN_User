@@ -4,7 +4,7 @@ import * as z from "zod";
 import bcrypt from "bcryptjs";
 
 import { RegisterSchema } from "@/schemas";
-import { getUserByEmail } from "@/data/user";
+import { getUserByEmail, getUserByIdCardNumber } from "@/data/user";
 import { db } from "@/lib/db";
 import { getSchoolByName } from "@/data/school";
 import { getProgramByName } from "@/data/program";
@@ -30,10 +30,12 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     ...value
   } = validatedFields.data;
 
-  const existingUser = await getUserByEmail(value.email);
+  const existingUser =
+    (await getUserByEmail(value.email)) ||
+    (await getUserByIdCardNumber(value.idCardNumber));
 
   if (existingUser) {
-    return { error: "Email already in use!" };
+    return { error: "Email or id card number already in use!" };
   }
 
   if (value.password && confirmPassword) {

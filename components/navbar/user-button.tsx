@@ -3,16 +3,21 @@
 import { ExtendedUser } from "@/auth";
 import {
   Avatar,
-  Divider,
+  CircularProgress,
   Dropdown,
   DropdownItem,
   DropdownMenu,
+  DropdownSection,
   DropdownTrigger,
+  Link,
+  Switch,
 } from "@nextui-org/react";
-import { ModeToggle } from "../theme-switcher";
 import { DictionaryLanguage } from "@/data/dictionaries";
 import { useRouter } from "next/navigation";
 import { logout } from "@/actions/logout";
+import { useTheme } from "next-themes";
+import { Moon, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface UserButtonProps {
   user: ExtendedUser;
@@ -20,44 +25,75 @@ interface UserButtonProps {
 }
 
 export const UserButton = ({ user, dict }: UserButtonProps) => {
-  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+  const { setTheme, theme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+  }, [mounted]);
+
+  if (!mounted) {
+    return <CircularProgress size="sm" aria-label="Loading..." />;
+  }
 
   return (
     <Dropdown placement="bottom-end" backdrop="blur" closeOnSelect={false}>
       <DropdownTrigger>
         <Avatar
           isBordered
-          as="button"
-          className="transition-transform"
           color="secondary"
-          name={user.name || "Student"}
+          name={"Image"}
           size="sm"
-          src={user.image || "/placeholder.jpg"}
+          src={user.image || "/placeholder.webp"}
         />
       </DropdownTrigger>
-      <DropdownMenu aria-label="Profile Information" variant="flat">
-        <DropdownItem key="profile" className="h-14 gap-4">
-          <div className="flex items-center justify-between gap-x-4">
-            <div>
-              <p className="font-semibold">{user.name}</p>
-              <p className="font-semibold">{user.studentCode}</p>
+      <DropdownMenu aria-label="User Actions" variant="flat">
+        <DropdownSection
+          title="Student's information"
+          showDivider
+          aria-label="Student"
+        >
+          <DropdownItem
+            key="profile"
+            aria-label="User with information"
+            className="h-14 gap-4"
+          >
+            <div className="flex items-center justify-between gap-x-4">
+              <div>
+                <p className="font-semibold text-primary">{user.name}</p>
+                <p className="font-semibold text-primary">{user.studentCode}</p>
+              </div>
+              <Switch
+                defaultSelected={theme === "light" ? true : false}
+                size="sm"
+                color="primary"
+                onValueChange={(isSelected) =>
+                  setTheme(isSelected ? "light" : "dark")
+                }
+                startContent={<Sun />}
+                endContent={<Moon />}
+              />
             </div>
-            <ModeToggle dict={dict} />
-          </div>
-        </DropdownItem>
+          </DropdownItem>
+        </DropdownSection>
+        <DropdownSection title="Actions" showDivider aria-label="Actions">
+          <DropdownItem as={Link} href="/student/settings" key="settings">
+            Settings
+          </DropdownItem>
+          <DropdownItem
+            as={Link}
+            href="/student/support"
+            key="help_and_feedback"
+          >
+            Help & Feedback
+          </DropdownItem>
+        </DropdownSection>
         <DropdownItem
-          onClick={() => router.push("/student/settings")}
-          key="settings"
+          onClick={() => logout()}
+          key="logout"
+          color="danger"
+          className="text-primary"
         >
-          Settings
-        </DropdownItem>
-        <DropdownItem
-          onClick={() => router.push("/student/support")}
-          key="help_and_feedback"
-        >
-          Help & Feedback
-        </DropdownItem>
-        <DropdownItem onClick={() => logout()} key="logout" color="danger">
           Log out
         </DropdownItem>
       </DropdownMenu>
