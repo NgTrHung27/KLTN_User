@@ -38,7 +38,7 @@ export const VerificationEmail: React.FC<Readonly<VerificationEmailProps>> = ({
           <Container className="mx-auto my-[40px] max-w-[465px] rounded border border-solid border-[#eaeaea] p-[20px]">
             <Section className="mt-[32px]">
               <Img
-                src={"logo-red.png"}
+                src={"logo-red.webp"}
                 width="40"
                 height="37"
                 alt="Logo"

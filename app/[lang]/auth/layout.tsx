@@ -16,7 +16,7 @@ const AuthLayout = async ({
       <div className="absolute flex w-full items-center justify-between">
         <Image
           width={85}
-          src="/logo-red.png"
+          src="/logo-red.webp"
           alt="logo"
           className="m-4 flex-1"
         />

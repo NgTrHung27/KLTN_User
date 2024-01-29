@@ -19,3 +19,13 @@ export const getUserById = async (id: string) => {
     return null;
   }
 };
+
+export const getUserByIdCardNumber = async (id: string) => {
+  try {
+    const user = await db.user.findUnique({ where: { idCardNumber: id } });
+
+    return user;
+  } catch {
+    return null;
+  }
+};
