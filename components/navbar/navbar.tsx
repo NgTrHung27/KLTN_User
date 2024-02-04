@@ -34,7 +34,6 @@ export const ProtectedNavbar = ({ user, dict }: ProtectedNavbarProps) => {
 
   return (
     <Navbar
-      isBlurred={true}
       isBordered
       onMenuOpenChange={setIsOpen}
       className="bg-white dark:bg-background"

@@ -40,7 +40,9 @@ export default async function RootLayout({
             >
               <ModalProvider />
               <Providers>
-                <main className="h-full w-full">{children}</main>
+                <main className="h-full w-full bg-white dark:bg-primary">
+                  {children}
+                </main>
               </Providers>
             </ThemeProvider>
           </EdgeStoreProvider>

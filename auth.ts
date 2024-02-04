@@ -9,6 +9,7 @@ import {
   DegreeType,
   Gender,
   GradeType,
+  StudentStatus,
   UserRole,
 } from "@prisma/client";
 
@@ -26,6 +27,8 @@ export type ExtendedUser = DefaultSession["user"] & {
   certificateImg: string;
   gradeType: GradeType;
   gradeScore: number;
+  isTwoFactorEnabled: boolean;
+  status: StudentStatus;
 };
 
 declare module "next-auth" {
@@ -96,6 +99,12 @@ export const {
         if (token.role) {
           session.user.role = token.role as UserRole;
         }
+        if (token.isTwoFactorEnabled) {
+          session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+        }
+        if (token.status) {
+          session.user.status = token.status as StudentStatus;
+        }
       }
 
       return session;
@@ -122,6 +131,10 @@ export const {
       token.gradeScore = existingUser.gradeScore;
 
       token.role = existingUser.role;
+
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+
+      token.status = existingUser.status;
 
       return token;
     },

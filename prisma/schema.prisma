@@ -35,6 +35,13 @@ enum UserRole {
   STUDENT
 }
 
+enum StudentStatus {
+  STUDYING
+  DROPPED
+  AWAITING
+  APPROVED
+}
+
 model User {
   id            String    @id @default(cuid())
   studentCode   String    @unique
@@ -65,8 +72,15 @@ model User {
   gradeType  GradeType
   gradeScore Float
 
+  // Student status
+  status StudentStatus @default(AWAITING)
+
   // Role-based authentication
   role UserRole @default(STUDENT)
+
+  // Two Factor Authentication
+  isTwoFactorEnabled    Boolean                @default(false)
+  twoFactorConfirmation TwoFactorConfirmation?
 
   createdAt DateTime @default(now())
   upadtedAt DateTime @updatedAt
@@ -120,6 +134,9 @@ model StudentProgram {
   programId String
   program   Program @relation(fields: [programId], references: [id], onDelete: Cascade)
 
+  createdAt DateTime @default(now())
+  upadtedAt DateTime @updatedAt
+
   @@unique([userId, programId])
   @@index([userId, programId])
 }
@@ -130,6 +147,8 @@ model VerificationToken {
   token   String   @unique
   expires DateTime
 
+  createdAt DateTime @default(now())
+
   @@unique([email, token])
 }
 
@@ -139,5 +158,30 @@ model PasswordResetToken {
   token   String   @unique
   expires DateTime
 
+  createdAt DateTime @default(now())
+
   @@unique([email, token])
+}
+
+model TwoFactorToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  createdAt DateTime @default(now())
+
+  @@unique([email, token])
+}
+
+model TwoFactorConfirmation {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  upadtedAt DateTime @updatedAt
+
+  @@unique([userId])
 }

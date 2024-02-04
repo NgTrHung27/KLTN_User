@@ -10,7 +10,7 @@ import { SettingsSidebar } from "./_components/settings-sidebar";
 
 const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="hidden h-full w-full space-y-6 bg-white p-10 pb-16 dark:bg-background md:block">
+    <div className="hidden w-full space-y-6 bg-white p-10 dark:bg-background md:block">
       <div className="space-y-0.5">
         <h2 className="text-2xl font-bold tracking-tight text-[#7D1f1f] dark:text-primary">
           Settings
@@ -20,7 +20,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         </p>
       </div>
       <Divider />
-      <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+      <div className="flex w-full flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
         <ResizablePanelGroup
           direction="horizontal"
           className="hidden h-full w-full rounded-lg border md:block"
@@ -32,9 +32,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={70}>
-            <div className="flex h-full items-center justify-center p-6">
-              {children}
-            </div>
+            <div className="h-full p-6">{children}</div>
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>

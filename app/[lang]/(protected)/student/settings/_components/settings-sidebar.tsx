@@ -39,7 +39,7 @@ export const SettingsSidebar = () => {
           href={item.href}
           size="lg"
           className={cn(
-            "w-full rounded-sm text-lg text-muted-foreground hover:bg-primary/10 hover:text-[#7D1F1F]",
+            "w-full rounded-sm text-base text-muted-foreground hover:bg-primary/10 hover:text-[#7D1F1F] dark:hover:text-white",
             pathname.includes(item.href) &&
               "bg-[#7D1F1F]/10 font-semibold text-[#7D1F1F] dark:bg-white/10 dark:text-primary",
           )}

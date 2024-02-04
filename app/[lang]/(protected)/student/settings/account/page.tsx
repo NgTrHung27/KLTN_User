@@ -3,6 +3,7 @@
 import { currentUser } from "@/lib/user";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { redirect } from "next/navigation";
+import { AccountForm } from "./_components/account-form";
 
 const SettingsAccountPage = async () => {
   const user = await currentUser();
@@ -11,7 +12,7 @@ const SettingsAccountPage = async () => {
     return redirect(DEFAULT_LOGIN_REDIRECT);
   }
 
-  return <div>Profile</div>;
+  return <AccountForm user={user} />;
 };
 
 export default SettingsAccountPage;

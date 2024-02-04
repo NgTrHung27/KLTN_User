@@ -1,7 +1,6 @@
 import { ProtectedNavbar } from "@/components/navbar/navbar";
 import { Lang, getDictionary } from "@/data/dictionaries";
 import { currentUser } from "@/lib/user";
-import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
 import { redirect } from "next/navigation";
 
 const ProtectedLayout = async ({

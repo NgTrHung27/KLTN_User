@@ -176,3 +176,42 @@ export const NewPasswordSchema = z
     message: "Passwords mismatch",
     path: ["confirmPassword"],
   });
+
+export const AccountFormSchema = z
+  .object({
+    email: z.optional(
+      z
+        .string({
+          invalid_type_error: "Invalid email",
+        })
+        .email(),
+    ),
+    password: z.optional(z.string()),
+    confirmPassword: z.optional(z.string()),
+    isTwoFactorEnabled: z.optional(z.boolean()),
+  })
+  .refine(
+    (data) => {
+      if (data.password !== undefined && data.confirmPassword === undefined) {
+        return false;
+      }
+
+      if (data.password === undefined && data.confirmPassword !== undefined) {
+        return false;
+      }
+
+      if (
+        data.password !== undefined &&
+        data.confirmPassword !== undefined &&
+        data.password !== data.confirmPassword
+      ) {
+        return false;
+      }
+
+      return true;
+    },
+    {
+      message: "Passwords mismatch",
+      path: ["confirmPassword"],
+    },
+  );
