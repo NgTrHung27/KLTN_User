@@ -7,6 +7,7 @@ import { EdgeStoreProvider } from "@/lib/edgestore";
 import { ModalProvider } from "@/components/providers/modal-provider";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
+import { Providers } from "@/components/providers/providers";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -38,7 +39,9 @@ export default async function RootLayout({
               enableSystem
             >
               <ModalProvider />
-              {children}
+              <Providers>
+                <main className="h-full w-full">{children}</main>
+              </Providers>
             </ThemeProvider>
           </EdgeStoreProvider>
         </body>
