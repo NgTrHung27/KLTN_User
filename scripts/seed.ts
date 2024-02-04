@@ -37,7 +37,7 @@ async function main() {
           coverImage:
             "https://utfs.io/f/1ddd79dd-dbf9-4841-aa39-fd363ad66639-i4sqms.png",
           isPublished: true,
-          schoolId: "clrnyxesi0000ujgsze80gzhe",
+          schoolId: "cls72mt9l0000kcqa1cr1h1lg",
         },
         {
           name: "Khoa Học Máy Tính",
@@ -45,7 +45,7 @@ async function main() {
           coverImage:
             "https://utfs.io/f/e5f5624d-5d06-458a-a2eb-9b11e21447eb-1yjes.jpg",
           isPublished: true,
-          schoolId: "clrnyxesl0001ujgsjsduou62",
+          schoolId: "cls72mt9n0001kcqaht7ysebp",
         },
       ],
     });

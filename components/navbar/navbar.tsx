@@ -39,8 +39,8 @@ export const ProtectedNavbar = ({ user, dict }: ProtectedNavbarProps) => {
       className="bg-white dark:bg-background"
       classNames={{
         wrapper: "max-w-full flex h-[85px] p-0 pl-3 pr-6",
+        menu: "top-[85px] bg-white dark:bg-background",
         toggleIcon: "text-[#7D1f1F] dark:text-primary",
-        menu: ["top-[85px] bg-white dark:bg-background"],
         item: [
           "flex",
           "relative",
