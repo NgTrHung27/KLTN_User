@@ -25,6 +25,8 @@ interface UserButtonProps {
 }
 
 export const UserButton = ({ user, dict }: UserButtonProps) => {
+  const router = useRouter();
+
   const [mounted, setMounted] = useState(false);
   const { setTheme, theme } = useTheme();
 
@@ -67,9 +69,10 @@ export const UserButton = ({ user, dict }: UserButtonProps) => {
                 defaultSelected={theme === "light" ? true : false}
                 size="sm"
                 color="primary"
-                onValueChange={(isSelected) =>
-                  setTheme(isSelected ? "light" : "dark")
-                }
+                onValueChange={(isSelected) => {
+                  setTheme(isSelected ? "light" : "dark");
+                  window.location.reload();
+                }}
                 startContent={<Sun />}
                 endContent={<Moon />}
               />

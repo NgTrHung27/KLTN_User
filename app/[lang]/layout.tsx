@@ -40,7 +40,7 @@ export default async function RootLayout({
             >
               <ModalProvider />
               <Providers>
-                <main className="h-full w-full bg-white dark:bg-primary">
+                <main className="h-full w-full bg-white dark:bg-background">
                   {children}
                 </main>
               </Providers>
