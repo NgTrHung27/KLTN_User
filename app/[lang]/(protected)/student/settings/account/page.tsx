@@ -1,18 +1,13 @@
-"use server";
+"use client";
 
-import { currentUser } from "@/lib/user";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { redirect } from "next/navigation";
 import { AccountForm } from "./_components/account-form";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
-const SettingsAccountPage = async () => {
-  const user = await currentUser();
+const SettingsAccountPage = () => {
+  const user = useCurrentUser();
 
-  if (!user) {
-    return redirect(DEFAULT_LOGIN_REDIRECT);
-  }
-
-  return <AccountForm user={user} />;
+  return <AccountForm user={user!} />;
 };
 
 export default SettingsAccountPage;
