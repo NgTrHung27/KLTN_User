@@ -9,12 +9,14 @@ import {
   DegreeType,
   Gender,
   GradeType,
+  Profile,
+  Program,
+  School,
   StudentStatus,
-  UserRole,
 } from "@prisma/client";
+import { NextResponse } from "next/server";
 
 export type ExtendedUser = DefaultSession["user"] & {
-  role: UserRole;
   studentCode: string;
   dob: Date;
   gender: Gender;
@@ -29,6 +31,12 @@ export type ExtendedUser = DefaultSession["user"] & {
   gradeScore: number;
   isTwoFactorEnabled: boolean;
   status: StudentStatus;
+
+  school: Pick<School, "logoUrl" | "name" | "backgroundUrl" | "colorValue">;
+
+  program: Program;
+
+  profile: Profile;
 };
 
 declare module "next-auth" {
@@ -99,17 +107,30 @@ export const {
         if (token.gradeScore) {
           session.user.gradeScore = token.gradeScore as number;
         }
-        if (token.role) {
-          session.user.role = token.role as UserRole;
-        }
+
         if (token.isTwoFactorEnabled) {
           session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
         }
+
         if (token.status) {
           session.user.status = token.status as StudentStatus;
         }
-      }
 
+        if (token.school) {
+          session.user.school = token.school as Pick<
+            School,
+            "logoUrl" | "name" | "backgroundUrl" | "colorValue"
+          >;
+        }
+
+        if (token.program) {
+          session.user.program = token.program as Program;
+        }
+
+        if (token.profile) {
+          session.user.profile = token.profile as Profile;
+        }
+      }
       return session;
     },
     async jwt({ token }) {
@@ -117,7 +138,9 @@ export const {
 
       const existingUser = await getUserById(token.sub);
 
-      if (!existingUser) return token;
+      if (!existingUser) {
+        return token;
+      }
 
       token.studentCode = existingUser.studentCode;
       token.dob = existingUser.dob;
@@ -133,11 +156,15 @@ export const {
       token.gradeType = existingUser.gradeType;
       token.gradeScore = existingUser.gradeScore;
 
-      token.role = existingUser.role;
-
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
 
       token.status = existingUser.status;
+
+      token.school = existingUser.school;
+
+      token.program = existingUser.program?.program;
+
+      token.profile = existingUser.profile;
 
       return token;
     },

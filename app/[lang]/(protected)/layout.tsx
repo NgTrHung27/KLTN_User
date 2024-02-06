@@ -1,3 +1,4 @@
+import { logout } from "@/actions/logout";
 import { ProtectedNavbar } from "@/components/navbar/navbar";
 import { Lang, getDictionary } from "@/data/dictionaries";
 import { currentUser } from "@/lib/user";
@@ -14,7 +15,7 @@ const ProtectedLayout = async ({
   const dict = await getDictionary(params.lang);
 
   if (!user) {
-    redirect("/auth/login");
+    redirect("/");
   }
 
   return (
