@@ -30,3 +30,17 @@ export const getSchoolByName = async (name: string) => {
     return null;
   }
 };
+
+export const getSchoolById = async (id: string) => {
+  try {
+    const school = await db.school.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return school;
+  } catch {
+    return null;
+  }
+};

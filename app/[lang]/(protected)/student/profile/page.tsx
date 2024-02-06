@@ -1,11 +1,17 @@
-"use client";
+"use server";
 
-import { useCurrentUser } from "@/hooks/use-current-user";
+import { currentUser } from "@/lib/user";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { redirect } from "next/navigation";
 
-const StudentProfilePage = () => {
-  const currentUser = useCurrentUser();
+const StudentProfilePage = async () => {
+  const user = await currentUser();
 
-  return <div>Profile</div>;
+  if (!user) {
+    return redirect(DEFAULT_LOGIN_REDIRECT);
+  }
+
+  return redirect("/student/profile/news");
 };
 
 export default StudentProfilePage;
