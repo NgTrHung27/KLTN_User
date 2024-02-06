@@ -74,7 +74,7 @@ export const ProtectedNavbar = ({ user, dict }: ProtectedNavbarProps) => {
             src="/logo-red.webp"
             className="h-fit"
           />
-          <p className="font-bold text-[#7D1F1F] dark:text-primary">
+          <p className="font-bold text-[#7D1F1F] dark:text-primary md:text-xs lg:text-base">
             Quan Ly Du Hoc
           </p>
         </NavbarBrand>
@@ -108,7 +108,7 @@ export const ProtectedNavbar = ({ user, dict }: ProtectedNavbarProps) => {
           startContent={<SearchIcon size={18} />}
           type="search"
           classNames={{
-            base: "max-w-full sm:max-w-[10rem] h-10",
+            base: "max-w-full md:max-w-[16rem] h-10",
             mainWrapper: "h-full",
             input: "text-small",
             inputWrapper:

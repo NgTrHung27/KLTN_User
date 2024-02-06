@@ -80,6 +80,9 @@ export const {
         if (token.address) {
           session.user.address = token.address as string;
         }
+        if (token.schoolId) {
+          session.user.schoolId = token.schoolId as string;
+        }
         if (token.degreeType) {
           session.user.degreeType = token.degreeType as DegreeType;
         }
