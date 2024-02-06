@@ -17,8 +17,8 @@ export default auth((req) => {
   const locales = ["en", "vi"];
   const defaultLocale = "en";
 
-  const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
+  const { nextUrl, auth } = req;
+  const isLoggedIn = !!auth;
 
   const getLocale = () => {
     const headers = { "accept-language": "en" };
@@ -70,9 +70,7 @@ export default auth((req) => {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      return Response.redirect(
-        new URL(`${DEFAULT_LOGIN_REDIRECT}/settings`, nextUrl),
-      );
+      return Response.redirect(new URL(`${DEFAULT_LOGIN_REDIRECT}`, nextUrl));
     }
     return null;
   }

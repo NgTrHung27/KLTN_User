@@ -7,7 +7,11 @@ export const getSchoolsWithPrograms = async () => {
         isPublished: true,
       },
       include: {
-        programs: true,
+        programs: {
+          where: {
+            isPublished: true,
+          },
+        },
       },
     });
 
