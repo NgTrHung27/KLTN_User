@@ -144,25 +144,39 @@ export async function POST(req: Request) {
 
       const studentCode = generateStudentCode(value.degreeType);
 
-      const user = await db.user.create({
+      const profile = await db.profile.create({
         data: {
-          studentCode: studentCode,
-          address,
-          gradeScore: parseFloat(gradeScore),
-          schoolId: existingSchool.id,
-          studentProgram: {
+          user: {
             create: {
-              programId: existingProgram.id,
+              studentCode: studentCode,
+              address,
+              gradeScore: parseFloat(gradeScore),
+              schoolId: existingSchool.id,
+              program: {
+                create: {
+                  programId: existingProgram.id,
+                },
+              },
+              ...value,
             },
           },
-          ...value,
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
         },
       });
 
-      const verificationToken = await generateVerificationToken(value.email);
+      const verificationToken = await generateVerificationToken(
+        profile.user.email,
+      );
 
       await sendVerificationEmail(
-        user.name,
+        profile.user.name,
         process.env.NODE_SENDER_EMAIL!,
         verificationToken.email,
         verificationToken.token,
