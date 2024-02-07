@@ -1,9 +1,10 @@
-import { auth } from "@/auth";
-import { currentUser } from "@/lib/user";
-import { redirect } from "next/navigation";
+"use client";
 
-const StudentPage = async () => {
-  return redirect("/student/profile");
+import { useRouter } from "next/navigation";
+
+const StudentPage = () => {
+  const router = useRouter();
+  return router.push("/student/profile");
 };
 
 export default StudentPage;

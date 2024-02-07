@@ -14,9 +14,7 @@ const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="col-span-1 grid auto-rows-min gap-3 text-primary lg:col-span-3">
         <ProfileSidebar schoolName={school!.name} user={user!} />
       </div>
-      <div className="col-span-11 grid gap-3 bg-black text-white lg:col-span-9 lg:grid-cols-7">
-        {children}
-      </div>
+      {children}
     </div>
   );
 };
