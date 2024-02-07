@@ -3,6 +3,7 @@
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { ProfileHeader } from "./_components/profile-header";
 import { useRouter } from "next/navigation";
+import { ProfileInformation } from "./_components/profile-information";
 
 const ProfileIdLayout = ({
   children,
@@ -36,9 +37,14 @@ const ProfileIdLayout = ({
         />
         {children}
       </div>
-      <div className="flex flex-col gap-3 bg-white text-black lg:col-span-2">
-        <div className="bg-black text-white">F</div>
-        <div className="bg-black text-white">G</div>
+      <div className="hidden gap-3 lg:col-span-2 lg:flex lg:flex-col">
+        <ProfileInformation
+          address={user.address}
+          dob={user.dob}
+          schoolLogo={school?.logoUrl!}
+          schoolName={school?.name!}
+        />
+        <div className="bg-black text-white">Friends</div>
       </div>
     </div>
   );
