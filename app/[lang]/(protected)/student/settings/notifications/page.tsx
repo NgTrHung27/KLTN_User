@@ -1,8 +1,8 @@
-"use server";
+"use client";
 
 import { NotificationsForm } from "./_components/notifications-form";
 
-const SettingsNotificationsPage = async () => {
+const SettingsNotificationsPage = () => {
   return <NotificationsForm />;
 };
 

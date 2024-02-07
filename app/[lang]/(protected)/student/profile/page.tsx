@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 const StudentProfilePage = () => {
   const user = useCurrentUser();
 
-  return redirect(`/student/profile/${user?.studentCode}`);
+  return redirect(`/student/profile/${user?.studentCode}/posts`);
 };
 
 export default StudentProfilePage;

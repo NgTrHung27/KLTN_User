@@ -1,4 +1,3 @@
-import { logout } from "@/actions/logout";
 import { ProtectedNavbar } from "@/components/navbar/navbar";
 import { Lang, getDictionary } from "@/data/dictionaries";
 import { currentUser } from "@/lib/user";

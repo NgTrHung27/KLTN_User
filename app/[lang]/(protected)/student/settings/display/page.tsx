@@ -1,8 +1,8 @@
-"use server";
+"use client";
 
 import { DisplayForm } from "./_components/display-form";
 
-const SettingsDisplayPage = async () => {
+const SettingsDisplayPage = () => {
   return <DisplayForm />;
 };
 
