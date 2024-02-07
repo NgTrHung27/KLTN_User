@@ -62,8 +62,10 @@ export const ProfileNavigationList = () => {
           )}
           href={item.href}
         >
-          {item.icon}
-          <span className="hidden lg:block">{item.label}</span>
+          <div className="flex items-center gap-x-2">
+            {item.icon}
+            <span className="hidden lg:block">{item.label}</span>
+          </div>
         </Link>
       ))}
     </div>

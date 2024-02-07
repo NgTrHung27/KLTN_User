@@ -1,14 +1,11 @@
-import { currentUser } from "@/lib/user";
+"use client";
 
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const StudentSettingsPage = () => {
-  const user = currentUser();
+  const router = useRouter();
 
-  if (!user) {
-    return redirect("/auth/login");
-  }
-  return redirect("/student/settings/account");
+  return router.push("/student/settings/account");
 };
 
 export default StudentSettingsPage;

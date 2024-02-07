@@ -209,7 +209,7 @@ model Profile {
   status ProfileStatus?
 
   // Feeds
-  feeds Feed[]
+  posts Post[]
 
   // Biography
   biography Biography?
@@ -239,7 +239,7 @@ model Profile {
   updatedAt DateTime @updatedAt
 }
 
-model Feed {
+model Post {
   id String @id @default(cuid())
 
   profileId String  @unique
@@ -247,6 +247,8 @@ model Feed {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("Feed")
 }
 
 model Biography {
