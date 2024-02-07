@@ -200,6 +200,14 @@ export async function POST(req: Request) {
           return NextResponse.json("Something went wrong", { status: 400 });
       }
     }
+
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        { error: "Invalid JSON syntax" },
+        { status: 406 },
+      );
+    }
+
     return NextResponse.json(error, { status: 500 });
   }
 }
