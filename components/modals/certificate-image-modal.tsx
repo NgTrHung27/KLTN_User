@@ -1,15 +1,8 @@
 "use client";
 
-import { useCertificateImage } from "@/hooks/use-certificate-image";
 import { SingleImageDropzone } from "../single-image-dropzone";
 import { useState } from "react";
-import { useEdgeStore } from "@/lib/edgestore";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  useDisclosure,
-} from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader } from "@nextui-org/react";
 
 interface CertificateImageModalProps {
   onUpload: () => void;
@@ -24,7 +17,7 @@ export const CertificateImageModal = ({
   isUploading,
   onOpenChange,
 }: CertificateImageModalProps) => {
-  const [file, setFile] = useState<File>();
+  const [file] = useState<File>();
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
