@@ -8,6 +8,7 @@ import { ModalProvider } from "@/components/providers/modal-provider";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import { Providers } from "@/components/providers/providers";
+import { Toaster } from "@/components/ui/sonner";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -43,6 +44,7 @@ export default async function RootLayout({
                 <main className="h-full w-full bg-white dark:bg-background">
                   {children}
                 </main>
+                <Toaster richColors closeButton />
               </Providers>
             </ThemeProvider>
           </EdgeStoreProvider>

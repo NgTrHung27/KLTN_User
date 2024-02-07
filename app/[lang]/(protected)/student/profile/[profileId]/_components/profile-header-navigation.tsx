@@ -23,6 +23,7 @@ export const ProfileHeaderNavigation = ({
         tabContent: "group-data-[selected=true]:text-primary",
       }}
       selectedKey={pathname.slice(3)}
+      className="z-10"
     >
       <Tab
         as={Link}
