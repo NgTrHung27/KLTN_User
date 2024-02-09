@@ -117,6 +117,11 @@ export const getUserById = async (id: string) => {
           where: {
             userId: id,
           },
+          select: {
+            status: true,
+            coverImage: true,
+            posts: true,
+          },
         },
       },
     });

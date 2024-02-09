@@ -55,12 +55,12 @@ const ProfileIdLayout = ({
         </div>
       </div>
       <Sheet>
-        <SheetTrigger asChild>
+        <SheetTrigger asChild className="sm:hidden md:block lg:hidden">
           <div className="fixed right-0 top-[50%] w-8 rounded-l-full bg-muted-foreground opacity-30 transition-all hover:w-16 hover:cursor-pointer hover:opacity-100">
             <ChevronsLeft className="h-8 w-8 " />
           </div>
         </SheetTrigger>
-        <SheetContent className="right-8 top-[calc(85px+32px)] h-fit min-h-[calc(100%-85px-85px-32px-32px)] overflow-x-scroll rounded-xl">
+        <SheetContent className="right-8 top-[calc(85px+32px)] h-[calc(100%-85px-85px-32px-32px)] overflow-y-scroll rounded-xl">
           <ProfileInformation
             address={user.address}
             dob={user.dob}

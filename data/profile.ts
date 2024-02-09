@@ -25,7 +25,6 @@ export const getProfileById = async (id: string) => {
 export const getProfileByStudentCode = async (code: string) => {
   try {
     const session = await currentUser();
-    console.log(session);
     const user = await db.user.findUnique({
       where: {
         id: session?.id,

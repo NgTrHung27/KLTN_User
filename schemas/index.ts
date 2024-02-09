@@ -215,3 +215,8 @@ export const AccountFormSchema = z
       path: ["confirmPassword"],
     },
   );
+
+export const PostSchema = z.object({
+  content: z.optional(z.string()),
+  postImages: z.optional(z.array(z.string())),
+});

@@ -9,12 +9,19 @@ import {
   DegreeType,
   Gender,
   GradeType,
+  Post,
   Profile,
+  ProfileStatus,
   Program,
   School,
   StudentStatus,
 } from "@prisma/client";
-import { NextResponse } from "next/server";
+
+export type ExtendedProfile = {
+  status: ProfileStatus;
+  coverImage: string | undefined | null;
+  posts: Post[];
+};
 
 export type ExtendedUser = DefaultSession["user"] & {
   studentCode: string;
@@ -36,7 +43,7 @@ export type ExtendedUser = DefaultSession["user"] & {
 
   program: Program;
 
-  profile: Profile;
+  profile: ExtendedProfile;
 };
 
 declare module "next-auth" {
@@ -128,7 +135,7 @@ export const {
         }
 
         if (token.profile) {
-          session.user.profile = token.profile as Profile;
+          session.user.profile = token.profile as ExtendedProfile;
         }
       }
       return session;
