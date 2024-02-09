@@ -272,7 +272,7 @@ model Post {
 
   isArchived Boolean @default(false)
 
-  profileId String  @unique
+  profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -288,8 +288,6 @@ model PostImage {
 
   postId String
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-
-  @@unique([postId])
 }
 
 model PostComment {
@@ -322,10 +320,8 @@ model PostCommentImage {
 
   url String
 
-  postId String
-  post   PostComment @relation(fields: [postId], references: [id], onDelete: Cascade)
-
-  @@unique([postId])
+  postCommentId String
+  postComment   PostComment @relation(fields: [postCommentId], references: [id], onDelete: Cascade)
 }
 
 model PostLike {

@@ -79,6 +79,7 @@ export const ProfilePostModal = ({
           logo={logo}
           onClick={onEditStatus}
           currentStatus={status}
+          onClose={onClose}
         />
       )}
       {isEditStatus && (

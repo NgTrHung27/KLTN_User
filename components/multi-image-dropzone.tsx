@@ -339,6 +339,7 @@ const Button = React.forwardRef<
 >(({ className, ...props }, ref) => {
   return (
     <button
+      type="button"
       className={twMerge(
         // base
         "inline-flex cursor-pointer items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",

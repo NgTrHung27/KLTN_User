@@ -81,8 +81,6 @@ export const AccountForm = ({ user }: AccountFormProps) => {
   };
 
   const onSubmit = (values: AccountFormValues) => {
-    console.log(values);
-
     setIsEditting(false);
   };
 

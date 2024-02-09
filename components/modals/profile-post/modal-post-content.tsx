@@ -1,5 +1,6 @@
 "use client";
 
+import { CreateNewProfilePost } from "@/actions/profile-post";
 import { IconPicker } from "@/components/IconPicker";
 import {
   FileState,
@@ -19,12 +20,15 @@ import {
   ModalFooter,
   ModalHeader,
   ScrollShadow,
+  Spinner,
   Textarea,
 } from "@nextui-org/react";
+import { PostStatus } from "@prisma/client";
 import { ChevronDown, Smile } from "lucide-react";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoImagesOutline } from "react-icons/io5";
+import { toast } from "sonner";
 import { z } from "zod";
 
 interface ModalPostContentProps {
@@ -35,6 +39,7 @@ interface ModalPostContentProps {
     label: string;
     icon: React.ReactNode;
   };
+  onClose: () => void;
 }
 
 export const ModalPostContent = ({
@@ -42,11 +47,13 @@ export const ModalPostContent = ({
   name,
   onClick,
   currentStatus,
+  onClose,
 }: ModalPostContentProps) => {
   const inputRef = useRef<ElementRef<"textarea">>(null);
   const [modeImage, setModeImage] = useState(false);
   const [fileStates, setFileStates] = useState<FileState[]>([]);
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { edgestore } = useEdgeStore();
 
@@ -83,9 +90,77 @@ export const ModalPostContent = ({
     onEmojiOpen();
   };
 
+  const uploadImageProgress = (
+    key: string,
+    progress: FileState["progress"],
+  ) => {
+    setFileStates((fileStates) => {
+      const newFileStates = structuredClone(fileStates);
+      const fileState = newFileStates.find(
+        (fileState) => fileState.key === key,
+      );
+
+      if (fileState) {
+        fileState.progress = progress;
+      }
+
+      return newFileStates;
+    });
+  };
+
+  const onSubmit = async (values: z.infer<typeof PostSchema>) => {
+    if (currentStatus.label === "Public") {
+      values.status = PostStatus.PUBLIC;
+    } else if (currentStatus.label === "Private") {
+      values.status = PostStatus.PRIVATE;
+    } else if (currentStatus.label === "Only friends") {
+      values.status = PostStatus.FRIENDS;
+    } else if (currentStatus.label === "Except for") {
+      values.status = PostStatus.EXCEPT;
+    }
+
+    setIsLoading(true);
+    if (fileStates) {
+      setFileStates([...fileStates]);
+      await Promise.all(
+        fileStates.map(async (fileState) => {
+          try {
+            const res = await edgestore.publicFiles.upload({
+              file: fileState.file as File,
+              onProgressChange: async (progress) => {
+                uploadImageProgress(fileState.key, progress);
+                if (progress === 100) {
+                  await new Promise((resolve) => setTimeout(resolve, 1000));
+                  uploadImageProgress(fileState.key, "COMPLETE");
+                }
+              },
+            });
+
+            values.postImages?.push(res.url);
+          } catch (error) {
+            uploadImageProgress(fileState.key, "ERROR");
+          }
+        }),
+      );
+    }
+
+    await CreateNewProfilePost(values).then((res) => {
+      if (res.success) {
+        toast.success(res.success);
+      }
+      if (res.error) {
+        toast.error(res.error);
+      }
+    });
+
+    setIsLoading(false);
+    setFileStates([]);
+    onClose();
+  };
+
   return (
     <Form {...form}>
-      <form>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <ModalContent className="bg-white text-primary dark:bg-background">
           <ModalHeader className="justify-center">
             Create a new post
@@ -121,6 +196,7 @@ export const ModalPostContent = ({
                         <Textarea
                           {...field}
                           ref={inputRef}
+                          isDisabled={isLoading}
                           size="lg"
                           value={field.value}
                           onChange={(e) => {
@@ -153,6 +229,7 @@ export const ModalPostContent = ({
 
               {modeImage && (
                 <MultiImageDropzone
+                  disabled={isLoading}
                   value={fileStates}
                   onChange={(files) => setFileStates(files)}
                   onFilesAdded={() => {}}
@@ -170,14 +247,20 @@ export const ModalPostContent = ({
                 <IoImagesOutline className="text-2xl" />
               </button>
             </div>
-            <Button
-              isDisabled={isDisabled}
-              type="submit"
-              variant="shadow"
-              color="primary"
-            >
-              Create
-            </Button>
+            {!isLoading ? (
+              <Button
+                isDisabled={isDisabled}
+                type="submit"
+                variant="shadow"
+                color="primary"
+              >
+                Create
+              </Button>
+            ) : (
+              <div className="flex items-center justify-center">
+                <Spinner size="lg" color="primary" />
+              </div>
+            )}
           </ModalFooter>
         </ModalContent>
       </form>
