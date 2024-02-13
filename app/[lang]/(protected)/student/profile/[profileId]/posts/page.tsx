@@ -4,13 +4,13 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { ProfilePostEditor } from "./_components/profile-post-editor";
 import { useDisclosure } from "@nextui-org/react";
 import { ProfilePostModal } from "@/components/modals/profile-post-modal";
+import { ProfilePostsList } from "./_components/profile-posts-list";
+import { useNewestProfilePosts } from "@/hooks/use-profile-posts";
 
 const ProfileIdPostPage = () => {
   const user = useCurrentUser();
 
-  const profile = user?.profile;
-
-  const posts = profile?.posts;
+  const posts = useNewestProfilePosts();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -27,7 +27,13 @@ const ProfileIdPostPage = () => {
           onOpen={onOpen}
           logo={user?.image as string | undefined}
         />
-        {posts?.length == 0 && <div>No posts found</div>}
+
+        {posts?.length! > 0 && (
+          <ProfilePostsList
+            name={user?.name!}
+            logo={user?.image!}
+          />
+        )}
       </div>
     </>
   );

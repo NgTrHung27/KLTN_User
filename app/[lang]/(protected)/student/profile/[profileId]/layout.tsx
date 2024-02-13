@@ -23,6 +23,7 @@ const ProfileIdLayout = ({
   const user = useCurrentUser();
   const school = user?.school;
   const profile = user?.profile;
+  const postCount = profile?.posts.length;
 
   if (!user?.studentCode.match(profileId)) {
     return (
@@ -37,6 +38,7 @@ const ProfileIdLayout = ({
       <div className="col-span-11 grid gap-3 lg:col-span-9 lg:grid-cols-7">
         <div className="items-ceneter flex flex-col justify-start gap-3 lg:col-span-5">
           <ProfileHeader
+            postCount={postCount}
             name={user.name!}
             coverUrl={profile?.coverImage as string | undefined}
             logoUrl={user.image as string | undefined}

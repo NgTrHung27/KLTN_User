@@ -25,6 +25,7 @@ import {
 } from "@nextui-org/react";
 import { PostStatus } from "@prisma/client";
 import { ChevronDown, Smile } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoImagesOutline } from "react-icons/io5";
@@ -49,6 +50,8 @@ export const ModalPostContent = ({
   currentStatus,
   onClose,
 }: ModalPostContentProps) => {
+  const router = useRouter();
+
   const inputRef = useRef<ElementRef<"textarea">>(null);
   const [modeImage, setModeImage] = useState(false);
   const [fileStates, setFileStates] = useState<FileState[]>([]);
@@ -153,9 +156,11 @@ export const ModalPostContent = ({
       }
     });
 
+    form.reset();
     setIsLoading(false);
     setFileStates([]);
     onClose();
+    router.refresh();
   };
 
   return (

@@ -9,18 +9,40 @@ import {
   DegreeType,
   Gender,
   GradeType,
-  Post,
-  Profile,
+  PostImage,
+  PostStatus,
   ProfileStatus,
   Program,
   School,
   StudentStatus,
+  User,
 } from "@prisma/client";
 
 export type ExtendedProfile = {
   status: ProfileStatus;
   coverImage: string | undefined | null;
-  posts: Post[];
+  posts: ExtendedPost[];
+};
+
+export type ExtendedPost = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  status: PostStatus;
+  content: string;
+  postImages: PostImage[];
+  comments: ExtendedComment[];
+};
+
+export type ExtendedComment = {
+  createdAt: Date;
+  updatedAt: Date;
+  isArchived: boolean;
+  content: string;
+  commentImage: string;
+  profile: {
+    user: Pick<User, "name" | "image">;
+  };
 };
 
 export type ExtendedUser = DefaultSession["user"] & {

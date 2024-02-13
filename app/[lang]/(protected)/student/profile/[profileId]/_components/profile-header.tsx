@@ -23,6 +23,7 @@ interface ProfileHeaderProps {
   name: string;
   logoUrl?: string;
   schoolName: string;
+  postCount?: number;
 }
 
 export const ProfileHeader = ({
@@ -30,6 +31,7 @@ export const ProfileHeader = ({
   name,
   logoUrl,
   schoolName,
+  postCount,
 }: ProfileHeaderProps) => {
   const params = useParams();
   const pathname = usePathname();
@@ -99,6 +101,7 @@ export const ProfileHeader = ({
         </div>
         <CardBody className="flex h-fit items-center justify-center">
           <ProfileHeaderNavigation
+            postCount={postCount}
             pathname={pathname}
             profileId={params.profileId as string}
           />

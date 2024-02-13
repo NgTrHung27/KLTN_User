@@ -29,7 +29,7 @@ export const IconPicker = ({
   const theme = themeMap[currentTheme];
 
   return (
-    <Popover isOpen={isOpen}>
+    <Popover isOpen={isOpen} placement="bottom">
       <PopoverTrigger onClick={onOpen}>{children}</PopoverTrigger>
       <PopoverContent className=" border-none p-0 shadow-none">
         <EmojiPicker

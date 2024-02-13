@@ -51,8 +51,24 @@ export const getUserByEmail = async (email: string) => {
         },
         profile: {
           where: {
-            user: {
-              email,
+            user: { email },
+          },
+          select: {
+            id: true,
+            status: true,
+            coverImage: true,
+            posts: {
+              select: {
+                id: true,
+                status: true,
+                createdAt: true,
+                content: true,
+                updatedAt: true,
+                postImages: true,
+              },
+              orderBy: {
+                createdAt: "desc",
+              },
             },
           },
         },
@@ -120,7 +136,36 @@ export const getUserById = async (id: string) => {
           select: {
             status: true,
             coverImage: true,
-            posts: true,
+            posts: {
+              select: {
+                id: true,
+                status: true,
+                createdAt: true,
+                content: true,
+                updatedAt: true,
+                postImages: true,
+                comments: {
+                  include: {
+                    commentImage: true,
+                    parentComment: true,
+                    children: true,
+                    profile: {
+                      select: {
+                        user: {
+                          select: {
+                            image: true,
+                            name: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              orderBy: {
+                createdAt: "desc",
+              },
+            },
           },
         },
       },

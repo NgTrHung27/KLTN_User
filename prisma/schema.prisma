@@ -295,10 +295,10 @@ model PostComment {
 
   content String?
 
-  commentImages PostCommentImage[]
-  isArchived    Boolean            @default(false)
+  commentImage PostCommentImage?
+  isArchived   Boolean           @default(false)
 
-  profileId String  @unique
+  profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   postId String
@@ -320,7 +320,7 @@ model PostCommentImage {
 
   url String
 
-  postCommentId String
+  postCommentId String      @unique
   postComment   PostComment @relation(fields: [postCommentId], references: [id], onDelete: Cascade)
 }
 

@@ -5,11 +5,13 @@ import { Link, Tab, Tabs } from "@nextui-org/react";
 interface ProfileHeaderNavigationProps {
   profileId: string;
   pathname: string;
+  postCount?: number;
 }
 
 export const ProfileHeaderNavigation = ({
   profileId,
   pathname,
+  postCount,
 }: ProfileHeaderNavigationProps) => {
   return (
     <Tabs
@@ -30,7 +32,7 @@ export const ProfileHeaderNavigation = ({
         key={`/student/profile/${profileId}/posts`}
         title={
           <div className="flex flex-col items-center text-primary ">
-            <span className="text-xl font-bold">0</span>
+            <span className="text-xl font-bold">{postCount || 0}</span>
             <span className="text-base font-semibold">Posts</span>
           </div>
         }
