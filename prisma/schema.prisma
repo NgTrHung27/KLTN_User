@@ -235,20 +235,128 @@ model Profile {
   // Socials
   socials Social[]
 
+  // Comments
+  postComments PostComment[]
+
+  // Posts liked
+  postLikes PostLike[]
+
+  // Posts shared
+  postShares PostShare[]
+
+  // Posts saved
+  postSaved PostSave[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum PostStatus {
+  PUBLIC
+  PRIVATE
+  FRIENDS
+  EXCEPT
 }
 
 model Post {
   id String @id @default(cuid())
 
-  profileId String  @unique
+  content    String?
+  postImages PostImage[]
+  comments   PostComment[]
+  likes      PostLike[]
+  shares     PostShare[]
+  saves      PostSave[]
+
+  status PostStatus @default(PUBLIC)
+
+  isArchived Boolean @default(false)
+
+  profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("Feed")
+}
+
+model PostImage {
+  id String @id @default(cuid())
+
+  url String
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model PostComment {
+  id String @id @default(cuid())
+
+  content String?
+
+  commentImage PostCommentImage?
+  isArchived   Boolean           @default(false)
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  children PostComment[] @relation("children")
+
+  parentCommentId String?
+  parentComment   PostComment? @relation("children", fields: [parentCommentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId])
+}
+
+model PostCommentImage {
+  id String @id @default(cuid())
+
+  url String
+
+  postCommentId String      @unique
+  postComment   PostComment @relation(fields: [postCommentId], references: [id], onDelete: Cascade)
+}
+
+model PostLike {
+  id String @id @default(cuid())
+
+  profileId String  @unique
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model PostShare {
+  id String @id @default(cuid())
+
+  profileId String  @unique
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model PostSave {
+  id String @id @default(cuid())
+
+  profileId String  @unique
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  Post      Post?   @relation(fields: [postId], references: [id])
+  postId    String?
+
+  @@index([profileId])
 }
 
 model Biography {

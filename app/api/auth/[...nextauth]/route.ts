@@ -34,6 +34,18 @@ export async function POST(req: Request) {
         );
       }
 
+      const isPasswordMatch = await bcrypt.compare(
+        password,
+        existingUser.password,
+      );
+
+      if (!isPasswordMatch) {
+        return NextResponse.json(
+          { error: "Invalid credentials" },
+          { status: 403 },
+        );
+      }
+
       if (!existingUser.emailVerified) {
         const verificationToken = await generateVerificationToken(
           existingUser.email,
@@ -55,17 +67,17 @@ export async function POST(req: Request) {
         );
       }
 
-      await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
+      // await signIn("credentials", {
+      //   email,
+      //   password,
+      //   redirect: false,
+      // });
 
-      const session = await auth();
+      // const session = await auth();
 
-      const user = session?.user;
+      // const user = session?.user;
 
-      return NextResponse.json(user, { status: 200 });
+      return NextResponse.json(existingUser, { status: 200 });
     }
 
     if (req.url.includes("register")) {

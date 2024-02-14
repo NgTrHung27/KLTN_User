@@ -1,10 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 const StudentPage = () => {
-  const router = useRouter();
-  return router.push("/student/profile");
+  return redirect("/student/profile");
 };
 
 export default StudentPage;
