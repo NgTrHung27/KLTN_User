@@ -35,6 +35,7 @@ export type ExtendedPost = {
 };
 
 export type ExtendedComment = {
+  id: string;
   createdAt: Date;
   updatedAt: Date;
   isArchived: boolean;

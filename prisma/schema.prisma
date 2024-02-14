@@ -236,7 +236,8 @@ model Profile {
   socials Social[]
 
   // Comments
-  postComments PostComment[]
+  postComments     PostComment[]
+  postCommentLikes PostCommentLike[]
 
   // Posts liked
   postLikes PostLike[]
@@ -309,6 +310,8 @@ model PostComment {
   parentCommentId String?
   parentComment   PostComment? @relation("children", fields: [parentCommentId], references: [id], onDelete: Cascade)
 
+  likes PostCommentLike[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -321,6 +324,16 @@ model PostCommentImage {
   url String
 
   postCommentId String      @unique
+  postComment   PostComment @relation(fields: [postCommentId], references: [id], onDelete: Cascade)
+}
+
+model PostCommentLike {
+  id String @id @default(cuid())
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  postCommentId String
   postComment   PostComment @relation(fields: [postCommentId], references: [id], onDelete: Cascade)
 }
 
