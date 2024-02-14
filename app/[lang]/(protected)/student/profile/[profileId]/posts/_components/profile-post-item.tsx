@@ -11,7 +11,7 @@ import {
   Divider,
   Image,
 } from "@nextui-org/react";
-import { PostComment, PostImage, PostStatus } from "@prisma/client";
+import { PostImage, PostStatus } from "@prisma/client";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale/vi";
 import {
@@ -28,9 +28,8 @@ import {
 import { useEffect, useState } from "react";
 import { ProfileCommentForm } from "./profile-comment-form";
 import { usePathname, useRouter } from "next/navigation";
-import { revalidatePath } from "next/cache";
 import { ProfileCommentsList } from "./profile-comments-list";
-import { ExtendedComment } from "@/auth";
+import { ExtendedComment } from "@/types";
 
 interface ProfilePostItemProps {
   name: string;
@@ -139,7 +138,11 @@ export const ProfilePostItem = ({
         <Divider />
       </div>
       <CardFooter className="flex-col items-start justify-start gap-2">
-        <ProfileCommentsList comments={comments || []} />
+        <ProfileCommentsList
+          comments={comments || []}
+          name={name}
+          image={logo}
+        />
         <ProfileCommentForm onSubmmited={onSubmitted} logo={logo} id={id} />
       </CardFooter>
     </Card>

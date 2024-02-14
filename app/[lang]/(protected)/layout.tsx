@@ -1,5 +1,7 @@
 import { ProtectedNavbar } from "@/components/navbar/navbar";
 import { Lang, getDictionary } from "@/data/dictionaries";
+import { getProfileByStudentCode } from "@/data/profile";
+import { getSchoolByUserId } from "@/data/school";
 import { currentUser } from "@/lib/user";
 import { redirect } from "next/navigation";
 
@@ -11,11 +13,24 @@ const ProtectedLayout = async ({
   params: { lang: Lang };
 }) => {
   const user = await currentUser();
-  const dict = await getDictionary(params.lang);
 
   if (!user) {
-    redirect("/");
+    return redirect("/");
   }
+
+  const school = await getSchoolByUserId(user.id);
+
+  if (!school) {
+    return redirect("/");
+  }
+
+  const profile = await getProfileByStudentCode(user.studentCode);
+
+  if (!profile) {
+    return redirect("/");
+  }
+
+  const dict = await getDictionary(params.lang);
 
   return (
     <div className="h-full w-full">

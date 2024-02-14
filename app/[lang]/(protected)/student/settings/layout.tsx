@@ -7,17 +7,8 @@ import {
 } from "@/components/ui/resizable";
 import { Divider } from "@nextui-org/react";
 import { SettingsSidebar } from "./_components/settings-sidebar";
-import { useCurrentUser } from "@/hooks/use-current-user";
-import { useRouter } from "next/navigation";
 
 const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
-  const user = useCurrentUser();
-  const router = useRouter();
-
-  if (!user) {
-    return router.push("/");
-  }
-
   return (
     <div className="hidden w-full space-y-6 bg-white p-10 dark:bg-background md:block">
       <div className="space-y-0.5">

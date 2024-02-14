@@ -1,6 +1,6 @@
 "use client";
 
-import { Spinner } from "@nextui-org/react";
+import { Image, Spinner } from "@nextui-org/react";
 import { UploadCloudIcon, X } from "lucide-react";
 import * as React from "react";
 import { useDropzone, type DropzoneOptions } from "react-dropzone";
@@ -146,7 +146,7 @@ const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
 
           {imageUrl ? (
             // Image Preview
-            <img
+            <Image
               className="h-full w-full rounded-md object-cover"
               src={imageUrl}
               alt={acceptedFiles[0]?.name}
@@ -164,15 +164,15 @@ const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
           {/* Remove Image Icon */}
           {imageUrl && !disabled && (
             <div
-              className="group absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 transform"
+              className="group absolute right-0 top-0 z-10 -translate-y-1/4 translate-x-1/4 transform"
               onClick={(e) => {
                 e.stopPropagation();
                 void onUpload?.(undefined);
               }}
             >
-              <div className="flex h-5 w-5 items-center justify-center rounded-md border border-solid border-gray-500 bg-white transition-all duration-300 hover:h-6 hover:w-6 dark:border-gray-400 dark:bg-black">
+              <div className="flex h-5 w-5 items-center justify-center rounded-md border border-solid border-rose-500 bg-white transition-all duration-300 hover:h-6 hover:w-6 dark:border-rose-400 dark:bg-black">
                 <X
-                  className="text-gray-500 dark:text-gray-400"
+                  className="text-rose-600 dark:text-rose-400"
                   width={16}
                   height={16}
                 />

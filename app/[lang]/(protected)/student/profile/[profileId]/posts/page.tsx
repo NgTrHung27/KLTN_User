@@ -1,41 +1,28 @@
-"use client";
-
-import { useCurrentUser } from "@/hooks/use-current-user";
-import { ProfilePostEditor } from "./_components/profile-post-editor";
-import { useDisclosure } from "@nextui-org/react";
 import { ProfilePostModal } from "@/components/modals/profile-post-modal";
+import { getPostsByProfileId } from "@/data/posts";
+import { getProfileByStudentCode } from "@/data/profile";
+import { currentUser } from "@/lib/user";
+import { useDisclosure } from "@nextui-org/react";
+import { ProfilePostEditor } from "./_components/profile-post-editor";
 import { ProfilePostsList } from "./_components/profile-posts-list";
-import { useNewestProfilePosts } from "@/hooks/use-profile-posts";
+import { ProfilePosts } from "./_components/profile-post";
 
-const ProfileIdPostPage = () => {
-  const user = useCurrentUser();
+const ProfileIdPostPage = async ({
+  params: { studentCode },
+}: {
+  params: { studentCode: string };
+}) => {
+  const user = await currentUser();
 
-  const posts = useNewestProfilePosts();
-
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const profile = await getProfileByStudentCode(studentCode);
+  const posts = await getPostsByProfileId(profile?.id!);
 
   return (
-    <>
-      <ProfilePostModal
-        name={user?.name!}
-        logo={user?.image as string | undefined}
-        isOpen={isOpen}
-        onClose={onClose}
-      />
-      <div className="flex flex-col gap-4 text-primary">
-        <ProfilePostEditor
-          onOpen={onOpen}
-          logo={user?.image as string | undefined}
-        />
-
-        {posts?.length! > 0 && (
-          <ProfilePostsList
-            name={user?.name!}
-            logo={user?.image!}
-          />
-        )}
-      </div>
-    </>
+    <ProfilePosts
+      posts={posts || []}
+      name={user?.name!}
+      image={user?.image || undefined}
+    />
   );
 };
 

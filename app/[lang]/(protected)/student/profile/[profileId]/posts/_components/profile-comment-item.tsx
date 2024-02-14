@@ -1,12 +1,13 @@
 "use client";
 
 import { Avatar, Input } from "@nextui-org/react";
+import { PostCommentImage } from "@prisma/client";
 import { formatDistanceToNowStrict } from "date-fns";
 import { vi } from "date-fns/locale/vi";
 
 interface ProfileCommentItemProps {
   content?: string;
-  image?: string;
+  image?: PostCommentImage;
   name: string;
   logo?: string;
   createdAt: Date;

@@ -9,42 +9,8 @@ import {
   DegreeType,
   Gender,
   GradeType,
-  PostImage,
-  PostStatus,
-  ProfileStatus,
-  Program,
-  School,
   StudentStatus,
-  User,
 } from "@prisma/client";
-
-export type ExtendedProfile = {
-  status: ProfileStatus;
-  coverImage: string | undefined | null;
-  posts: ExtendedPost[];
-};
-
-export type ExtendedPost = {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  status: PostStatus;
-  content: string;
-  postImages: PostImage[];
-  comments: ExtendedComment[];
-};
-
-export type ExtendedComment = {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  isArchived: boolean;
-  content: string;
-  commentImage: string;
-  profile: {
-    user: Pick<User, "name" | "image">;
-  };
-};
 
 export type ExtendedUser = DefaultSession["user"] & {
   studentCode: string;
@@ -53,7 +19,6 @@ export type ExtendedUser = DefaultSession["user"] & {
   phoneNumber: string;
   idCardNumber: string;
   address: string;
-  schoolId: string;
   degreeType: DegreeType;
   certificateType: CertificateType;
   certificateImg: string;
@@ -61,12 +26,6 @@ export type ExtendedUser = DefaultSession["user"] & {
   gradeScore: number;
   isTwoFactorEnabled: boolean;
   status: StudentStatus;
-
-  school: Pick<School, "logoUrl" | "name" | "backgroundUrl" | "colorValue">;
-
-  program: Program;
-
-  profile: ExtendedProfile;
 };
 
 declare module "next-auth" {
@@ -118,9 +77,6 @@ export const {
         if (token.address) {
           session.user.address = token.address as string;
         }
-        if (token.schoolId) {
-          session.user.schoolId = token.schoolId as string;
-        }
         if (token.degreeType) {
           session.user.degreeType = token.degreeType as DegreeType;
         }
@@ -145,21 +101,6 @@ export const {
         if (token.status) {
           session.user.status = token.status as StudentStatus;
         }
-
-        if (token.school) {
-          session.user.school = token.school as Pick<
-            School,
-            "logoUrl" | "name" | "backgroundUrl" | "colorValue"
-          >;
-        }
-
-        if (token.program) {
-          session.user.program = token.program as Program;
-        }
-
-        if (token.profile) {
-          session.user.profile = token.profile as ExtendedProfile;
-        }
       }
       return session;
     },
@@ -179,7 +120,6 @@ export const {
       token.idCardNumber = existingUser.idCardNumber;
       token.address = existingUser.address;
 
-      token.schoolId = existingUser.schoolId;
       token.degreeType = existingUser.degreeType;
       token.certificateType = existingUser.certificateType;
       token.certificateImg = existingUser.certificateImg;
@@ -189,12 +129,6 @@ export const {
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
 
       token.status = existingUser.status;
-
-      token.school = existingUser.school;
-
-      token.program = existingUser.program?.program;
-
-      token.profile = existingUser.profile;
 
       return token;
     },

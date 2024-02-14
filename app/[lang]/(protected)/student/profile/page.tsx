@@ -1,10 +1,8 @@
-"use client";
-
-import { useCurrentUser } from "@/hooks/use-current-user";
+import { currentUser } from "@/lib/user";
 import { redirect } from "next/navigation";
 
-const StudentProfilePage = () => {
-  const user = useCurrentUser();
+const StudentProfilePage = async () => {
+  const user = await currentUser();
 
   return redirect(`/student/profile/${user?.studentCode}/posts`);
 };

@@ -3,12 +3,12 @@
 import { useRouter } from "next/navigation";
 
 const ProfileIdPage = ({
-  params: { profileId },
+  params: { studentCode },
 }: {
-  params: { profileId: string };
+  params: { studentCode: string };
 }) => {
   const router = useRouter();
-  return router.push(`/student/profile/${profileId}/posts`);
+  return router.push(`/student/profile/${studentCode}/posts`);
 };
 
 export default ProfileIdPage;

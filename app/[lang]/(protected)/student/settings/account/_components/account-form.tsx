@@ -1,17 +1,6 @@
 "use client";
 
-import {
-  Accordion,
-  AccordionItem,
-  Chip,
-  Divider,
-  Input,
-  Switch,
-  useDisclosure,
-} from "@nextui-org/react";
-import { SettingsHeader } from "../../_components/settings-header";
 import { ExtendedUser } from "@/auth";
-import { useState, useTransition } from "react";
 import { ActionModal } from "@/components/modals/action-modal";
 import {
   Form,
@@ -21,11 +10,22 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { z } from "zod";
 import { AccountFormSchema } from "@/schemas";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Accordion,
+  AccordionItem,
+  Chip,
+  Divider,
+  Input,
+  Switch,
+  useDisclosure,
+} from "@nextui-org/react";
 import { Eye, EyeOff, Key, Mail } from "lucide-react";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { SettingsHeader } from "../../_components/settings-header";
 
 interface AccountFormProps {
   user: Pick<ExtendedUser, "email" | "name" | "status" | "isTwoFactorEnabled">;

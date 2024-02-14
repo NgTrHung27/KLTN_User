@@ -1,8 +1,7 @@
 "use client";
 
-import { redirect } from "next/navigation";
-import { AccountForm } from "./_components/account-form";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { AccountForm } from "./_components/account-form";
 
 const SettingsAccountPage = () => {
   const user = useCurrentUser();
