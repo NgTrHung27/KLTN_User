@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { logout } from "@/actions/logout";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 
 interface UserButtonProps {
   user: ExtendedUser;
@@ -37,6 +37,12 @@ export const UserButton = ({ user, dict }: UserButtonProps) => {
   if (!mounted) {
     return <CircularProgress size="sm" aria-label="Loading..." />;
   }
+
+  const onLogout = () => {
+    startTransition(() => {
+      logout();
+    });
+  };
 
   return (
     <Dropdown placement="bottom-end" backdrop="blur" closeOnSelect={false}>
@@ -92,7 +98,7 @@ export const UserButton = ({ user, dict }: UserButtonProps) => {
           </DropdownItem>
         </DropdownSection>
         <DropdownItem
-          onClick={() => logout()}
+          onClick={onLogout}
           key="logout"
           color="danger"
           className="text-primary"
