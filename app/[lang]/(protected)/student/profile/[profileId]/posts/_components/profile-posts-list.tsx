@@ -1,6 +1,5 @@
 "use client";
 
-import { Post } from "@prisma/client";
 import { ProfilePostItem } from "./profile-post-item";
 import { useEffect, useState } from "react";
 import {
@@ -12,16 +11,20 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { Check, ChevronDown } from "lucide-react";
-import { useNewestProfilePosts } from "@/hooks/use-profile-posts";
+import { ExtendedPost } from "@/types";
 
 interface ProfilePostsListProps {
   logo?: string;
   name: string;
+  posts: ExtendedPost[];
 }
 
-export const ProfilePostsList = ({ logo, name }: ProfilePostsListProps) => {
+export const ProfilePostsList = ({
+  logo,
+  name,
+  posts,
+}: ProfilePostsListProps) => {
   const [sort, setSort] = useState<"New" | "Relevant">("New");
-  const [posts, setPosts] = useState(useNewestProfilePosts());
 
   const [mounted, setMounted] = useState(false);
 

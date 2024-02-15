@@ -40,6 +40,11 @@ export const getProfileByStudentCode = async (code: string) => {
       where: {
         userId: user.id,
       },
+      select: {
+        status: true,
+        coverImage: true,
+        id: true,
+      },
     });
 
     return profile;

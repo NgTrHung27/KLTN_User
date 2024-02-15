@@ -99,7 +99,6 @@ export const getUserById = async (id: string) => {
         phoneNumber: true,
         idCardNumber: true,
         address: true,
-        schoolId: true,
         degreeType: true,
         certificateType: true,
         certificateImg: true,
@@ -107,67 +106,6 @@ export const getUserById = async (id: string) => {
         gradeScore: true,
         isTwoFactorEnabled: true,
         status: true,
-        school: {
-          select: {
-            name: true,
-            logoUrl: true,
-            backgroundUrl: true,
-            colorValue: true,
-          },
-        },
-        program: {
-          where: {
-            userId: id,
-          },
-          select: {
-            program: {
-              select: {
-                coverImage: true,
-                description: true,
-                name: true,
-              },
-            },
-          },
-        },
-        profile: {
-          where: {
-            userId: id,
-          },
-          select: {
-            status: true,
-            coverImage: true,
-            posts: {
-              select: {
-                id: true,
-                status: true,
-                createdAt: true,
-                content: true,
-                updatedAt: true,
-                postImages: true,
-                comments: {
-                  include: {
-                    commentImage: true,
-                    parentComment: true,
-                    children: true,
-                    profile: {
-                      select: {
-                        user: {
-                          select: {
-                            image: true,
-                            name: true,
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-              orderBy: {
-                createdAt: "desc",
-              },
-            },
-          },
-        },
       },
     });
 

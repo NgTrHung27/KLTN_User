@@ -1,18 +1,9 @@
 "use client";
 
-import {
-  Button,
-  Divider,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-} from "@nextui-org/react";
-import { ArrowLeft, Globe2, Lock, UserX, Users } from "lucide-react";
+import { Modal } from "@nextui-org/react";
+import { Globe2, Lock, UserX, Users } from "lucide-react";
 import { useState } from "react";
 import { ModalPostContent } from "./profile-post/modal-post-content";
-import { StatusButton } from "./profile-post/status-button";
 import { ModalPostStatusContent } from "./profile-post/modal-post-status-content";
 
 interface ProfilePostModalProps {

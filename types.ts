@@ -1,4 +1,11 @@
-import { Program, School } from "@prisma/client";
+import {
+  Post,
+  PostComment,
+  PostCommentImage,
+  PostImage,
+  Program,
+  School,
+} from "@prisma/client";
 
 export type Ward = {
   Id: string;
@@ -23,3 +30,12 @@ export type City = {
 };
 
 export type SchoolWithPrograms = School & { programs: Program[] };
+
+export type ExtendedComment = PostComment & {
+  commentImage: PostCommentImage | null;
+};
+
+export type ExtendedPost = Post & {
+  postImages: PostImage[];
+  comments: ExtendedComment[];
+};

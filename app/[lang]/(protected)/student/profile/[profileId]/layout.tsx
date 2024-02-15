@@ -1,10 +1,3 @@
-"use client";
-
-import { useCurrentUser } from "@/hooks/use-current-user";
-import { ProfileHeader } from "./_components/profile-header";
-import { ProfileInformation } from "./_components/profile-information";
-import { Button } from "@nextui-org/react";
-import { ChevronsLeft } from "lucide-react";
 import {
   Sheet,
   SheetClose,
@@ -12,20 +5,28 @@ import {
   SheetFooter,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { getPostsByProfileId } from "@/data/posts";
+import { getProfileByStudentCode } from "@/data/profile";
+import { getSchoolByUserId } from "@/data/school";
+import { currentUser } from "@/lib/user";
+import { Button } from "@nextui-org/react";
+import { ChevronsLeft } from "lucide-react";
+import { ProfileHeader } from "./_components/profile-header";
+import { ProfileInformation } from "./_components/profile-information";
 
-const ProfileIdLayout = ({
+const ProfileIdLayout = async ({
   children,
-  params: { profileId },
+  params: { studentCode },
 }: {
   children: React.ReactNode;
-  params: { profileId: string };
+  params: { studentCode: string };
 }) => {
-  const user = useCurrentUser();
-  const school = user?.school;
-  const profile = user?.profile;
-  const postCount = profile?.posts.length;
+  const user = await currentUser();
+  const school = await getSchoolByUserId(user?.id!);
+  const profile = await getProfileByStudentCode(user?.studentCode!);
+  const posts = await getPostsByProfileId(profile?.id!);
 
-  if (!user?.studentCode.match(profileId)) {
+  if (!user?.studentCode.match(studentCode)) {
     return (
       <div className="col-span-11 h-full w-full bg-white text-primary dark:bg-background lg:col-span-9">
         Another user
@@ -38,7 +39,7 @@ const ProfileIdLayout = ({
       <div className="col-span-11 grid gap-3 lg:col-span-9 lg:grid-cols-7">
         <div className="items-ceneter flex flex-col justify-start gap-3 lg:col-span-5">
           <ProfileHeader
-            postCount={postCount}
+            postCount={posts?.length}
             name={user.name!}
             coverUrl={profile?.coverImage as string | undefined}
             logoUrl={user.image as string | undefined}

@@ -78,7 +78,10 @@ export const ProfileCoverImageModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => {
+        onClose();
+        setImage(imageUrl);
+      }}
       isDismissable={false}
       hideCloseButton
     >

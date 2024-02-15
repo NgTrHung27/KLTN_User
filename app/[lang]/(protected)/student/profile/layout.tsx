@@ -1,12 +1,10 @@
-"use client";
-
-import { useCurrentUser } from "@/hooks/use-current-user";
+import { getSchoolByUserId } from "@/data/school";
+import { currentUser } from "@/lib/user";
 import { ProfileSidebar } from "./_components/profile-sidebar";
 
-const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
-  const user = useCurrentUser();
-
-  const school = user?.school;
+const ProfileLayout = async ({ children }: { children: React.ReactNode }) => {
+  const user = await currentUser();
+  const school = await getSchoolByUserId(user?.id!);
 
   return (
     <div className="hidden w-full gap-3 rounded-lg bg-slate-100 p-8 text-primary dark:bg-background md:grid md:grid-cols-[70px_repeat(11,_1fr)]">
