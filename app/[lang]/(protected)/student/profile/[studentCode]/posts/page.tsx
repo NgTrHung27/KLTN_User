@@ -1,10 +1,6 @@
-import { ProfilePostModal } from "@/components/modals/profile-post-modal";
 import { getPostsByProfileId } from "@/data/posts";
 import { getProfileByStudentCode } from "@/data/profile";
 import { currentUser } from "@/lib/user";
-import { useDisclosure } from "@nextui-org/react";
-import { ProfilePostEditor } from "./_components/profile-post-editor";
-import { ProfilePostsList } from "./_components/profile-posts-list";
 import { ProfilePosts } from "./_components/profile-post";
 
 const ProfileIdPostPage = async ({

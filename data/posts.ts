@@ -9,8 +9,15 @@ export const getPostsByProfileId = async (id: string) => {
       include: {
         postImages: true,
         comments: {
+          where: {
+            parentCommentId: null,
+          },
           include: {
             commentImage: true,
+            children: true,
+          },
+          orderBy: {
+            createdAt: "desc",
           },
         },
       },

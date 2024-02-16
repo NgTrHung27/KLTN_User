@@ -1,6 +1,5 @@
 "use client";
 
-import { ProfilePostItem } from "./profile-post-item";
 import { useEffect, useState } from "react";
 import {
   Button,
@@ -12,6 +11,8 @@ import {
 } from "@nextui-org/react";
 import { Check, ChevronDown } from "lucide-react";
 import { ExtendedPost } from "@/types";
+import { ProfilePostItem } from "./profile-post-item";
+import { GetTotalCommentsByPostId } from "@/data/comments";
 
 interface ProfilePostsListProps {
   logo?: string;
