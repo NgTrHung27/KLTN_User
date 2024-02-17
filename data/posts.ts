@@ -11,6 +11,10 @@ export const getPostsByProfileId = async (id: string) => {
         comments: {
           include: {
             commentImage: true,
+            children: true,
+          },
+          orderBy: {
+            createdAt: "desc",
           },
         },
       },

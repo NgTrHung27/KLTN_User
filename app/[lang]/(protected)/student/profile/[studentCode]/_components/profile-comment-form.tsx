@@ -13,21 +13,18 @@ import { CommentImageDropzone } from "./single-image-comment";
 import { toast } from "sonner";
 import { useEdgeStore } from "@/lib/edgestore";
 import { Comment } from "@/actions/comment";
-import { useRouter } from "next/navigation";
 
 interface ProfileCommentFormProps {
   logo: string;
-  id: string;
-  onSubmmited: () => void;
+  postId: string;
+  parentId?: string;
 }
 
 export const ProfileCommentForm = ({
   logo,
-  id,
-  onSubmmited,
+  postId,
+  parentId,
 }: ProfileCommentFormProps) => {
-  const router = useRouter();
-
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
   const [file, setFile] = useState<File>();
   const { edgestore } = useEdgeStore();
@@ -80,7 +77,7 @@ export const ProfileCommentForm = ({
       }
     }
 
-    await Comment(values, id).then((res) => {
+    await Comment(values, postId, parentId).then((res) => {
       if (res.success) {
       }
       if (res.error) {
@@ -92,7 +89,6 @@ export const ProfileCommentForm = ({
     setIsDisabled(false);
     setFile(undefined);
     setIsValue(false);
-    onSubmmited();
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -150,6 +146,10 @@ export const ProfileCommentForm = ({
                         />
                       </div>
                     }
+                    classNames={{
+                      inputWrapper:
+                        "group-data-[focus-visible=true]:ring-offset-0  group-data-[focus-visible=true]:ring-0",
+                    }}
                   />
                 ) : (
                   <Textarea
@@ -199,6 +199,8 @@ export const ProfileCommentForm = ({
                     }
                     classNames={{
                       innerWrapper: "flex-col",
+                      inputWrapper:
+                        "group-data-[focus-visible=true]:ring-offset-0  group-data-[focus-visible=true]:ring-0",
                     }}
                   />
                 )}

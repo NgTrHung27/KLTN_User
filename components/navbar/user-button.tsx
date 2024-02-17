@@ -77,7 +77,6 @@ export const UserButton = ({ user, dict }: UserButtonProps) => {
                 color="primary"
                 onValueChange={(isSelected) => {
                   setTheme(isSelected ? "light" : "dark");
-                  window.location.reload();
                 }}
                 startContent={<Sun />}
                 endContent={<Moon />}

@@ -71,3 +71,29 @@ export const Comment = async (
     return { error: "Error while posting comment" };
   }
 };
+
+export const GetCommentsByParentId = async (
+  postId: string,
+  parentId: string,
+) => {
+  try {
+    const comments = await db.postComment.findMany({
+      where: {
+        postId: postId,
+        parentCommentId: parentId,
+      },
+      include: {
+        commentImage: true,
+        children: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    return comments;
+  } catch {
+    return null;
+  }
+};

@@ -11,7 +11,7 @@ import {
   Divider,
   Image,
 } from "@nextui-org/react";
-import { PostImage, PostStatus } from "@prisma/client";
+import { PostComment, PostImage, PostStatus } from "@prisma/client";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale/vi";
 import {
@@ -26,10 +26,9 @@ import {
   Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ProfileCommentForm } from "./profile-comment-form";
-import { usePathname, useRouter } from "next/navigation";
 import { ProfileCommentsList } from "./profile-comments-list";
 import { ExtendedComment } from "@/types";
+import { ProfileCommentForm } from "./profile-comment-form";
 
 interface ProfilePostItemProps {
   name: string;
@@ -61,16 +60,9 @@ export const ProfilePostItem = ({
   comments,
   images,
 }: ProfilePostItemProps) => {
-  const [mounted, setMounted] = useState(false);
-  const router = useRouter();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    setMounted(true);
-  }, [mounted]);
-
-  const onSubmitted = () => {};
-
+  const parentComments = comments?.filter(
+    (comment) => !comment.parentCommentId,
+  );
   return (
     <Card>
       <CardHeader className="items-center justify-between pr-6">
@@ -139,11 +131,11 @@ export const ProfilePostItem = ({
       </div>
       <CardFooter className="flex-col items-start justify-start gap-2">
         <ProfileCommentsList
-          comments={comments || []}
+          comments={parentComments || []}
           name={name}
           image={logo}
         />
-        <ProfileCommentForm onSubmmited={onSubmitted} logo={logo} id={id} />
+        <ProfileCommentForm logo={logo} postId={id} />
       </CardFooter>
     </Card>
   );
