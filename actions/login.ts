@@ -15,13 +15,13 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   const { email, password } = validatedFields.data;
 
   try {
+    console.log("Meomeo");
     await signIn("credentials", {
       email,
       password,
+    }).then(() => {
+      return { success: "Login successful" };
     });
-
-    console.log("Meomeo");
-    return { success: "Login successful" };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {

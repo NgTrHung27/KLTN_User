@@ -13,6 +13,8 @@ import { Button } from "@nextui-org/react";
 import { ChevronsLeft } from "lucide-react";
 import { ProfileHeader } from "./_components/profile-header";
 import { ProfileInformation } from "./_components/profile-information";
+import { redirect } from "next/navigation";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 const ProfileIdLayout = async ({
   children,
@@ -22,6 +24,11 @@ const ProfileIdLayout = async ({
   params: { studentCode: string };
 }) => {
   const user = await currentUser();
+
+  if (studentCode === "undefined") {
+    return redirect(`${DEFAULT_LOGIN_REDIRECT}/${user?.studentCode}`);
+  }
+
   const school = await getSchoolByUserId(user?.id!);
   const profile = await getProfileByStudentCode(user?.studentCode!);
   const posts = await getPostsByProfileId(profile?.id!);

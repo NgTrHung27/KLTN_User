@@ -38,11 +38,11 @@ export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
       if (data) {
         if (data.error) {
           toast.error(data.error);
+        } else {
+          toast.success(data.success);
         }
       }
     });
-
-    toast.success("Login successful");
 
     setIsLoading(false);
   };
