@@ -51,6 +51,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   }
 
   const address = `${addressLine}, ${ward}, ${district}, ${city}`;
+  console.log(schoolName);
 
   const existingSchool = await getSchoolByName(schoolName);
 

@@ -106,7 +106,7 @@ model School {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([name])
+  @@unique([name])
 }
 
 model Program {

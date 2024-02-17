@@ -13,18 +13,23 @@ import { CommentImageDropzone } from "./single-image-comment";
 import { toast } from "sonner";
 import { useEdgeStore } from "@/lib/edgestore";
 import { Comment } from "@/actions/comment";
+import { useRouter } from "next/navigation";
 
 interface ProfileCommentFormProps {
   logo: string;
   postId: string;
   parentId?: string;
+  onLoad: () => void;
 }
 
 export const ProfileCommentForm = ({
   logo,
   postId,
   parentId,
+  onLoad,
 }: ProfileCommentFormProps) => {
+  const router = useRouter();
+
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
   const [file, setFile] = useState<File>();
   const { edgestore } = useEdgeStore();
@@ -89,6 +94,8 @@ export const ProfileCommentForm = ({
     setIsDisabled(false);
     setFile(undefined);
     setIsValue(false);
+    router.refresh();
+    onLoad();
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
