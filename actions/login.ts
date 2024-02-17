@@ -22,9 +22,9 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: `${DEFAULT_LOGIN_REDIRECT}`,
     });
 
+    console.log("Meomeo");
     return { success: "Login successful" };
   } catch (error) {
     if (error instanceof AuthError) {
