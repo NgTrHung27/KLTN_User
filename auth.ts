@@ -133,6 +133,7 @@ export const {
       return token;
     },
   },
+  // @ts-ignore
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt", maxAge: 60 * 60 * 24 * 7 },
   ...authConfig,
