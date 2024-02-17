@@ -13,10 +13,8 @@ import { z } from "zod";
 import { CardWrapper } from "./card-wrapper";
 
 export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
-  const [isPending, startTransition] = useTransition();
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -33,22 +31,20 @@ export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    setError("");
-    setSuccess("");
+  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+    setIsLoading(true);
 
-    startTransition(() => {
-      login(values).then((data) => {
-        if (data) {
-          if (data.error) {
-            toast.error(data.error);
-          }
-          if (data.success) {
-            toast.success(data.success);
-          }
+    await login(values).then((data) => {
+      if (data) {
+        if (data.error) {
+          toast.error(data.error);
         }
-      });
+      }
     });
+
+    toast.success("Login successful");
+
+    setIsLoading(false);
   };
 
   const emailRegister = register("email");
@@ -66,7 +62,7 @@ export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
       >
         <div className="flex w-full flex-col gap-4">
           <Input
-            isDisabled={isPending}
+            isDisabled={isLoading}
             label={dict.Authentication.Email_Label}
             labelPlacement="outside"
             type="email"
@@ -80,7 +76,7 @@ export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
             {...emailRegister}
           />
           <Input
-            isDisabled={isPending}
+            isDisabled={isLoading}
             label={dict.Authentication.Password_Label}
             labelPlacement="outside"
             type={isVisible ? "text" : "password"}
@@ -116,8 +112,8 @@ export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
           </Link>
         </div>
         <Button
-          isLoading={isPending}
-          isDisabled={!isValid || isPending}
+          isLoading={isLoading}
+          isDisabled={!isValid || isLoading}
           type="submit"
           className="mt-4 w-full bg-[#7D1F1F] font-semibold text-white"
         >
