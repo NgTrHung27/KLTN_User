@@ -49,6 +49,7 @@
     "@types/negotiator": "^0.6.3",
     "@types/nodemailer": "^6.4.14",
     "@types/uuid": "^9.0.8",
+    "@vercel/speed-insights": "^1.0.10",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",

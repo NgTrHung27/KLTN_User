@@ -1,17 +1,16 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { CardWrapper } from "./card-wrapper";
-import { z } from "zod";
+import { login } from "@/actions/login";
+import { DictionaryLanguage } from "@/data/dictionaries";
 import { LoginSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Link } from "@nextui-org/react";
 import { Eye, EyeOff, Key, Mail } from "lucide-react";
 import { useState, useTransition } from "react";
-import { FormError } from "../form-error";
-import { FormSuccess } from "../form-success";
-import { login } from "@/actions/login";
-import { DictionaryLanguage } from "@/data/dictionaries";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { CardWrapper } from "./card-wrapper";
 
 export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
   const [error, setError] = useState<string | undefined>("");
@@ -40,8 +39,14 @@ export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
 
     startTransition(() => {
       login(values).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
+        if (data) {
+          if (data.error) {
+            toast.error(data.error);
+          }
+          if (data.success) {
+            toast.success(data.success);
+          }
+        }
       });
     });
   };
@@ -110,8 +115,6 @@ export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
             {dict.Authentication.Forgot_Password}
           </Link>
         </div>
-        <FormError message={error} />
-        <FormSuccess message={success} />
         <Button
           isLoading={isPending}
           isDisabled={!isValid || isPending}

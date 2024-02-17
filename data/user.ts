@@ -6,72 +6,10 @@ export const getUserByEmail = async (email: string) => {
       where: { email },
       select: {
         id: true,
-        name: true,
         email: true,
-        emailVerified: true,
         password: true,
-        image: true,
-        studentCode: true,
-        dob: true,
-        gender: true,
-        phoneNumber: true,
-        idCardNumber: true,
-        address: true,
-        schoolId: true,
-        degreeType: true,
-        certificateType: true,
-        certificateImg: true,
-        gradeType: true,
-        gradeScore: true,
-        isTwoFactorEnabled: true,
-        status: true,
-        school: {
-          select: {
-            name: true,
-            logoUrl: true,
-            backgroundUrl: true,
-            colorValue: true,
-          },
-        },
-        program: {
-          where: {
-            user: {
-              email,
-            },
-          },
-          select: {
-            program: {
-              select: {
-                coverImage: true,
-                description: true,
-                name: true,
-              },
-            },
-          },
-        },
-        profile: {
-          where: {
-            user: { email },
-          },
-          select: {
-            id: true,
-            status: true,
-            coverImage: true,
-            posts: {
-              select: {
-                id: true,
-                status: true,
-                createdAt: true,
-                content: true,
-                updatedAt: true,
-                postImages: true,
-              },
-              orderBy: {
-                createdAt: "desc",
-              },
-            },
-          },
-        },
+        emailVerified: true,
+        name: true,
       },
     });
 

@@ -18,27 +18,6 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 
   const { email, password } = validatedFields.data;
 
-  const existingUser = await getUserByEmail(email);
-
-  if (!existingUser || !existingUser.email) {
-    return { error: "User not found!" };
-  }
-
-  if (!existingUser.emailVerified) {
-    const verificationToken = await generateVerificationToken(
-      existingUser.email,
-    );
-
-    await sendVerificationEmail(
-      existingUser.name,
-      process.env.NODE_SENDER_EMAIL!,
-      verificationToken.email,
-      verificationToken.token,
-    );
-
-    return { success: "Confirmation email sent!" };
-  }
-
   try {
     await signIn("credentials", {
       email,
@@ -53,7 +32,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
         case "CredentialsSignin":
           return { error: "Invalid creadentials!" };
         case "AuthorizedCallbackError":
-          return { error: "Email not yet verified!" };
+          return { success: "Confirmation email sent!" };
         default:
           return { error: "Something went wrong" };
       }
