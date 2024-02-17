@@ -1,15 +1,15 @@
 "use client";
 
-import { Link, Tab, Tabs } from "@nextui-org/react";
+import { Chip, Link, Tab, Tabs } from "@nextui-org/react";
 
 interface ProfileHeaderNavigationProps {
-  profileId: string;
+  studentCode: string;
   pathname: string;
   postCount?: number;
 }
 
 export const ProfileHeaderNavigation = ({
-  profileId,
+  studentCode,
   pathname,
   postCount,
 }: ProfileHeaderNavigationProps) => {
@@ -29,62 +29,62 @@ export const ProfileHeaderNavigation = ({
     >
       <Tab
         as={Link}
-        key={`/student/profile/${profileId}/posts`}
+        key={`/student/profile/${studentCode}`}
         title={
-          <div className="flex flex-col items-center text-primary ">
-            <span className="text-xl font-bold">{postCount || 0}</span>
-            <span className="text-base font-semibold">Posts</span>
+          <div className="flex items-center gap-2 text-primary">
+            <Chip radius="full">{postCount}</Chip>
+            <span className="text-lg font-semibold">Posts</span>
           </div>
         }
-        href={`/student/profile/${profileId}/posts`}
+        href={`/student/profile/${studentCode}`}
         className="overflow-hidden"
       />
       <Tab
         as={Link}
-        key={`/student/profile/${profileId}/followers`}
+        key={`/student/profile/${studentCode}/followers`}
         title={
-          <div className="flex flex-col items-center text-primary ">
-            <span className="text-xl font-bold">0</span>
-            <span className="text-base font-semibold">Followers</span>
+          <div className="flex items-center gap-2 text-primary">
+            <Chip radius="full">{0}</Chip>
+            <span className="text-lg font-semibold">Followers</span>
           </div>
         }
-        href={`/student/profile/${profileId}/followers`}
+        href={`/student/profile/${studentCode}/followers`}
         className="overflow-hidden"
       />
       <Tab
         as={Link}
-        key={`/student/profile/${profileId}/following`}
+        key={`/student/profile/${studentCode}/following`}
         title={
-          <div className="flex flex-col items-center text-primary ">
-            <span className="text-xl font-bold">0</span>
-            <span className="text-base font-semibold">Following</span>
+          <div className="flex items-center gap-2 text-primary">
+            <Chip radius="full">{0}</Chip>
+            <span className="text-lg font-semibold">Following</span>
           </div>
         }
-        href={`/student/profile/${profileId}/following`}
+        href={`/student/profile/${studentCode}/following`}
         className="overflow-hidden"
       />
       <Tab
         as={Link}
-        key={`/student/profile/${profileId}/friends`}
+        key={`/student/profile/${studentCode}/friends`}
         title={
-          <div className="flex flex-col items-center text-primary ">
-            <span className="text-xl font-bold">0</span>
-            <span className="text-base font-semibold">Friends</span>
+          <div className="flex items-center gap-2 text-primary">
+            <Chip radius="full">{0}</Chip>
+            <span className="text-lg font-semibold">Friends</span>
           </div>
         }
-        href={`/student/profile/${profileId}/friends`}
+        href={`/student/profile/${studentCode}/friends`}
         className="overflow-hidden"
       />
       <Tab
         as={Link}
-        key={`/student/profile/${profileId}/blogs`}
+        key={`/student/profile/${studentCode}/blogs`}
         title={
-          <div className="flex flex-col items-center text-primary ">
-            <span className="text-xl font-bold">0</span>
-            <span className="text-base font-semibold">Blogs</span>
+          <div className="flex items-center gap-2 text-primary">
+            <Chip radius="full">{0}</Chip>
+            <span className="text-lg font-semibold">Blogs</span>
           </div>
         }
-        href={`/student/profile/${profileId}/blogs`}
+        href={`/student/profile/${studentCode}/blogs`}
         className="overflow-hidden"
       />
     </Tabs>

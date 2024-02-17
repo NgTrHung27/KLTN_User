@@ -1,22 +1,21 @@
 "use client";
 
+import { ProfileCoverImageModal } from "@/components/modals/profile-cover-image-modal";
 import {
   Avatar,
   Button,
   Card,
   CardBody,
+  CardFooter,
   CardHeader,
-  Link,
-  Tab,
-  Tabs,
+  Divider,
   useDisclosure,
 } from "@nextui-org/react";
-import { ProfileCoverImage } from "./profile-cover-image";
-import { useParams, usePathname } from "next/navigation";
-import { ProfileHeaderNavigation } from "./profile-header-navigation";
 import { Camera, SquarePen } from "lucide-react";
-import { ProfileCoverImageModal } from "@/components/modals/profile-cover-image-modal";
+import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ProfileCoverImage } from "./profile-cover-image";
+import { ProfileHeaderNavigation } from "./profile-header-navigation";
 
 interface ProfileHeaderProps {
   coverUrl?: string;
@@ -57,7 +56,7 @@ export const ProfileHeader = ({
           ) : (
             <ProfileCoverImage url={coverUrl} />
           )}
-          <div className="absolute bottom-6 right-6 flex flex-col gap-3">
+          <div className="absolute bottom-3 right-6 flex flex-col gap-3">
             {!coverUrl ? (
               <Button
                 startContent={<Camera className="h-4 w-4" />}
@@ -79,33 +78,33 @@ export const ProfileHeader = ({
                 Change cover
               </Button>
             )}
-
-            <Button
-              startContent={<SquarePen className="h-4 w-4" />}
-              size="sm"
-              color="primary"
-              variant="shadow"
-            >
-              Edit profile
-            </Button>
           </div>
         </CardHeader>
-        <div className="absolute left-8 top-[calc(12px+25vh-48px)] z-10 flex items-start justify-between gap-2">
-          <Avatar src={logoUrl} className=" h-24 w-24" />
+        <div className="absolute left-16 top-[calc(12px+20vh-12px)] z-10 flex items-center justify-between gap-3">
+          <Avatar src={logoUrl} className=" h-28 w-28" />
           <div className="flex flex-col items-start justify-start">
-            <h1 className="text-lg font-bold text-background">{name}</h1>
-            <h2 className="text-xs font-semibold text-muted-foreground">
-              {schoolName}
-            </h2>
+            <h1 className="text-lg font-bold text-primary">{name}</h1>
+            <h2 className="text-xs font-semibold text-primary">{schoolName}</h2>
           </div>
         </div>
-        <CardBody className="flex h-fit items-center justify-center">
+        <CardBody className="flex h-[calc(90px+12px)] flex-row items-center justify-end">
+          <Button
+            startContent={<SquarePen className="h-4 w-4" />}
+            size="md"
+            color="primary"
+            variant="shadow"
+          >
+            Edit profile
+          </Button>
+        </CardBody>
+        <Divider />
+        <CardFooter className="justify-center">
           <ProfileHeaderNavigation
             postCount={postCount}
             pathname={pathname}
-            profileId={params.profileId as string}
+            studentCode={params.studentCode as string}
           />
-        </CardBody>
+        </CardFooter>
       </Card>
     </>
   );

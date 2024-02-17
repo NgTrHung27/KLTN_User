@@ -60,6 +60,9 @@ export const ProfilePostItem = ({
   comments,
   images,
 }: ProfilePostItemProps) => {
+  const parentComments = comments?.filter(
+    (comment) => !comment.parentCommentId,
+  );
   return (
     <Card>
       <CardHeader className="items-center justify-between pr-6">
@@ -112,7 +115,7 @@ export const ProfilePostItem = ({
             variant="light"
             color="primary"
           >
-            Comments
+            {comments?.length} Comments
           </Button>
           <Button startContent={<Heart />} variant="light" color="primary">
             0 Likes
@@ -128,7 +131,7 @@ export const ProfilePostItem = ({
       </div>
       <CardFooter className="flex-col items-start justify-start gap-2">
         <ProfileCommentsList
-          comments={comments || []}
+          comments={parentComments || []}
           name={name}
           image={logo}
         />

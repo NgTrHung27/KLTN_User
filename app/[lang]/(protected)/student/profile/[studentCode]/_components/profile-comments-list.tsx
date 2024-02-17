@@ -16,7 +16,7 @@ export const ProfileCommentsList = ({
 }: ProfileCommentsListProps) => {
   if (comments.length === 0) return null;
   return (
-    <div className="flex max-h-[50vh] w-full flex-col gap-2 overflow-y-scroll scrollbar-hide">
+    <div className="flex w-full flex-col gap-2 overflow-y-scroll scrollbar-hide">
       {comments.map((comment) => {
         return (
           <>

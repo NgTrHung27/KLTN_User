@@ -13,7 +13,7 @@ export const ProfileCoverImage = ({ url, preview }: ProfileCoverImageProps) => {
   return (
     <div
       className={cn(
-        "h-[25vh] w-full",
+        "h-[20vh] w-full",
         !url && "bg-zinc-600",
         url && "bg-muted",
       )}
@@ -31,5 +31,5 @@ export const ProfileCoverImage = ({ url, preview }: ProfileCoverImageProps) => {
 };
 
 ProfileCoverImage.Skeleton = function ProfileCoverImageSkeleton() {
-  return <Skeleton className="h-[25vh] w-full bg-muted" />;
+  return <Skeleton className="h-[20vh] w-full bg-muted" />;
 };
