@@ -19,7 +19,7 @@ interface ProfileCommentFormProps {
   logo: string;
   postId: string;
   parentId?: string;
-  onLoad: () => void;
+  onLoad?: () => void;
 }
 
 export const ProfileCommentForm = ({
@@ -95,7 +95,7 @@ export const ProfileCommentForm = ({
     setFile(undefined);
     setIsValue(false);
     router.refresh();
-    onLoad();
+    onLoad?.();
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
