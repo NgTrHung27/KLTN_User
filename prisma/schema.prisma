@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
@@ -43,7 +43,7 @@ enum StudentStatus {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   studentCode   String    @unique
   // Account
   email         String    @unique
@@ -59,7 +59,7 @@ model User {
 
   image    String?
   // Education
-  schoolId String
+  schoolId String  @db.ObjectId
   school   School  @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
   program StudentProgram?
@@ -92,10 +92,10 @@ model User {
 }
 
 model School {
-  id            String  @id @default(cuid())
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
   logoUrl       String
   backgroundUrl String
-  name          String  @unique
+  name          String
   colorValue    String
   isPublished   Boolean @default(false)
 
@@ -110,13 +110,13 @@ model School {
 }
 
 model Program {
-  id          String  @id @default(cuid())
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   description String
   coverImage  String?
   isPublished Boolean @default(false)
 
-  schoolId String
+  schoolId String @db.ObjectId
   school   School @relation(fields: [schoolId], references: [id])
 
   createdAt DateTime @default(now())
@@ -129,23 +129,24 @@ model Program {
 }
 
 model StudentProgram {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  userId String @unique
+  // Scores
+
+  userId String @unique @db.ObjectId
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  programId String
+  programId String  @db.ObjectId
   program   Program @relation(fields: [programId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([userId, programId])
-  @@index([userId, programId])
 }
 
 model VerificationToken {
-  id      String   @id @default(cuid())
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
   email   String
   token   String   @unique
   expires DateTime
@@ -156,7 +157,7 @@ model VerificationToken {
 }
 
 model PasswordResetToken {
-  id      String   @id @default(cuid())
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
   email   String
   token   String   @unique
   expires DateTime
@@ -167,7 +168,7 @@ model PasswordResetToken {
 }
 
 model TwoFactorToken {
-  id      String   @id @default(cuid())
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
   email   String
   token   String   @unique
   expires DateTime
@@ -178,9 +179,9 @@ model TwoFactorToken {
 }
 
 model TwoFactorConfirmation {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  userId String
+  userId String @db.ObjectId
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -198,11 +199,11 @@ enum ProfileStatus {
 }
 
 model Profile {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   coverImage String?
 
-  userId String @unique
+  userId String @unique @db.ObjectId
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Status
@@ -224,7 +225,7 @@ model Profile {
   blogs Blog[]
 
   // Events
-  eventId String?
+  eventId String? @db.ObjectId
   event   Event?  @relation(fields: [eventId], references: [id])
 
   // Messages
@@ -260,7 +261,7 @@ enum PostStatus {
 }
 
 model Post {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   content    String?
   postImages PostImage[]
@@ -273,42 +274,40 @@ model Post {
 
   isArchived Boolean @default(false)
 
-  profileId String
+  profileId String  @db.ObjectId
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@map("Feed")
 }
 
 model PostImage {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   url String
 
-  postId String
+  postId String @db.ObjectId
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model PostComment {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   content String?
 
   commentImage PostCommentImage?
   isArchived   Boolean           @default(false)
 
-  profileId String
+  profileId String  @db.ObjectId
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  postId String
+  postId String @db.ObjectId
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   children PostComment[] @relation("children")
 
-  parentCommentId String?
-  parentComment   PostComment? @relation("children", fields: [parentCommentId], references: [id], onDelete: Cascade)
+  parentCommentId String?      @db.ObjectId
+  parentComment   PostComment? @relation("children", fields: [parentCommentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   likes PostCommentLike[]
 
@@ -319,63 +318,64 @@ model PostComment {
 }
 
 model PostCommentImage {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   url String
 
-  postCommentId String      @unique
-  postComment   PostComment @relation(fields: [postCommentId], references: [id], onDelete: Cascade)
+  postCommentId String      @unique @db.ObjectId
+  postComment   PostComment @relation(fields: [postCommentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model PostCommentLike {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  profileId String
+  profileId String  @db.ObjectId
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  postCommentId String
-  postComment   PostComment @relation(fields: [postCommentId], references: [id], onDelete: Cascade)
+  postCommentId String      @db.ObjectId
+  postComment   PostComment @relation(fields: [postCommentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model PostLike {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  profileId String  @unique
+  profileId String  @db.ObjectId
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  postId String
+  postId String @db.ObjectId
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@index([profileId])
 }
 
 model PostShare {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  profileId String  @unique
+  profileId String  @db.ObjectId
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  postId String
+  postId String @db.ObjectId
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@index([profileId])
 }
 
 model PostSave {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  profileId String  @unique
+  profileId String  @db.ObjectId
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  Post      Post?   @relation(fields: [postId], references: [id])
-  postId    String?
+
+  postId String @db.ObjectId
+  post   Post?  @relation(fields: [postId], references: [id])
 
   @@index([profileId])
 }
 
 model Biography {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  profileId String  @unique
+  profileId String  @unique @db.ObjectId
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -383,9 +383,9 @@ model Biography {
 }
 
 model Friend {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  profileId String  @unique
+  profileId String  @unique @db.ObjectId
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -393,7 +393,7 @@ model Friend {
 }
 
 model Group {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   users ProfileGroup[]
 
@@ -402,12 +402,12 @@ model Group {
 }
 
 model ProfileGroup {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  profileId String
+  profileId String  @db.ObjectId
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  groupId String
+  groupId String @db.ObjectId
   group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -417,9 +417,9 @@ model ProfileGroup {
 }
 
 model Blog {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  profileId String  @unique
+  profileId String  @unique @db.ObjectId
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -427,7 +427,7 @@ model Blog {
 }
 
 model Event {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   profiles Profile[]
 
@@ -436,9 +436,9 @@ model Event {
 }
 
 model Area {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  title String @unique
+  title String
 
   profiles ProfileArea[]
 
@@ -449,18 +449,17 @@ model Area {
 }
 
 model ProfileArea {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  profileId String
+  profileId String  @db.ObjectId
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  areaId String
+  areaId String @db.ObjectId
   area   Area   @relation(fields: [areaId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([profileId, areaId])
   @@index([profileId, areaId])
 }
 
@@ -475,12 +474,12 @@ enum SocialType {
 }
 
 model Social {
-  id String @id @default(cuid())
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   type SocialType
   href String
 
-  profileId String
+  profileId String  @db.ObjectId
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
