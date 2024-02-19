@@ -1,20 +1,17 @@
-import {
-  Body,
-  Button,
-  Column,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Img,
-  Link,
-  Preview,
-  Row,
-  Section,
-  Tailwind,
-  Text,
-} from "@react-email/components";
+import { Html } from "@react-email/html"
+import { Head } from "@react-email/head"
+import { Link } from "@react-email/link"
+import { Preview } from "@react-email/preview"
+import { Body } from "@react-email/body"
+import { Text } from "@react-email/text"
+import { Img } from "@react-email/Img"
+import { Section } from "@react-email/Section"
+import { Container } from "@react-email/container"
+import { Heading } from "@react-email/heading"
+import { Hr } from "@react-email/hr"
+import { Column } from "@react-email/column"
+import { Row } from "@react-email/row"
+
 
 interface VerificationEmailProps {
   name: string;
@@ -33,7 +30,6 @@ export const VerificationEmail: React.FC<Readonly<VerificationEmailProps>> = ({
     <Html>
       <Head />
       <Preview>Hello, {name}</Preview>
-      <Tailwind>
         <Body className="mx-auto my-auto bg-white px-2 font-sans">
           <Container className="mx-auto my-[40px] max-w-[465px] rounded border border-solid border-[#eaeaea] p-[20px]">
             <Section className="mt-[32px]">
@@ -101,7 +97,6 @@ export const VerificationEmail: React.FC<Readonly<VerificationEmailProps>> = ({
             </Text>
           </Container>
         </Body>
-      </Tailwind>
     </Html>
   );
 };

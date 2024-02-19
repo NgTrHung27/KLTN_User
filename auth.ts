@@ -13,7 +13,6 @@ import {
 } from "@prisma/client";
 import { sendVerificationEmail } from "./lib/mail";
 import { generateVerificationToken } from "./lib/tokens";
-import { toast } from "sonner";
 
 export type ExtendedUser = DefaultSession["user"] & {
   studentCode: string;

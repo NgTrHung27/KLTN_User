@@ -26,7 +26,7 @@ const ProfileIdLayout = async ({
   const user = await currentUser();
 
   if (studentCode === "undefined") {
-    return redirect(`${DEFAULT_LOGIN_REDIRECT}/${user?.studentCode}`);
+    redirect(`${DEFAULT_LOGIN_REDIRECT}/${user?.studentCode}`);
   }
 
   const school = await getSchoolByUserId(user?.id!);
