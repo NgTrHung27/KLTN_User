@@ -63,6 +63,7 @@ export const ProfilePostItem = ({
   const parentComments = comments?.filter(
     (comment) => !comment.parentCommentId,
   );
+  
   return (
     <Card>
       <CardHeader className="items-center justify-between pr-6">

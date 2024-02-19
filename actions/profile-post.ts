@@ -1,6 +1,6 @@
 "use server";
 
-import { getUserByEmail } from "@/data/user";
+import { getUserByEmail, getUserByIdCardNumber } from "@/data/user";
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/user";
 import { PostSchema } from "@/schemas";
@@ -23,7 +23,7 @@ export const CreateNewProfilePost = async (
       return { error: "User not found" };
     }
 
-    const existingUser = await getUserByEmail(user.email!);
+    const existingUser = await getUserByIdCardNumber(user.idCardNumber!);
 
     if (!existingUser) {
       return { error: "User not found" };

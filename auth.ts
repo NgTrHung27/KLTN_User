@@ -3,7 +3,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 
 import { db } from "@/lib/db";
 import authConfig from "@/auth.config";
-import { getUserById } from "./data/user";
+import { getUserByEmail, getUserById } from "./data/user";
 import {
   CertificateType,
   DegreeType,
@@ -11,6 +11,8 @@ import {
   GradeType,
   StudentStatus,
 } from "@prisma/client";
+import { sendVerificationEmail } from "./lib/mail";
+import { generateVerificationToken } from "./lib/tokens";
 
 export type ExtendedUser = DefaultSession["user"] & {
   studentCode: string;
@@ -46,9 +48,24 @@ export const {
   },
   callbacks: {
     async signIn({ user }) {
-      const existingUser = await getUserById(user.id);
+      const existingUser = await getUserByEmail(user.email!);
 
-      if (!existingUser?.emailVerified) {
+      if (!existingUser) {
+        return false;
+      }
+
+      if (!existingUser?.emailVerified || !existingUser) {
+        const verificationToken = await generateVerificationToken(
+          existingUser.email,
+        );
+
+        await sendVerificationEmail(
+          existingUser.name,
+          process.env.NODE_SENDER_EMAIL!,
+          verificationToken.email,
+          verificationToken.token,
+        );
+
         return false;
       }
 
