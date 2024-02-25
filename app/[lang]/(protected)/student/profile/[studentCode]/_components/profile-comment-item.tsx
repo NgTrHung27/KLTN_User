@@ -74,7 +74,7 @@ export const ProfileCommentItem = ({
   return (
     <div className="flex w-full flex-col gap-1">
       <div className="flex gap-2">
-        <Avatar src={logo || "/placeholder.webp"} alt="logo" />
+        <Avatar src={logo} alt="logo" />
         <div className="flex flex-col">
           <div className="w-fit rounded-2xl bg-default-100 px-3 py-1 hover:bg-default-200">
             <span className="text-sm font-bold text-default-600 dark:text-default-400">
@@ -143,7 +143,12 @@ export const ProfileCommentItem = ({
       )}
       {isCommenting && (
         <div className="ml-[48px]">
-          <ProfileCommentForm logo={logo || ""} postId={postId} parentId={id} />
+          <ProfileCommentForm
+            logo={logo || ""}
+            postId={postId}
+            parentId={id}
+            onLoad={onLoad}
+          />
         </div>
       )}
     </div>

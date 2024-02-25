@@ -14,9 +14,6 @@ export const getPostsByProfileId = async (id: string) => {
             commentImage: true,
             children: true,
           },
-          orderBy: {
-            createdAt: "desc",
-          },
         },
         likes: true,
       },

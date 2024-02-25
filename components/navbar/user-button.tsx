@@ -47,13 +47,7 @@ export const UserButton = ({ user, dict }: UserButtonProps) => {
   return (
     <Dropdown placement="bottom-end" backdrop="blur" closeOnSelect={false}>
       <DropdownTrigger>
-        <Avatar
-          isBordered
-          color="secondary"
-          name={"Image"}
-          size="sm"
-          src={user.image || "/placeholder.webp"}
-        />
+        <Avatar isBordered color="secondary" size="sm" src={user.image || ""} />
       </DropdownTrigger>
       <DropdownMenu aria-label="User Actions" variant="flat">
         <DropdownSection

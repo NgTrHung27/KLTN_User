@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
-import "./globals.css";
-import "react-day-picker/dist/style.css";
-import { ThemeProvider } from "@/components/providers/theme-provider";
-import { EdgeStoreProvider } from "@/lib/edgestore";
-import { ModalProvider } from "@/components/providers/modal-provider";
-import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
+import { ModalProvider } from "@/components/providers/modal-provider";
 import { Providers } from "@/components/providers/providers";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { EdgeStoreProvider } from "@/lib/edgestore";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import type { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
+import { Montserrat } from "next/font/google";
+import "react-day-picker/dist/style.css";
+import "./globals.css";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -43,6 +44,7 @@ export default async function RootLayout({
               <Providers>
                 <main className="h-full w-full bg-white dark:bg-background">
                   {children}
+                  <SpeedInsights />
                 </main>
                 <Toaster richColors closeButton />
               </Providers>
