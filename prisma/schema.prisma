@@ -335,18 +335,21 @@ model PostCommentLike {
 
   postCommentId String
   postComment   PostComment @relation(fields: [postCommentId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, postCommentId])
 }
 
 model PostLike {
   id String @id @default(cuid())
 
-  profileId String  @unique
+  profileId String 
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   postId String
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@index([profileId])
+  @@unique([profileId, postId])
 }
 
 model PostShare {

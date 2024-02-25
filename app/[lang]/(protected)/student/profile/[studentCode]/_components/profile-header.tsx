@@ -44,7 +44,7 @@ export const ProfileHeader = ({
   return (
     <>
       <ProfileCoverImageModal
-        studentCode={params.profileId as string}
+        studentCode={params.studentCode as string}
         isOpen={isOpen}
         onClose={onClose}
         imageUrl={coverUrl}

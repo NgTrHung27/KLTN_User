@@ -10,6 +10,7 @@ export const getPostsByProfileId = async (id: string) => {
         postImages: true,
         comments: {
           include: {
+            likes: true,
             commentImage: true,
             children: true,
           },
@@ -17,6 +18,7 @@ export const getPostsByProfileId = async (id: string) => {
             createdAt: "desc",
           },
         },
+        likes: true,
       },
       orderBy: {
         createdAt: "desc",

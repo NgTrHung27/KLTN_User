@@ -2,9 +2,11 @@ import {
   Post,
   PostComment,
   PostCommentImage,
+  PostCommentLike,
   PostImage,
+  PostLike,
   Program,
-  School,
+  School
 } from "@prisma/client";
 
 export type Ward = {
@@ -33,18 +35,23 @@ export type SchoolWithPrograms = School & { programs: Program[] };
 
 export type ExtendedComment = PostComment & {
   commentImage: PostCommentImage | null;
-  children: PostComment[];
+  children: ExtendedComment[];
 };
 
 export type BasicComment = PostComment & {
   commentImage: PostCommentImage | null;
   children: { id: string }[];
+  likes: PostCommentLike[];
 };
 
 export type ExtendedPost = Post & {
   postImages: PostImage[];
-  comments: ExtendedComment[];
+  comments: BasicComment[];
+  likes: PostLike[];
 };
+
+
+
 
 // ({
 //   postImages[];
