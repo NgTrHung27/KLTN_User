@@ -237,7 +237,6 @@ export const ModalPostContent = ({
                   disabled={isLoading}
                   value={fileStates}
                   onChange={(files) => setFileStates(files)}
-                  onFilesAdded={() => {}}
                 />
               )}
             </ModalBody>

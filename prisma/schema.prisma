@@ -96,17 +96,73 @@ model School {
   logoUrl       String
   backgroundUrl String
   name          String  @unique
+  description   String?
   colorValue    String
   isPublished   Boolean @default(false)
 
   users User[]
 
-  programs Program[]
+  locations Location[]
+  history   History?
+  programs  Program[]
+  galleries Gallery[]
+  blogs     SchoolBlog[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([name])
+}
+
+model Location {
+  id String @id @default(cuid())
+
+  cover   String?
+  name    String  @unique
+  address String
+  isMain  Boolean @default(false)
+
+  images  LocationImage[]
+  contact LocationContact[]
+
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+model LocationImage {
+  id String @id @default(cuid())
+
+  url String
+
+  locationId String
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+}
+
+model LocationContact {
+  id String @id @default(cuid())
+
+  phoneNumber  String?
+  workingHours String?
+  faxNumber    String?
+  email        String?
+  url          String?
+
+  locationId String
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+}
+
+model History {
+  id String @id @default(cuid())
+
+  content String
+
+  schoolId String @unique
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 }
 
 model Program {
@@ -126,6 +182,49 @@ model Program {
 
   @@unique([schoolId, name])
   @@index([name])
+}
+
+model Gallery {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+
+  images GalleryImage[]
+
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id])
+}
+
+model GalleryImage {
+  id String @id @default(cuid())
+
+  url String
+
+  galleryId String
+  gallery   Gallery @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+}
+
+model SchoolBlog {
+  id String @id @default(cuid())
+
+  content String?
+  images  SchoolBlogImages[]
+  title   String
+
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SchoolBlogImages {
+  id String @id @default(cuid())
+
+  url String
+
+  schoolBlogId String
+  schoolBlog   SchoolBlog @relation(fields: [schoolBlogId], references: [id], onDelete: Cascade)
 }
 
 model StudentProgram {
