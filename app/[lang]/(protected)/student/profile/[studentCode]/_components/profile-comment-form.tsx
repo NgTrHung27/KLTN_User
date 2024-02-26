@@ -101,7 +101,6 @@ export const ProfileCommentForm = ({
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (isSubmitting) return;
     if (event.key === "Enter" && !event.shiftKey) {
-      console.log(isSubmitting);
       form.handleSubmit(onSubmit);
     }
   };

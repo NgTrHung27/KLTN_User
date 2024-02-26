@@ -1,22 +1,26 @@
 "use client";
 
+import { GetCommentsByParentId } from "@/actions/comment";
+import { LikeCmt } from "@/actions/likecmt";
 import { cn } from "@/lib/utils";
-import { BasicComment } from "@/types";
+import { BasicComment} from "@/types";
 import { Avatar, Image, Spinner } from "@nextui-org/react";
-import { PostCommentImage } from "@prisma/client";
+import { PostCommentImage, PostCommentLike } from "@prisma/client";
 import { formatDistanceToNowStrict } from "date-fns";
 import { vi } from "date-fns/locale/vi";
 import { CornerDownRight, CornerLeftUp } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ProfileCommentForm } from "./profile-comment-form";
 import { ProfileCommentsList } from "./profile-comments-list";
-import { GetCommentsByParentId } from "@/actions/comment";
 
 interface ProfileCommentItemProps {
   postId: string;
   id: string;
   content?: string;
+  likes?: PostCommentLike[];
   image?: PostCommentImage;
+  profileId: String;
   name: string;
   logo?: string;
   createdAt: Date;
@@ -24,17 +28,18 @@ interface ProfileCommentItemProps {
   isArchived: boolean;
   childLength?: number;
 }
-
 export const ProfileCommentItem = ({
   content,
   image,
   name,
   logo,
+  likes,
   createdAt,
   updatedAt,
   isArchived,
   postId,
   id,
+  profileId,
   childLength,
 }: ProfileCommentItemProps) => {
   const [isCommenting, setIsCommenting] = useState(false);
@@ -47,7 +52,6 @@ export const ProfileCommentItem = ({
     startTransition(() => {
       GetCommentsByParentId(postId, id).then((res) => {
         if (res) {
-          console.log(res);
           setItems(res);
         }
       });
@@ -55,6 +59,17 @@ export const ProfileCommentItem = ({
 
     setIsExpanded(true);
   };
+  const router = useRouter();
+  const params = useParams();
+  const studentCode = params.studentCode as string;
+  const onLike =  async () => {
+    startTransition(() => {
+      LikeCmt(studentCode, id);
+    })
+
+    router.refresh();
+  }
+  const isLike = likes?.some(LikeCmt => LikeCmt.profileId == profileId)
 
   return (
     <div className="flex w-full flex-col gap-1">
@@ -80,7 +95,15 @@ export const ProfileCommentItem = ({
             locale: vi,
           })}
         </span>
-        <span>Like</span>
+        <span
+         onClick={() => onLike()}
+         className={cn(
+          "cursor-pointer hover:underline",
+          isLike && "text-rose-500 font-bold" 
+        )}
+        >
+          Like
+        </span>
         <span
           onClick={() => setIsCommenting((value) => !value)}
           className={cn(
@@ -100,7 +123,7 @@ export const ProfileCommentItem = ({
           >
             See {childLength} response(s)
           </span>
-          {isPending && <Spinner size="sm" />}
+          {isPending && <Spinner size="sm" />}  
         </div>
       )}
       {isExpanded && (

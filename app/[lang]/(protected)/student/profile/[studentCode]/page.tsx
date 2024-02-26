@@ -34,6 +34,7 @@ const ProfileIdPage = async ({
               posts={posts || []}
               name={user?.name!}
               logo={user?.image || ""}
+              profileId={profile?.id!}
             />
           )}
         </div>
