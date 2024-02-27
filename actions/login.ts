@@ -8,20 +8,11 @@ import { z } from "zod";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   try {
-    const validatedFields = LoginSchema.safeParse(values);
-
-    if (!validatedFields.success) {
-      return { error: "Invalid fields!" };
-    }
-
-    const { email, password } = validatedFields.data;
-
+    const { email, password } = values;
     await signIn("credentials", {
       email,
       password,
       redirectTo: `${DEFAULT_LOGIN_REDIRECT}`,
-    }).then(() => {
-      return { success: "Login successful" };
     });
   } catch (error) {
     if (error instanceof AuthError) {

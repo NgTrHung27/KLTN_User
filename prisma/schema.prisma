@@ -441,14 +441,14 @@ model PostCommentLike {
 model PostLike {
   id String @id @default(cuid())
 
-  profileId String 
+  profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   postId String
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  @@index([profileId])
   @@unique([profileId, postId])
+  @@index([profileId])
 }
 
 model PostShare {

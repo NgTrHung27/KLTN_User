@@ -64,10 +64,9 @@ export const ProfilePostItem = ({
   comments,
   likes,
   images,
-  profileId
-}: ProfilePostItemProps) => 
-{
-  const isLike = likes?.some(like => like.profileId == profileId)
+  profileId,
+}: ProfilePostItemProps) => {
+  const isLike = likes?.some((like) => like.profileId == profileId);
   const router = useRouter();
 
   const parentComments = comments?.filter(
@@ -77,20 +76,19 @@ export const ProfilePostItem = ({
   const params = useParams();
   const studentCode = params.studentCode as string;
 
-  const onLike =  async () => {
+  const onLike = async () => {
     startTransition(() => {
       Like(studentCode, id);
-    })
+    });
 
     router.refresh();
-  }
-
+  };
 
   return (
     <Card>
       <CardHeader className="items-center justify-between pr-6">
         <div className="flex items-start gap-2">
-          <Avatar src={logo || "/placeholder.webp"} alt="logo" />
+          <Avatar src={logo} alt="logo" />
           <div className="flex flex-col items-start justify-start">
             <p className="font-bold text-primary">{name}</p>
             <div className="flex items-center gap-[1px]">
@@ -140,11 +138,16 @@ export const ProfilePostItem = ({
           >
             {comments?.length} Comments
           </Button>
-         
-          <Button onClick={onLike } startContent={<Heart fill={isLike ? "red" : "undefined"} />} variant="light" color="primary">
+
+          <Button
+            onClick={onLike}
+            startContent={<Heart fill={isLike ? "red" : "undefined"} />}
+            variant="light"
+            color="primary"
+          >
             {likes?.length || 0} Likes
           </Button>
-              
+
           <Button startContent={<Share2 />} variant="light" color="primary">
             0 Share
           </Button>

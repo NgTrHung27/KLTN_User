@@ -12,14 +12,22 @@ export default {
         const validatedFields = LoginSchema.safeParse(credentials);
 
         if (validatedFields.success) {
-          const { email, password } = validatedFields.data;
+          const res = await fetch("http://localhost:3001/api/auth/login", {
+            method: "POST",
+            cache: "no-cache",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(credentials),
+          });
 
-          const user = await getUserByEmail(email);
-          if (!user || !user.password) return null;
+          const user = await res.json();
 
-          const passwordsMatch = await bcrypt.compare(password, user.password);
+          if (!user.email) {
+            return null;
+          }
 
-          if (passwordsMatch) return user;
+          return user;
         }
 
         return null;
