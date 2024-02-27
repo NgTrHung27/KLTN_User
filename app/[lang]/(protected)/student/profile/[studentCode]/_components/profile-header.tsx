@@ -59,7 +59,7 @@ export const ProfileHeader = ({
           <div className="absolute bottom-3 right-6 flex flex-col gap-3">
             {!coverUrl ? (
               <Button
-                startContent={<Camera className="h-4 w-4" />}
+                startContent={<Camera className="size-4" />}
                 size="sm"
                 color="primary"
                 variant="shadow"
@@ -69,7 +69,7 @@ export const ProfileHeader = ({
               </Button>
             ) : (
               <Button
-                startContent={<Camera className="h-4 w-4" />}
+                startContent={<Camera className="size-4" />}
                 size="sm"
                 color="primary"
                 variant="shadow"
@@ -89,7 +89,7 @@ export const ProfileHeader = ({
         </div>
         <CardBody className="flex h-[calc(90px+12px)] flex-row items-center justify-end">
           <Button
-            startContent={<SquarePen className="h-4 w-4" />}
+            startContent={<SquarePen className="size-4" />}
             size="md"
             color="primary"
             variant="shadow"

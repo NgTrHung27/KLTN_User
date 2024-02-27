@@ -70,7 +70,7 @@ export const NewPasswordForm = () => {
                 variant="bordered"
                 size="md"
                 placeholder="Enter your new password"
-                startContent={<Key className="h-4 w-4" />}
+                startContent={<Key className="size-4" />}
                 endContent={
                   <button
                     className="focus:outline-none"
@@ -78,9 +78,9 @@ export const NewPasswordForm = () => {
                     onClick={toggleVisibility}
                   >
                     {isVisible ? (
-                      <EyeOff className="h-4 w-4" />
+                      <EyeOff className="size-4" />
                     ) : (
-                      <Eye className="h-4 w-4" />
+                      <Eye className="size-4" />
                     )}
                   </button>
                 }
@@ -105,7 +105,7 @@ export const NewPasswordForm = () => {
                 variant="bordered"
                 size="md"
                 placeholder="Re-enter your password"
-                startContent={<Key className="h-4 w-4" />}
+                startContent={<Key className="size-4" />}
                 endContent={
                   <button
                     className="focus:outline-none"
@@ -113,9 +113,9 @@ export const NewPasswordForm = () => {
                     onClick={toggleVisibility}
                   >
                     {isVisible ? (
-                      <EyeOff className="h-4 w-4" />
+                      <EyeOff className="size-4" />
                     ) : (
-                      <Eye className="h-4 w-4" />
+                      <Eye className="size-4" />
                     )}
                   </button>
                 }

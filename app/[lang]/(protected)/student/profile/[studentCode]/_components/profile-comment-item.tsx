@@ -3,7 +3,7 @@
 import { GetCommentsByParentId } from "@/actions/comment";
 import { LikeCmt } from "@/actions/likecmt";
 import { cn } from "@/lib/utils";
-import { BasicComment} from "@/types";
+import { BasicComment } from "@/types";
 import { Avatar, Image, Spinner } from "@nextui-org/react";
 import { PostCommentImage, PostCommentLike } from "@prisma/client";
 import { formatDistanceToNowStrict } from "date-fns";
@@ -62,14 +62,14 @@ export const ProfileCommentItem = ({
   const router = useRouter();
   const params = useParams();
   const studentCode = params.studentCode as string;
-  const onLike =  async () => {
+  const onLike = async () => {
     startTransition(() => {
       LikeCmt(studentCode, id);
-    })
+    });
 
     router.refresh();
-  }
-  const isLike = likes?.some(LikeCmt => LikeCmt.profileId == profileId)
+  };
+  const isLike = likes?.some((LikeCmt) => LikeCmt.profileId == profileId);
 
   return (
     <div className="flex w-full flex-col gap-1">
@@ -96,11 +96,11 @@ export const ProfileCommentItem = ({
           })}
         </span>
         <span
-         onClick={() => onLike()}
-         className={cn(
-          "cursor-pointer hover:underline",
-          isLike && "text-rose-500 font-bold" 
-        )}
+          onClick={() => onLike()}
+          className={cn(
+            "cursor-pointer hover:underline",
+            isLike && "font-bold text-rose-500",
+          )}
         >
           Like
         </span>
@@ -116,21 +116,21 @@ export const ProfileCommentItem = ({
       </div>
       {childLength! > 0 && !isExpanded && (
         <div className="ml-[48px] flex items-center gap-2">
-          <CornerDownRight className="h-4 w-4" />
+          <CornerDownRight className="size-4" />
           <span
             onClick={onLoad}
             className="cursor-pointer text-base text-zinc-600 hover:underline dark:text-zinc-400"
           >
             See {childLength} response(s)
           </span>
-          {isPending && <Spinner size="sm" />}  
+          {isPending && <Spinner size="sm" />}
         </div>
       )}
       {isExpanded && (
         <div className="ml-[48px] flex  flex-col gap-2">
           <ProfileCommentsList comments={items} name={name} image={logo} />
           <div className="flex  items-center gap-2">
-            <CornerLeftUp className="h-4 w-4" />
+            <CornerLeftUp className="size-4" />
             <span
               onClick={() => setIsExpanded(false)}
               className="cursor-pointer text-base text-zinc-600 hover:underline dark:text-zinc-400"

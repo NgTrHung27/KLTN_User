@@ -38,13 +38,13 @@ export const ProfileInformation = ({
             variant="faded"
           />
           <div className="flex items-center text-muted-foreground">
-            <MapPin className="mr-2 h-4 w-4" />
+            <MapPin className="mr-2 size-4" />
             <p className="">
               {address.split(",")[2]}, {address.split(",")[3]}
             </p>
           </div>
           <div className="flex items-center truncate text-muted-foreground">
-            <Cake className="mr-2 h-4 w-4" />
+            <Cake className="mr-2 size-4" />
             {format(dob, "dd, MMMM, yyyy", { locale: vi })}
           </div>
           <div className="flex items-center gap-2 truncate text-muted-foreground">

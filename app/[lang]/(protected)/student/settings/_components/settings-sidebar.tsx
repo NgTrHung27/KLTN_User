@@ -8,22 +8,22 @@ import { usePathname } from "next/navigation";
 const items = [
   {
     label: "Account",
-    icon: <User className="h-4 w-4" />,
+    icon: <User className="size-4" />,
     href: "/student/settings/account",
   },
   {
     label: "Appearance",
-    icon: <User className="h-4 w-4" />,
+    icon: <User className="size-4" />,
     href: "/student/settings/appearance",
   },
   {
     label: "Notifications",
-    icon: <User className="h-4 w-4" />,
+    icon: <User className="size-4" />,
     href: "/student/settings/notifications",
   },
   {
     label: "Display",
-    icon: <User className="h-4 w-4" />,
+    icon: <User className="size-4" />,
     href: "/student/settings/display",
   },
 ];

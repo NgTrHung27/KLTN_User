@@ -12,14 +12,17 @@ export default {
         const validatedFields = LoginSchema.safeParse(credentials);
 
         if (validatedFields.success) {
-          const res = await fetch("http://localhost:3001/api/auth/login", {
-            method: "POST",
-            cache: "no-cache",
-            headers: {
-              "Content-Type": "application/json",
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API}/api/auth/login`,
+            {
+              method: "POST",
+              cache: "no-cache",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(credentials),
             },
-            body: JSON.stringify(credentials),
-          });
+          );
 
           const user = await res.json();
 

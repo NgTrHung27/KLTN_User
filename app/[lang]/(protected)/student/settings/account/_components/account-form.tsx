@@ -156,7 +156,7 @@ export const AccountForm = ({ user }: AccountFormProps) => {
                               size="md"
                               placeholder="Enter your password"
                               startContent={
-                                <Key className="h-4 w-4 text-primary" />
+                                <Key className="size-4 text-primary" />
                               }
                               endContent={
                                 <button
@@ -165,9 +165,9 @@ export const AccountForm = ({ user }: AccountFormProps) => {
                                   onClick={toggleVisibility}
                                 >
                                   {isVisible ? (
-                                    <EyeOff className="h-4 w-4 text-primary" />
+                                    <EyeOff className="size-4 text-primary" />
                                   ) : (
-                                    <Eye className="h-4 w-4 text-primary" />
+                                    <Eye className="size-4 text-primary" />
                                   )}
                                 </button>
                               }
@@ -197,7 +197,7 @@ export const AccountForm = ({ user }: AccountFormProps) => {
                               size="md"
                               placeholder="Re-enter your password"
                               startContent={
-                                <Key className="h-4 w-4 text-primary" />
+                                <Key className="size-4 text-primary" />
                               }
                               endContent={
                                 <button
@@ -206,9 +206,9 @@ export const AccountForm = ({ user }: AccountFormProps) => {
                                   onClick={toggleVisibility}
                                 >
                                   {isVisible ? (
-                                    <EyeOff className="h-4 w-4 text-primary" />
+                                    <EyeOff className="size-4 text-primary" />
                                   ) : (
-                                    <Eye className="h-4 w-4 text-primary" />
+                                    <Eye className="size-4 text-primary" />
                                   )}
                                 </button>
                               }
@@ -239,7 +239,7 @@ export const AccountForm = ({ user }: AccountFormProps) => {
                       label="Email"
                       labelPlacement="outside"
                       description="Change with your primary email. If the field value changed, an email verification will be sent to the new email."
-                      startContent={<Mail className="h-4 w-4 text-primary" />}
+                      startContent={<Mail className="size-4 text-primary" />}
                       isInvalid={fieldState.invalid}
                       errorMessage={fieldState.error?.message}
                     />

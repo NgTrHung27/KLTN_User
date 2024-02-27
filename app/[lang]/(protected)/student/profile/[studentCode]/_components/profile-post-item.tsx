@@ -47,10 +47,10 @@ interface ProfilePostItemProps {
 }
 
 const statusType = {
-  PUBLIC: <Globe2 className="h-4 w-4" />,
-  PRIVATE: <Lock className="h-4 w-4" />,
-  FRIENDS: <Users className="h-4 w-4" />,
-  EXCEPT: <UserX className="h-4 w-4" />,
+  PUBLIC: <Globe2 className="size-4" />,
+  PRIVATE: <Lock className="size-4" />,
+  FRIENDS: <Users className="size-4" />,
+  EXCEPT: <UserX className="size-4" />,
 };
 
 export const ProfilePostItem = ({

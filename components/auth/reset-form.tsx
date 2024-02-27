@@ -60,7 +60,7 @@ export const ResetForm = () => {
                 variant="bordered"
                 size="md"
                 placeholder="Enter your email"
-                startContent={<Mail className="h-4 w-4" />}
+                startContent={<Mail className="size-4" />}
                 errorMessage={fieldState.error?.message}
                 isInvalid={!!fieldState.error}
                 isRequired

@@ -10,14 +10,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import { CardWrapper } from "./card-wrapper";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "../ui/form";
 
 type LoginForm = z.infer<typeof LoginSchema>;
 
@@ -50,8 +44,6 @@ export const LoginForm = ({ dict }: { dict: DictionaryLanguage }) => {
       })
       .finally(() => setIsLoading(false));
   };
-
-  console.log(form.formState.errors);
 
   return (
     <CardWrapper

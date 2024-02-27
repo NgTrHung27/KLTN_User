@@ -34,7 +34,7 @@ export function ModeToggle({ className, dict }: ModeToggleProps) {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownTrigger>
-      <DropdownMenu>
+      <DropdownMenu classNames={{ list: "text-primary" }}>
         <DropdownItem onClick={() => setTheme("light")}>
           {dict.Theme.Light}
         </DropdownItem>

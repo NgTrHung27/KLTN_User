@@ -15,32 +15,32 @@ import { usePathname } from "next/navigation";
 const items = [
   {
     label: "News Feeds",
-    icon: <Newspaper className="h-4 w-4" />,
+    icon: <Newspaper className="size-4" />,
     href: "/student/profile/news",
   },
   {
     label: "Friends",
-    icon: <Users className="h-4 w-4" />,
+    icon: <Users className="size-4" />,
     href: "/student/profile/friends",
   },
   {
     label: "Groups",
-    icon: <Group className="h-4 w-4" />,
+    icon: <Group className="size-4" />,
     href: "/student/profile/groups",
   },
   {
     label: "Blogs",
-    icon: <PenLine className="h-4 w-4" />,
+    icon: <PenLine className="size-4" />,
     href: "/student/profile/blogs",
   },
   {
     label: "Events",
-    icon: <CalendarCheck className="h-4 w-4" />,
+    icon: <CalendarCheck className="size-4" />,
     href: "/student/profile/events",
   },
   {
     label: "Messages",
-    icon: <MessageCircle className="h-4 w-4" />,
+    icon: <MessageCircle className="size-4" />,
     href: "/student/profile/messages",
   },
 ];
