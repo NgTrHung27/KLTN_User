@@ -185,9 +185,28 @@ export const ResetSchema = z.object({
 
 export const NewPasswordSchema = z
   .object({
-    password: z.string().min(1, {
-      message: "Password is required",
-    }),
+    password: z
+      .string()
+      // Minimum length of 8 characters
+      .min(8, { message: "Password must be at least 8 characters long" })
+      // Maximum length of 25 characters
+      .max(25, { message: "Password cannot exceed 25 characters" })
+      // Check for at least one digit
+      .refine((value) => /\d/.test(value), {
+        message: "Password must contain at least one digit",
+      })
+      // Check for at least one lowercase letter
+      .refine((value) => /[a-z]/.test(value), {
+        message: "Password must contain at least one lowercase letter",
+      })
+      // Check for at least one uppercase letter
+      .refine((value) => /[A-Z]/.test(value), {
+        message: "Password must contain at least one uppercase letter",
+      })
+      // Check for at least one special character
+      .refine((value) => /[^\w\s]/.test(value), {
+        message: "Password must contain at least one special character",
+      }),
     confirmPassword: z.string().min(1, {
       message: "Confirm password is required",
     }),

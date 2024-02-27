@@ -1,9 +1,8 @@
-import bcrypt from "bcryptjs";
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
-import { getUserByEmail } from "@/data/user";
 import { LoginSchema } from "@/schemas";
+import { toast } from "sonner";
 
 export default {
   providers: [
@@ -16,7 +15,7 @@ export default {
             `${process.env.NEXT_PUBLIC_API}/api/auth/login`,
             {
               method: "POST",
-              cache: "no-cache",
+              cache: "no-store",
               headers: {
                 "Content-Type": "application/json",
               },

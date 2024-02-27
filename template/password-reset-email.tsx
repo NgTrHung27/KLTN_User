@@ -47,7 +47,7 @@ export const ResetPasswordEmail = ({
             <Text style={text}>
               To keep your account secure, please don&apos;t forward this email
               to anyone. See our Help Center for{" "}
-              <Link style={anchor} href="http://localhost:3000">
+              <Link style={anchor} href={`${process.env.NEXT_PUBLIC_URL}`}>
                 more security tips.
               </Link>
             </Text>

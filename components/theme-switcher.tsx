@@ -34,14 +34,20 @@ export function ModeToggle({ className, dict }: ModeToggleProps) {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownTrigger>
-      <DropdownMenu classNames={{ list: "text-primary" }}>
-        <DropdownItem onClick={() => setTheme("light")}>
+      <DropdownMenu
+        aria-label="Theme selector"
+        classNames={{ list: "text-primary" }}
+      >
+        <DropdownItem aria-label="Light mode" onClick={() => setTheme("light")}>
           {dict.Theme.Light}
         </DropdownItem>
-        <DropdownItem onClick={() => setTheme("dark")}>
+        <DropdownItem aria-label="Dark mode" onClick={() => setTheme("dark")}>
           {dict.Theme.Dark}
         </DropdownItem>
-        <DropdownItem onClick={() => setTheme("system")}>
+        <DropdownItem
+          aria-label="System mode"
+          onClick={() => setTheme("system")}
+        >
           {dict.Theme.System}
         </DropdownItem>
       </DropdownMenu>
