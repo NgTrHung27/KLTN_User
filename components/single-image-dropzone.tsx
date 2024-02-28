@@ -22,7 +22,7 @@ type InputProps = {
   height?: number;
   className?: string;
   value?: File | string;
-  onUpload?: (file?: File) => void | Promise<void>;
+  onSelect?: (file?: File) => void | Promise<void>;
   disabled?: boolean;
   dropzoneOptions?: Omit<DropzoneOptions, "disabled">;
 };
@@ -44,7 +44,7 @@ const ERROR_MESSAGES = {
 
 const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
   (
-    { dropzoneOptions, width, height, value, className, disabled, onUpload },
+    { dropzoneOptions, width, height, value, className, disabled, onSelect },
     ref,
   ) => {
     const imageUrl = React.useMemo(() => {
@@ -74,7 +74,7 @@ const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
       onDrop: (acceptedFiles) => {
         const file = acceptedFiles[0];
         if (file) {
-          void onUpload?.(file);
+          void onSelect?.(file);
         }
       },
       ...dropzoneOptions,
@@ -164,10 +164,10 @@ const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
           {/* Remove Image Icon */}
           {imageUrl && !disabled && (
             <div
-              className="group absolute right-0 top-0 z-10 -translate-y-1/4 translate-x-1/4 transform"
+              className="group absolute right-3 top-3 z-10 -translate-y-1/4 translate-x-1/4 transform"
               onClick={(e) => {
                 e.stopPropagation();
-                void onUpload?.(undefined);
+                void onSelect?.(undefined);
               }}
             >
               <div className="flex h-5 w-5 items-center justify-center rounded-md border border-solid border-rose-500 bg-white transition-all duration-300 hover:h-6 hover:w-6 dark:border-rose-400 dark:bg-black">

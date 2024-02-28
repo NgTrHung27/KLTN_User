@@ -1,22 +1,26 @@
 "use client";
 
+import { GetCommentsByParentId } from "@/actions/comment";
+import { LikeCmt } from "@/actions/likecmt";
 import { cn } from "@/lib/utils";
 import { BasicComment } from "@/types";
 import { Avatar, Image, Spinner } from "@nextui-org/react";
-import { PostCommentImage } from "@prisma/client";
+import { PostCommentImage, PostCommentLike } from "@prisma/client";
 import { formatDistanceToNowStrict } from "date-fns";
 import { vi } from "date-fns/locale/vi";
 import { CornerDownRight, CornerLeftUp } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ProfileCommentForm } from "./profile-comment-form";
 import { ProfileCommentsList } from "./profile-comments-list";
-import { GetCommentsByParentId } from "@/actions/comment";
 
 interface ProfileCommentItemProps {
   postId: string;
   id: string;
   content?: string;
+  likes?: PostCommentLike[];
   image?: PostCommentImage;
+  profileId: String;
   name: string;
   logo?: string;
   createdAt: Date;
@@ -24,17 +28,18 @@ interface ProfileCommentItemProps {
   isArchived: boolean;
   childLength?: number;
 }
-
 export const ProfileCommentItem = ({
   content,
   image,
   name,
   logo,
+  likes,
   createdAt,
   updatedAt,
   isArchived,
   postId,
   id,
+  profileId,
   childLength,
 }: ProfileCommentItemProps) => {
   const [isCommenting, setIsCommenting] = useState(false);
@@ -47,7 +52,6 @@ export const ProfileCommentItem = ({
     startTransition(() => {
       GetCommentsByParentId(postId, id).then((res) => {
         if (res) {
-          console.log(res);
           setItems(res);
         }
       });
@@ -55,6 +59,17 @@ export const ProfileCommentItem = ({
 
     setIsExpanded(true);
   };
+  const router = useRouter();
+  const params = useParams();
+  const studentCode = params.studentCode as string;
+  const onLike = async () => {
+    startTransition(() => {
+      LikeCmt(studentCode, id);
+    });
+
+    router.refresh();
+  };
+  const isLike = likes?.some((LikeCmt) => LikeCmt.profileId == profileId);
 
   return (
     <div className="flex w-full flex-col gap-1">
@@ -80,7 +95,15 @@ export const ProfileCommentItem = ({
             locale: vi,
           })}
         </span>
-        <span>Like</span>
+        <span
+          onClick={() => onLike()}
+          className={cn(
+            "cursor-pointer hover:underline",
+            isLike && "font-bold text-rose-500",
+          )}
+        >
+          Like
+        </span>
         <span
           onClick={() => setIsCommenting((value) => !value)}
           className={cn(
@@ -93,7 +116,7 @@ export const ProfileCommentItem = ({
       </div>
       {childLength! > 0 && !isExpanded && (
         <div className="ml-[48px] flex items-center gap-2">
-          <CornerDownRight className="h-4 w-4" />
+          <CornerDownRight className="size-4" />
           <span
             onClick={onLoad}
             className="cursor-pointer text-base text-zinc-600 hover:underline dark:text-zinc-400"
@@ -107,7 +130,7 @@ export const ProfileCommentItem = ({
         <div className="ml-[48px] flex  flex-col gap-2">
           <ProfileCommentsList comments={items} name={name} image={logo} />
           <div className="flex  items-center gap-2">
-            <CornerLeftUp className="h-4 w-4" />
+            <CornerLeftUp className="size-4" />
             <span
               onClick={() => setIsExpanded(false)}
               className="cursor-pointer text-base text-zinc-600 hover:underline dark:text-zinc-400"

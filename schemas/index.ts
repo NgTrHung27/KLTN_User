@@ -8,30 +8,41 @@ import {
 } from "@prisma/client";
 
 export const LoginSchema = z.object({
-  email: z
-    .string()
-    .min(1, {
-      message: "Email is required",
-    })
-    .email(),
-  password: z.string().min(1, {
-    message: "Password is required",
+  email: z.string().email({
+    message: "Invalid type of email",
+  }),
+  password: z.string({
+    required_error: "Password is required",
   }),
 });
 
 export const RegisterSchema = z
   .object({
-    email: z
-      .string()
-      .min(1, {
-        message: "Email is required",
-      })
-      .email({
-        message: "Invalid type of email",
-      }),
-    password: z.string().min(1, {
-      message: "Password is required",
+    email: z.string().email({
+      message: "Invalid type of email",
     }),
+    password: z
+      .string()
+      // Minimum length of 8 characters
+      .min(8, { message: "Password must be at least 8 characters long" })
+      // Maximum length of 25 characters
+      .max(25, { message: "Password cannot exceed 25 characters" })
+      // Check for at least one digit
+      .refine((value) => /\d/.test(value), {
+        message: "Password must contain at least one digit",
+      })
+      // Check for at least one lowercase letter
+      .refine((value) => /[a-z]/.test(value), {
+        message: "Password must contain at least one lowercase letter",
+      })
+      // Check for at least one uppercase letter
+      .refine((value) => /[A-Z]/.test(value), {
+        message: "Password must contain at least one uppercase letter",
+      })
+      // Check for at least one special character
+      .refine((value) => /[^\w\s]/.test(value), {
+        message: "Password must contain at least one special character",
+      }),
     confirmPassword: z.string().min(1, {
       message: "Confirm password is required",
     }),
@@ -54,7 +65,6 @@ export const RegisterSchema = z
     phoneNumber: z
       .string({
         invalid_type_error: "Invalid phone number",
-        required_error: "Phone number is required",
       })
       .min(10, {
         message: "Minimum 10 numbers is required",
@@ -63,11 +73,15 @@ export const RegisterSchema = z
         message: "Maximum 13 numbers is required",
       }),
     idCardNumber: z
-      .string({
-        required_error: "Id card number is required",
+      .string()
+      .min(9, {
+        message: "Minimum 9 numbers is required",
       })
-      .min(1, {
-        message: "Id card number is required",
+      .max(12, {
+        message: "Maximum 12 numbers is required",
+      })
+      .refine((value) => /^\d+$/.test(value), {
+        message: "Please enter a valid id card number",
       }),
     city: z.string().min(1, {
       message: "City is required",
@@ -171,9 +185,28 @@ export const ResetSchema = z.object({
 
 export const NewPasswordSchema = z
   .object({
-    password: z.string().min(1, {
-      message: "Password is required",
-    }),
+    password: z
+      .string()
+      // Minimum length of 8 characters
+      .min(8, { message: "Password must be at least 8 characters long" })
+      // Maximum length of 25 characters
+      .max(25, { message: "Password cannot exceed 25 characters" })
+      // Check for at least one digit
+      .refine((value) => /\d/.test(value), {
+        message: "Password must contain at least one digit",
+      })
+      // Check for at least one lowercase letter
+      .refine((value) => /[a-z]/.test(value), {
+        message: "Password must contain at least one lowercase letter",
+      })
+      // Check for at least one uppercase letter
+      .refine((value) => /[A-Z]/.test(value), {
+        message: "Password must contain at least one uppercase letter",
+      })
+      // Check for at least one special character
+      .refine((value) => /[^\w\s]/.test(value), {
+        message: "Password must contain at least one special character",
+      }),
     confirmPassword: z.string().min(1, {
       message: "Confirm password is required",
     }),

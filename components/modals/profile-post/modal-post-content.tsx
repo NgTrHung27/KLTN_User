@@ -184,7 +184,7 @@ export const ModalPostContent = ({
                     startContent={currentStatus.icon}
                     size="sm"
                     variant="shadow"
-                    endContent={<ChevronDown className="h-4 w-4" />}
+                    endContent={<ChevronDown className="size-4" />}
                     className="gap-1"
                   >
                     {currentStatus.label}
@@ -237,7 +237,6 @@ export const ModalPostContent = ({
                   disabled={isLoading}
                   value={fileStates}
                   onChange={(files) => setFileStates(files)}
-                  onFilesAdded={() => {}}
                 />
               )}
             </ModalBody>

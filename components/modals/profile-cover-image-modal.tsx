@@ -108,7 +108,7 @@ export const ProfileCoverImageModal = ({
               disabled={isLoading}
               className="w-full outline-none"
               value={file}
-              onUpload={onUpload}
+              onSelect={onUpload}
             />
           )}
         </ModalBody>

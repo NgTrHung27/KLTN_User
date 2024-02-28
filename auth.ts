@@ -1,9 +1,8 @@
-import NextAuth, { DefaultSession } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import NextAuth, { DefaultSession } from "next-auth";
 
-import { db } from "@/lib/db";
 import authConfig from "@/auth.config";
-import { getUserByEmail, getUserById } from "./data/user";
+import { db } from "@/lib/db";
 import {
   CertificateType,
   DegreeType,
@@ -11,8 +10,7 @@ import {
   GradeType,
   StudentStatus,
 } from "@prisma/client";
-import { sendVerificationEmail } from "./lib/mail";
-import { generateVerificationToken } from "./lib/tokens";
+import { getUserById } from "./data/user";
 
 export type ExtendedUser = DefaultSession["user"] & {
   studentCode: string;
@@ -47,30 +45,6 @@ export const {
     error: "/auth/error",
   },
   callbacks: {
-    async signIn({ user }) {
-      const existingUser = await getUserByEmail(user.email!);
-
-      if (!existingUser) {
-        return false;
-      }
-
-      if (!existingUser?.emailVerified || !existingUser) {
-        const verificationToken = await generateVerificationToken(
-          existingUser.email,
-        );
-
-        await sendVerificationEmail(
-          existingUser.name,
-          process.env.NODE_SENDER_EMAIL!,
-          verificationToken.email,
-          verificationToken.token,
-        );
-
-        return false;
-      }
-
-      return true;
-    },
     async session({ token, session }) {
       if (session.user) {
         if (token.sub) {

@@ -12,18 +12,19 @@ import {
 import { Check, ChevronDown } from "lucide-react";
 import { ExtendedPost } from "@/types";
 import { ProfilePostItem } from "./profile-post-item";
-import { GetTotalCommentsByPostId } from "@/data/comments";
 
 interface ProfilePostsListProps {
   logo?: string;
   name: string;
   posts: ExtendedPost[];
+  profileId: string;
 }
 
 export const ProfilePostsList = ({
   logo,
   name,
   posts,
+  profileId,
 }: ProfilePostsListProps) => {
   const [sort, setSort] = useState<"New" | "Relevant">("New");
 
@@ -60,7 +61,7 @@ export const ProfilePostsList = ({
           <Dropdown>
             <DropdownTrigger>
               <Button
-                endContent={<ChevronDown className="h-4 w-4" />}
+                endContent={<ChevronDown className="size-4" />}
                 variant="light"
                 color="primary"
                 className="font-bold"
@@ -107,6 +108,8 @@ export const ProfilePostsList = ({
           isModified={post.createdAt !== post.updatedAt}
           status={post.status}
           comments={post.comments}
+          likes={post.likes}
+          profileId={profileId}
         />
       ))}
     </>

@@ -1,9 +1,8 @@
-import bcrypt from "bcryptjs";
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
-import { getUserByEmail } from "@/data/user";
 import { LoginSchema } from "@/schemas";
+import { toast } from "sonner";
 
 export default {
   providers: [
@@ -12,14 +11,25 @@ export default {
         const validatedFields = LoginSchema.safeParse(credentials);
 
         if (validatedFields.success) {
-          const { email, password } = validatedFields.data;
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API}/api/auth/login`,
+            {
+              method: "POST",
+              cache: "force-cache",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(credentials),
+            },
+          );
 
-          const user = await getUserByEmail(email);
-          if (!user || !user.password) return null;
+          const user = await res.json();
 
-          const passwordsMatch = await bcrypt.compare(password, user.password);
+          if (!user.email) {
+            return null;
+          }
 
-          if (passwordsMatch) return user;
+          return user;
         }
 
         return null;

@@ -1,5 +1,7 @@
 "use client";
 
+import { Like } from "@/actions/like";
+import { BasicComment } from "@/types";
 import {
   Avatar,
   Button,
@@ -11,7 +13,7 @@ import {
   Divider,
   Image,
 } from "@nextui-org/react";
-import { PostComment, PostImage, PostStatus } from "@prisma/client";
+import { PostImage, PostLike, PostStatus } from "@prisma/client";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale/vi";
 import {
@@ -25,28 +27,30 @@ import {
   UserX,
   Users,
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { ProfileCommentsList } from "./profile-comments-list";
-import { ExtendedComment } from "@/types";
+import { useParams, useRouter } from "next/navigation";
+import { startTransition } from "react";
 import { ProfileCommentForm } from "./profile-comment-form";
+import { ProfileCommentsList } from "./profile-comments-list";
 
 interface ProfilePostItemProps {
   name: string;
   logo: string;
-  comments?: ExtendedComment[];
+  comments?: BasicComment[];
+  likes?: PostLike[];
   id: string;
   createdAt: Date;
   isModified: boolean;
   status: PostStatus;
   content?: string;
   images?: PostImage[];
+  profileId: string;
 }
 
 const statusType = {
-  PUBLIC: <Globe2 className="h-4 w-4" />,
-  PRIVATE: <Lock className="h-4 w-4" />,
-  FRIENDS: <Users className="h-4 w-4" />,
-  EXCEPT: <UserX className="h-4 w-4" />,
+  PUBLIC: <Globe2 className="size-4" />,
+  PRIVATE: <Lock className="size-4" />,
+  FRIENDS: <Users className="size-4" />,
+  EXCEPT: <UserX className="size-4" />,
 };
 
 export const ProfilePostItem = ({
@@ -58,17 +62,33 @@ export const ProfilePostItem = ({
   content,
   id,
   comments,
+  likes,
   images,
+  profileId,
 }: ProfilePostItemProps) => {
+  const isLike = likes?.some((like) => like.profileId == profileId);
+  const router = useRouter();
+
   const parentComments = comments?.filter(
     (comment) => !comment.parentCommentId,
   );
-  
+
+  const params = useParams();
+  const studentCode = params.studentCode as string;
+
+  const onLike = async () => {
+    startTransition(() => {
+      Like(studentCode, id);
+    });
+
+    router.refresh();
+  };
+
   return (
     <Card>
       <CardHeader className="items-center justify-between pr-6">
         <div className="flex items-start gap-2">
-          <Avatar src={logo || "/placeholder.webp"} alt="logo" />
+          <Avatar src={logo} alt="logo" />
           <div className="flex flex-col items-start justify-start">
             <p className="font-bold text-primary">{name}</p>
             <div className="flex items-center gap-[1px]">
@@ -118,9 +138,16 @@ export const ProfilePostItem = ({
           >
             {comments?.length} Comments
           </Button>
-          <Button startContent={<Heart />} variant="light" color="primary">
-            0 Likes
+
+          <Button
+            onClick={onLike}
+            startContent={<Heart fill={isLike ? "red" : "undefined"} />}
+            variant="light"
+            color="primary"
+          >
+            {likes?.length || 0} Likes
           </Button>
+
           <Button startContent={<Share2 />} variant="light" color="primary">
             0 Share
           </Button>

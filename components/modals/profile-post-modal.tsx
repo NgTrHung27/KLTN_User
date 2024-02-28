@@ -16,22 +16,22 @@ interface ProfilePostModalProps {
 export const Status = {
   PUBLIC: {
     label: "Public",
-    icon: <Globe2 className="h-4 w-4" />,
+    icon: <Globe2 className="size-4" />,
     description: "Anyone who is logged in or not",
   },
   FRIENDS: {
     label: "Only friends",
-    icon: <Users className="h-4 w-4" />,
+    icon: <Users className="size-4" />,
     description: "Only your friends can see this post",
   },
   EXCEPT: {
     label: "Except for",
-    icon: <UserX className="h-4 w-4" />,
+    icon: <UserX className="size-4" />,
     description: "Everyone except...",
   },
   PRIVATE: {
     label: "Private",
-    icon: <Lock className="h-4 w-4" />,
+    icon: <Lock className="size-4" />,
     description: "Only you can see this post",
   },
 };

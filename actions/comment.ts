@@ -34,6 +34,8 @@ export const Comment = async (
       return { error: "User not found" };
     }
 
+    console.log(existingUser);
+
     if (!existingUser.profile) {
       return { error: "Profile not found" };
     }
@@ -87,6 +89,7 @@ export const GetCommentsByParentId = async (
         parentCommentId: parentId,
       },
       include: {
+        likes: true,
         commentImage: true,
         children: {
           select: {
