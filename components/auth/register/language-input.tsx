@@ -34,6 +34,10 @@ export const LanguageInput = ({
       errorMessage={errorMessage}
       isInvalid={isInvalid}
       onSelectionChange={onSelectionChange}
+      selectedKeys={[value]}
+      classNames={{
+        listbox: "text-primary",
+      }}
       {...field}
     >
       <SelectItem key={CertificateType.IELTS}>IELTS</SelectItem>

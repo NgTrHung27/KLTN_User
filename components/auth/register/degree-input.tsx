@@ -34,6 +34,10 @@ export const DegreeInput = ({
       errorMessage={errorMessage}
       isInvalid={isInvalid}
       onSelectionChange={onSelectionChange}
+      selectedKeys={[value]}
+      classNames={{
+        listbox: "text-primary",
+      }}
       {...field}
     >
       <SelectItem key={DegreeType.HIGHSCHOOL}>Highschool</SelectItem>

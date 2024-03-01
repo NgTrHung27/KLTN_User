@@ -28,6 +28,7 @@ export const SchoolInput = ({
       items={schools}
       isDisabled={isLoading}
       label="School"
+      selectedKeys={[value === "" ? undefined : value]}
       labelPlacement="outside"
       variant="bordered"
       size="md"
@@ -36,6 +37,9 @@ export const SchoolInput = ({
       errorMessage={errorMessage}
       isInvalid={isInvalid}
       onSelectionChange={onSelectionChange}
+      classNames={{
+        listbox: "text-primary",
+      }}
       {...field}
     >
       {schools.map((school) => (

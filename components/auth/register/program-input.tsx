@@ -36,6 +36,10 @@ export const ProgramInput = ({
       placeholder="Choose a program"
       errorMessage={errorMessage}
       isInvalid={isInvalid}
+      selectedKeys={[value]}
+      classNames={{
+        listbox: "text-primary",
+      }}
     >
       {programs.map((program) => (
         <SelectItem key={program.name}>{program.name}</SelectItem>
