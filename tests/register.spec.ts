@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { Gender } from "@prisma/client";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("http://localhost:3001/en/auth/register");
+  await page.goto("https://kltn-demo-deploy.vercel.app/en/auth/register");
 });
 
 const test_user_valid = {
