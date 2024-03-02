@@ -34,7 +34,7 @@ export const LanguageInput = ({
       errorMessage={errorMessage}
       isInvalid={isInvalid}
       onSelectionChange={onSelectionChange}
-      selectedKeys={[value]}
+      defaultSelectedKeys={[CertificateType.IELTS]}
       classNames={{
         listbox: "text-primary",
       }}

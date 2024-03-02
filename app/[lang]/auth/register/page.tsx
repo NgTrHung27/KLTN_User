@@ -13,7 +13,9 @@ const RegisterPage = async () => {
         fill
         src={"/register.jpg"}
         alt="register"
-        className="absolute object-fill blur"
+        className="absolute object-cover blur"
+        quality={100}
+        priority
       />
       <div className="relative z-50 flex h-full items-center justify-evenly gap-x-4 p-4">
         <RegisterForm schools={schools!} />

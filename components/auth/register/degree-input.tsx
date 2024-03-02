@@ -34,7 +34,7 @@ export const DegreeInput = ({
       errorMessage={errorMessage}
       isInvalid={isInvalid}
       onSelectionChange={onSelectionChange}
-      selectedKeys={[value]}
+      defaultSelectedKeys={[DegreeType.HIGHSCHOOL]}
       classNames={{
         listbox: "text-primary",
       }}

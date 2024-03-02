@@ -4,9 +4,9 @@ import { RegisterSchema } from "@/schemas";
 import { SchoolLib } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Spinner, Tab, Tabs } from "@nextui-org/react";
-import { Gender, GradeType } from "@prisma/client";
+import { CertificateType, DegreeType, Gender, GradeType } from "@prisma/client";
 import { GraduationCap, NotepadText, User } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Key, useCallback, useEffect, useState } from "react";
 import "react-day-picker/dist/style.css";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -31,6 +31,22 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
   const [mounted, setMounted] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<Key>("account");
+
+  // Chỉ sử dụng khi testing
+  const handleMouseClick = (e: MouseEvent) => {
+    const el = e.target as HTMLElement | undefined;
+
+    const button = el?.closest?.<HTMLButtonElement>('button[data-slot="tab"]');
+
+    if (button) {
+      const key = button?.dataset.key as Key;
+
+      setSelectedTab(key);
+    }
+  };
+
+  const onTabChange = () => {};
 
   const form = useForm<RegisterFormType>({
     resolver: zodResolver(RegisterSchema),
@@ -47,10 +63,10 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
       district: "",
       ward: "",
       addressLine: "",
-      schoolName: "",
-      programName: "",
-      degreeType: undefined,
-      certificateType: undefined,
+      schoolName: schools[0].name,
+      programName: schools[0].programs[0].name,
+      degreeType: DegreeType.HIGHSCHOOL,
+      certificateType: CertificateType.IELTS,
       gradeType: GradeType.GPA,
       gradeScore: "1",
     },
@@ -77,7 +93,7 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
   const onValidateSubmit = () => {
     if (form.formState.isSubmitting) return;
     if (!form.formState.isValid) {
-      toast.error("Please enter all the information");
+      toast.error("Please enter correct information");
       return;
     }
   };
@@ -85,6 +101,8 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
   form.watch("schoolName");
   form.watch("certificateImg");
   form.watch("gradeType");
+  form.watch("certificateType");
+  form.watch("degreeType");
 
   const programs =
     schools.find((school) => school.name === form.getValues("schoolName"))
@@ -92,6 +110,7 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
 
   useEffect(() => {
     setMounted(true);
+    addEventListener("click", handleMouseClick);
   }, [mounted]);
 
   return (
@@ -116,6 +135,8 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
                 variant="bordered"
                 aria-label="Options"
                 className="flex-1"
+                selectedKey={selectedTab.toString()}
+                onSelectionChange={onTabChange}
                 classNames={{
                   cursor: "bg-[#7D1f1F]",
                   tabList: "mb-3",

@@ -18,11 +18,19 @@ export const LoginSchema = z.object({
 
 export const RegisterSchema = z
   .object({
-    email: z.string().email({
-      message: "Invalid type of email",
-    }),
+    email: z
+      .string()
+      .min(1, {
+        message: "Email is required",
+      })
+      .email({
+        message: "Invalid type of email",
+      }),
     password: z
       .string()
+      .min(1, {
+        message: "Password is required",
+      })
       // Minimum length of 8 characters
       .min(8, { message: "Password must be at least 8 characters long" })
       // Maximum length of 25 characters
@@ -46,9 +54,21 @@ export const RegisterSchema = z
     confirmPassword: z.string().min(1, {
       message: "Confirm password is required",
     }),
-    name: z.string().min(1, {
-      message: "Fullname is required",
-    }),
+    name: z
+      .string()
+      .min(1, {
+        message: "Fullname is required",
+      })
+      .max(50, "Name must not exceed 50 characters")
+      .refine(
+        (value) =>
+          !/[^a-zA-ZáàảãạâấầẩẫậăắằẳẵặđéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵÁÀẢÃẠÂẤẦẨẪẬĂẮẰẲẴẶĐÉÈẺẼẸÊẾỀỂỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤƯỨỪỬỮỰÝỲỶỸỴ\s]/g.test(
+            value,
+          ),
+        {
+          message: "Name must only contain letters, spaces",
+        },
+      ),
     dob: z
       .date({
         required_error: "Date of birth is required",
@@ -63,23 +83,36 @@ export const RegisterSchema = z
       invalid_type_error: "Invalid type, please reselect",
     }),
     phoneNumber: z
-      .string({
-        invalid_type_error: "Invalid phone number",
+      .string()
+      .min(1, {
+        message: "Phone number is required",
       })
       .min(10, {
         message: "Minimum 10 numbers is required",
       })
       .max(13, {
         message: "Maximum 13 numbers is required",
+      })
+      .refine((value) => /^\d+$/.test(value), {
+        message: "Please enter a valid id phone number",
       }),
     idCardNumber: z
       .string()
-      .min(9, {
-        message: "Minimum 9 numbers is required",
+      .min(1, {
+        message: "Id card number is required",
       })
-      .max(12, {
-        message: "Maximum 12 numbers is required",
-      })
+      .refine(
+        (value) => {
+          if (value.length !== 9 && value.length !== 12) {
+            return false;
+          }
+
+          return true;
+        },
+        {
+          message: "Id card number must be 9 or 12 characters",
+        },
+      )
       .refine((value) => /^\d+$/.test(value), {
         message: "Please enter a valid id card number",
       }),

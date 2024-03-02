@@ -24,11 +24,12 @@ export const SchoolInput = ({
 }: SchoolInputProps) => {
   return (
     <Select
+      data-testid="school-name"
       disallowEmptySelection
       items={schools}
       isDisabled={isLoading}
       label="School"
-      selectedKeys={[value === "" ? undefined : value]}
+      selectedKeys={[value]}
       labelPlacement="outside"
       variant="bordered"
       size="md"
