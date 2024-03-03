@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { Gender } from "@prisma/client";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("https://kltn-demo-deploy.vercel.app/en/auth/register");
+  await page.goto("http://localhost:3000/en/auth/register");
 });
 
 const test_user_valid = {
@@ -51,64 +51,33 @@ const tab_list = {
 };
 
 test.describe("Họ và Tên", () => {
-  test("Báo lỗi khi bỏ trống", async ({ page }) => {
+  test("Báo lỗi khi không đúng quy định", async ({ page }) => {
+    // Kích thông báo lỗi
     await page.getByRole("tab", { name: tab_list.education }).click();
 
     const btnRegister = page.getByRole("button", { name: "Sign Up" });
 
     await btnRegister.click();
 
+    // Báo lỗi khi bỏ trống
     await page.getByRole("tab", { name: tab_list.account }).click();
-
     await expect(page.getByText("Fullname is required")).toBeVisible();
-  });
 
-  test("Báo lỗi khi chứa ký tự số", async ({ page }) => {
+    // Báo lỗi khi chứa ký tự số
     const nameInp = page.getByPlaceholder("Enter your fullname");
     await nameInp.fill(test_name_invalid.digitCharacters);
-
-    await page.getByRole("tab", { name: tab_list.education }).click();
-
-    const btnRegister = page.getByRole("button", { name: "Sign Up" });
-
-    await btnRegister.click();
-
-    await page.getByRole("tab", { name: tab_list.account }).click();
-
     await expect(
       page.getByText("Name must only contain letters, spaces"),
     ).toBeVisible();
-  });
 
-  test("Báo lỗi khi chứa ký tự đặc biệt", async ({ page }) => {
-    const nameInp = page.getByPlaceholder("Enter your fullname");
+    // Báo lỗi khi chứa ký tự đặc biệt
     await nameInp.fill(test_name_invalid.specialCharacters);
-
-    await page.getByRole("tab", { name: tab_list.education }).click();
-
-    const btnRegister = page.getByRole("button", { name: "Sign Up" });
-
-    await btnRegister.click();
-
-    await page.getByRole("tab", { name: tab_list.account }).click();
-
     await expect(
       page.getByText("Name must only contain letters, spaces"),
     ).toBeVisible();
-  });
 
-  test("Báo lỗi khi độ dài vượt 50 ký tự", async ({ page }) => {
-    const nameInp = page.getByPlaceholder("Enter your fullname");
+    // Báo lỗi khi vượt quá 50 ký tự
     await nameInp.fill(test_name_invalid.tooLong);
-
-    await page.getByRole("tab", { name: tab_list.education }).click();
-
-    const btnRegister = page.getByRole("button", { name: "Sign Up" });
-
-    await btnRegister.click();
-
-    await page.getByRole("tab", { name: tab_list.account }).click();
-
     await expect(
       page.getByText("Name must not exceed 50 characters"),
     ).toBeVisible();
@@ -116,7 +85,7 @@ test.describe("Họ và Tên", () => {
 });
 
 test.describe("Email", () => {
-  test("Báo lỗi khi bỏ trống", async ({ page }) => {
+  test("Báo lỗi khi không đúng định dạng", async ({ page }) => {
     await page.getByRole("tab", { name: tab_list.education }).click();
 
     const btnRegister = page.getByRole("button", { name: "Sign Up" });
@@ -125,27 +94,18 @@ test.describe("Email", () => {
 
     await page.getByRole("tab", { name: tab_list.account }).click();
 
+    // Báo lỗi khi bỏ trống
     await expect(page.getByText("Email is required")).toBeVisible();
-  });
 
-  test("Báo lỗi khi không đúng định dạng", async ({ page }) => {
+    // Báo lỗi khi sai cú pháp
     const emailInp = page.getByPlaceholder("Enter your email");
     await emailInp.fill("abcd@123meomeo");
-
-    await page.getByRole("tab", { name: tab_list.education }).click();
-
-    const btnRegister = page.getByRole("button", { name: "Sign Up" });
-
-    await btnRegister.click();
-
-    await page.getByRole("tab", { name: tab_list.account }).click();
-
     await expect(page.getByText("Invalid type of email")).toBeVisible();
   });
 });
 
 test.describe("Mật khẩu", () => {
-  test("Báo lỗi khi bỏ trống", async ({ page }) => {
+  test("Báo lỗi khi không đúng định dạng", async ({ page }) => {
     await page.getByRole("tab", { name: tab_list.education }).click();
 
     const btnRegister = page.getByRole("button", { name: "Sign Up" });
@@ -153,107 +113,47 @@ test.describe("Mật khẩu", () => {
     await btnRegister.click();
 
     await page.getByRole("tab", { name: tab_list.account }).click();
+    const passInp = page.getByPlaceholder("Enter your password", {
+      exact: true,
+    });
 
-    await expect(page.getByText(/^Password is required/)).toBeVisible();
-  });
+    // Báo lỗi khi bỏ trống
+    await expect(
+      page.getByText("Password is required", { exact: true }),
+    ).toBeVisible();
 
-  test("Báo lỗi khi ít hơn 8 ký tự", async ({ page }) => {
-    const passInp = page.getByPlaceholder(/^Enter your password/);
+    // Báo lỗi khi ít hơn 8 ký tự
     await passInp.fill(test_password_invalid.shortCharacter);
-
-    await page.getByRole("tab", { name: tab_list.education }).click();
-
-    const btnRegister = page.getByRole("button", { name: "Sign Up" });
-
-    await btnRegister.click();
-
-    await page.getByRole("tab", { name: tab_list.account }).click();
-
     await expect(
       page.getByText("Password must be at least 8 characters long"),
     ).toBeVisible();
-  });
 
-  test("Báo lỗi khi nhiều hơn 25 ký tự", async ({ page }) => {
-    const passInp = page.getByPlaceholder(/^Enter your password/);
+    // Báo lỗi khi nhiều hơn 25 ký tự
     await passInp.fill(test_password_invalid.longCharacter);
-
-    await page.getByRole("tab", { name: tab_list.education }).click();
-
-    const btnRegister = page.getByRole("button", { name: "Sign Up" });
-
-    await btnRegister.click();
-
-    await page.getByRole("tab", { name: tab_list.account }).click();
-
     await expect(
       page.getByText("Password cannot exceed 25 characters"),
     ).toBeVisible();
-  });
 
-  test("Báo lỗi khi không có ký tự số", async ({ page }) => {
-    const passInp = page.getByPlaceholder(/^Enter your password/);
+    // Báo lỗi khi không có ký tự số
     await passInp.fill(test_password_invalid.missingDigit);
-
-    await page.getByRole("tab", { name: tab_list.education }).click();
-
-    const btnRegister = page.getByRole("button", { name: "Sign Up" });
-
-    await btnRegister.click();
-
-    await page.getByRole("tab", { name: tab_list.account }).click();
-
     await expect(
       page.getByText("Password must contain at least one digit"),
     ).toBeVisible();
-  });
 
-  test("Báo lỗi khi không có ký tự in hoa", async ({ page }) => {
-    const passInp = page.getByPlaceholder(/^Enter your password/);
+    // Báo lỗi khi không có ký tự in hoa
     await passInp.fill(test_password_invalid.missingUpper);
-
-    await page.getByRole("tab", { name: tab_list.education }).click();
-
-    const btnRegister = page.getByRole("button", { name: "Sign Up" });
-
-    await btnRegister.click();
-
-    await page.getByRole("tab", { name: tab_list.account }).click();
-
     await expect(
       page.getByText("Password must contain at least one uppercase letter"),
     ).toBeVisible();
-  });
 
-  test("Báo lỗi khi không có ký tự thường", async ({ page }) => {
-    const passInp = page.getByPlaceholder(/^Enter your password/);
+    // Báo lỗi khi không có ký tự thường
     await passInp.fill(test_password_invalid.missingLower);
-
-    await page.getByRole("tab", { name: tab_list.education }).click();
-
-    const btnRegister = page.getByRole("button", { name: "Sign Up" });
-
-    await btnRegister.click();
-
-    await page.getByRole("tab", { name: tab_list.account }).click();
-
     await expect(
       page.getByText("Password must contain at least one lowercase letter"),
     ).toBeVisible();
-  });
 
-  test("Báo lỗi khi không có ký tự đặc biệt", async ({ page }) => {
-    const passInp = page.getByPlaceholder(/^Enter your password/);
+    // Báo lỗi khi không có ký tự đặc biệt
     await passInp.fill(test_password_invalid.missingSpecial);
-
-    await page.getByRole("tab", { name: tab_list.education }).click();
-
-    const btnRegister = page.getByRole("button", { name: "Sign Up" });
-
-    await btnRegister.click();
-
-    await page.getByRole("tab", { name: tab_list.account }).click();
-
     await expect(
       page.getByText("Password must contain at least one special character"),
     ).toBeVisible();
@@ -270,7 +170,26 @@ test.describe("Nhập lại mật khẩu", () => {
 
     await page.getByRole("tab", { name: tab_list.account }).click();
 
-    await expect(page.getByText(/^Confirm password is required/)).toBeVisible();
+    // Báo lỗi khi bỏ trống
+    await expect(page.getByText("Confirm password is required")).toBeVisible();
+  });
+});
+
+test.describe("Ngày sinh", () => {
+  test("Báo lỗi khi không đúng định dạng", async ({ page }) => {
+    await page.getByRole("tab", { name: tab_list.education }).click();
+
+    const btnRegister = page.getByRole("button", { name: "Sign Up" });
+
+    await btnRegister.click();
+
+    await page.getByRole("tab", { name: tab_list.profile }).click();
+
+    await page.getByText("Date of birth01 tháng 01,").click();
+
+    await page.getByLabel("tháng 01, 2006").click();
+    await page.getByRole("combobox", { name: "Month:" }).selectOption("9");
+    await page.getByRole("combobox", { name: "Year:" }).selectOption("2003");
   });
 });
 

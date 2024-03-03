@@ -70,9 +70,7 @@ export const RegisterSchema = z
         },
       ),
     dob: z
-      .date({
-        required_error: "Date of birth is required",
-      })
+      .date()
       .min(new Date("1970-01-01"), {
         message: "Your age is too old",
       })

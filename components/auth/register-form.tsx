@@ -18,6 +18,7 @@ import { EducationTab } from "./register/education-tab";
 import { ProfileTab } from "./register/profile-tab";
 import { register } from "@/actions/register";
 import { useRouter } from "next/navigation";
+import { removeAllListeners } from "process";
 
 interface RegisterFormProps {
   schools: SchoolLib[];
@@ -32,21 +33,6 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState<Key>("account");
-
-  // Chỉ sử dụng khi testing
-  const handleMouseClick = (e: MouseEvent) => {
-    const el = e.target as HTMLElement | undefined;
-
-    const button = el?.closest?.<HTMLButtonElement>('button[data-slot="tab"]');
-
-    if (button) {
-      const key = button?.dataset.key as Key;
-
-      setSelectedTab(key);
-    }
-  };
-
-  const onTabChange = () => {};
 
   const form = useForm<RegisterFormType>({
     resolver: zodResolver(RegisterSchema),
@@ -110,7 +96,24 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
 
   useEffect(() => {
     setMounted(true);
-    addEventListener("click", handleMouseClick);
+    // Chỉ sử dụng khi testing
+    const handleMouseClick = (e: MouseEvent) => {
+      const el = e.target as HTMLElement | undefined;
+
+      const button = el?.closest?.<HTMLButtonElement>(
+        'button[data-slot="tab"]',
+      );
+
+      if (button) {
+        const key = button?.dataset.key as Key;
+
+        setSelectedTab(key);
+      }
+    };
+
+    document.addEventListener("click", handleMouseClick);
+
+    return () => document.removeEventListener("click", handleMouseClick);
   }, [mounted]);
 
   return (
@@ -136,7 +139,6 @@ export const RegisterForm = ({ schools }: RegisterFormProps) => {
                 aria-label="Options"
                 className="flex-1"
                 selectedKey={selectedTab.toString()}
-                onSelectionChange={onTabChange}
                 classNames={{
                   cursor: "bg-[#7D1f1F]",
                   tabList: "mb-3",

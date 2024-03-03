@@ -10,7 +10,7 @@ import {
 import { format } from "date-fns";
 import { vi } from "date-fns/locale/vi";
 import { Calendar } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DayPicker } from "react-day-picker";
 
 interface DobInputProps {
@@ -32,6 +32,7 @@ export const DobInput = ({
   const latestMonth = new Date("2006-12-01");
 
   const [month, setMonth] = useState<Date>(new Date(latestMonth));
+  const [open, setOpen] = useState(false);
 
   const footer = (
     <div className="mt-4 flex items-center justify-between">
@@ -43,8 +44,68 @@ export const DobInput = ({
       </Button>
     </div>
   );
+
+  useEffect(() => {
+    const handleMouseClick = (e: MouseEvent) => {
+      const el = e.target as HTMLElement | undefined;
+
+      const input = el?.closest?.<HTMLInputElement>('input[type="button"]');
+
+      console.log(input);
+      if (input) {
+        setOpen((value) => !value);
+      }
+    };
+
+    const handleMonth = (e: Event) => {
+      const el = e.target as HTMLElement | undefined;
+
+      const select = el?.closest?.<HTMLSelectElement>('select[name="months"]');
+
+      if (select) {
+        setMonth((value) => {
+          value.setMonth(parseInt(select.value));
+          return value;
+        });
+      }
+
+      console.log(month);
+    };
+
+    const handleYear = (e: Event) => {
+      const el = e.target as HTMLElement | undefined;
+
+      const select = el?.closest?.<HTMLSelectElement>('select[name="years"]');
+
+      if (select) {
+        setMonth((value) => {
+          value.setFullYear(parseInt(select.value));
+          return value;
+        });
+      }
+
+      console.log(month);
+    };
+
+    document.addEventListener("click", handleMouseClick);
+    document.addEventListener("change", handleMonth);
+    document.addEventListener("change", handleYear);
+
+    return () => {
+      document.removeEventListener("click", handleMouseClick);
+      document.removeEventListener("change", handleMonth);
+      document.removeEventListener("change", handleYear);
+    };
+  });
+
   return (
-    <Popover placement="right" showArrow offset={10} backdrop="transparent">
+    <Popover
+      isOpen={open}
+      placement="right"
+      showArrow
+      offset={10}
+      backdrop="transparent"
+    >
       <PopoverTrigger>
         <Input
           readOnly
@@ -64,6 +125,7 @@ export const DobInput = ({
       </PopoverTrigger>
       <PopoverContent className="w-full">
         <DayPicker
+          onMonthChange={setMonth}
           selected={value}
           onSelect={onSelectionChange}
           mode="single"
@@ -74,7 +136,6 @@ export const DobInput = ({
           fromYear={1970}
           toYear={2006}
           footer={footer}
-          onMonthChange={setMonth}
           locale={vi}
           classNames={{
             table: "w-full mx-auto",

@@ -14,11 +14,9 @@ const LoginPage = async ({
     <div className="relative h-full w-full scrollbar-hide">
       <Image
         fill
-        layout="fill"
-        objectFit="cover"
         src={"/login.jpg"}
         alt="register"
-        className="absolute blur"
+        className="absolute object-cover blur"
         priority
         quality={100}
       />
