@@ -5,6 +5,7 @@ import {
   PostCommentLike,
   PostImage,
   PostLike,
+  PostSave,
   Program,
   School
 } from "@prisma/client";
@@ -42,12 +43,14 @@ export type BasicComment = PostComment & {
   commentImage: PostCommentImage | null;
   children: { id: string }[];
   likes: PostCommentLike[];
+
 };
 
 export type ExtendedPost = Post & {
   postImages: PostImage[];
   comments: BasicComment[];
   likes: PostLike[];
+  saves: PostSave[];
 };
 
 

@@ -12,7 +12,6 @@ import { currentUser } from "@/lib/user";
 import { Button } from "@nextui-org/react";
 import { ChevronsLeft } from "lucide-react";
 import { ProfileHeader } from "./_components/profile-header";
-import { ProfileInformation } from "./_components/profile-information";
 import { redirect } from "next/navigation";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 

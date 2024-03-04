@@ -1,6 +1,7 @@
 "use client";
 
 import { Like } from "@/actions/like";
+import { Save } from "@/actions/save";
 import { BasicComment } from "@/types";
 import {
   Avatar,
@@ -13,7 +14,7 @@ import {
   Divider,
   Image,
 } from "@nextui-org/react";
-import { PostImage, PostLike, PostStatus } from "@prisma/client";
+import { PostImage, PostLike, PostSave, PostStatus } from "@prisma/client";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale/vi";
 import {
@@ -43,6 +44,7 @@ interface ProfilePostItemProps {
   status: PostStatus;
   content?: string;
   images?: PostImage[];
+  saves?: PostSave[];
   profileId: string;
 }
 
@@ -64,28 +66,38 @@ export const ProfilePostItem = ({
   comments,
   likes,
   images,
+  saves,
   profileId
 }: ProfilePostItemProps) => 
 {
+  console.log(saves)
   const isLike = likes?.some(like => like.profileId == profileId)
+  const isSave = saves?.some(save => save.profileId == profileId)
   const router = useRouter();
-
+  
   const parentComments = comments?.filter(
     (comment) => !comment.parentCommentId,
-  );
-
-  const params = useParams();
-  const studentCode = params.studentCode as string;
-
-  const onLike =  async () => {
-    startTransition(() => {
-      Like(studentCode, id);
-    })
-
-    router.refresh();
-  }
-
-
+    );
+    
+    const params = useParams();
+    const studentCode = params.studentCode as string;
+    
+    const onLike =  async () => {
+      startTransition(() => {
+        Like(studentCode, id);
+      })
+      
+      router.refresh();
+    }
+    
+    const onSave = async () => 
+    {
+      startTransition(() => {
+        Save(studentCode,id);
+      })
+      router.refresh();
+    }
+    console.log(saves);
   return (
     <Card>
       <CardHeader className="items-center justify-between pr-6">
@@ -148,8 +160,8 @@ export const ProfilePostItem = ({
           <Button startContent={<Share2 />} variant="light" color="primary">
             0 Share
           </Button>
-          <Button startContent={<Bookmark />} variant="light" color="primary">
-            0 Saved
+          <Button onClick={onSave} startContent={<Bookmark fill = {isSave? "yellow" : "undefined" } />} variant="light" color="primary">
+            {saves?.length || 0} Saved
           </Button>
         </div>
         <Divider />

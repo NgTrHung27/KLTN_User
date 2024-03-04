@@ -109,6 +109,7 @@ export const ProfilePostsList = ({
           status={post.status}
           comments={post.comments}
           likes = {post.likes}
+          saves = {post.saves}
           profileId={profileId}
         />
       ))}

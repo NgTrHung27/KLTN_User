@@ -1,14 +1,17 @@
 "use client";
 
+import { BiographyAdd } from "@/actions/Biography/addBio";
 import { Label } from "@/components/ui/label";
-import { Avatar, Card, CardBody, Divider, Textarea } from "@nextui-org/react";
+import { Avatar, Button, Card, CardBody, Divider, Textarea } from "@nextui-org/react";
 import { Area, Biography, Social } from "@prisma/client";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { vi } from "date-fns/locale/vi";
 import { Cake, MapPin } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { ChangeEvent, startTransition, useState } from "react";
 
 interface ProfileInformationProps {
-  biography?: Biography;
+  biography: Biography;
   address: string;
   dob: Date;
   schoolName: string;
@@ -16,7 +19,6 @@ interface ProfileInformationProps {
   areas?: Area[];
   socials?: Social[];
 }
-
 export const ProfileInformation = ({
   biography,
   address,
@@ -26,17 +28,95 @@ export const ProfileInformation = ({
   areas,
   socials,
 }: ProfileInformationProps) => {
+  const [button, setButton] = useState(true);
+  const [textValue, setTextValue] = useState("")
+
+  const onAddBio = () =>
+  {
+    setButton(prveButton => !prveButton);
+
+  }
+  const handleTextareaChange = (event: ChangeEvent<HTMLInputElement>) =>
+  {
+    setTextValue(event.target.value)
+  }
+
+  const params = useParams();
+  const studentCode = params.studentCode as string;
+  const router = useRouter();
+
+  const onBiography =  async () => {
+    startTransition(() => {
+      BiographyAdd(studentCode,textValue);
+      onAddBio
+    })
+    router.refresh();
+  }
+
   return (
     <Card>
       <CardBody className="flex flex-col gap-2">
         <Label className=" font-semibold">Biography</Label>
         <div className="flex flex-col items-start justify-center gap-2 text-sm">
-          <Textarea
-            value={"No description"}
-            readOnly
+          { button && !biography?.content && (
+          <Button
+          onClick={onAddBio}
+          className="w-full h-[40px]"
+          >
+            Add Biography
+          </Button>
+          )
+          }
+          {!button && (  
+            <Textarea 
+            onChange={e => handleTextareaChange(e)}
+            value={biography?.content}
             size="sm"
             variant="faded"
-          />
+            />  
+            )}
+          {
+          button &&
+          (<p className="mx-auto">
+            {biography?.content || ""}
+          </p>)
+          }
+            {button && biography?.content && (
+            <Button
+            onClick={onAddBio}
+            className="w-full h-[40px]"
+            >
+              Update Biography
+            </Button>
+            )
+            }
+          <div className="flex">
+            {
+              !button && ( 
+              <Button
+              onClick={onAddBio}
+                size="md"
+                color="primary"
+                variant="faded"
+              >
+                Cancle
+              </Button>
+               )
+            }
+            {
+              !button && (
+                <Button
+                onClick={onBiography}
+                color = "success"
+                size="md"
+                className="ml-2"
+                >
+                  Save
+                </Button>
+              )
+            }
+          </div>
+
           <div className="flex items-center text-muted-foreground">
             <MapPin className="mr-2 h-4 w-4" />
             <p className="">

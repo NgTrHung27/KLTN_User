@@ -5,6 +5,7 @@ import { ProfilePosts } from "./_components/profile-post";
 import { ProfilePostsList } from "./_components/profile-posts-list";
 import { ProfileInformation } from "./_components/profile-information";
 import { getSchoolByUserId } from "@/data/school";
+import { CrispProvider } from "@/scripts/crisp-provider";
 
 const ProfileIdPage = async ({
   params: { studentCode },
@@ -17,13 +18,14 @@ const ProfileIdPage = async ({
   const posts = await getPostsByProfileId(profile?.id!);
 
   return (
-    <div className="hidden gap-4 md:grid lg:grid-cols-12">
+    <div className="hidden gap-4 md:grid lg:grid-cols-12 relative">
       <div className="lg:col-span-3">
         <ProfileInformation
           address={user?.address!}
           dob={user?.dob!}
           schoolLogo={school?.logoUrl!}
           schoolName={school?.name!}
+          biography={profile?.biography}
         />
       </div>
       <div className="lg:col-span-9">
@@ -36,7 +38,8 @@ const ProfileIdPage = async ({
               logo={user?.image || ""}
               profileId={profile?.id!}
             />
-          )}
+            )}
+           <CrispProvider />
         </div>
       </div>
     </div>

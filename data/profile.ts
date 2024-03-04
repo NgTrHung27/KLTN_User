@@ -44,6 +44,7 @@ export const getProfileByStudentCode = async (code: string) => {
         status: true,
         coverImage: true,
         id: true,
+        biography: true,
       },
     });
 
