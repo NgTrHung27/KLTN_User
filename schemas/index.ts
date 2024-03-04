@@ -296,7 +296,7 @@ export const PostSchema = z.object({
     ]),
   ),
   content: z.optional(z.string()),
-  postImages: z.optional(z.array(z.string())),
+  images: z.optional(z.array(z.string())),
 });
 
 export const CommentSchema = z.object({

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { PostLib } from "@/types";
 import {
   Button,
   Dropdown,
@@ -10,13 +10,13 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { Check, ChevronDown } from "lucide-react";
-import { ExtendedPost } from "@/types";
+import { useEffect, useState } from "react";
 import { ProfilePostItem } from "./profile-post-item";
 
 interface ProfilePostsListProps {
   logo?: string;
   name: string;
-  posts: ExtendedPost[];
+  posts: PostLib[];
   profileId: string;
 }
 
@@ -99,7 +99,7 @@ export const ProfilePostsList = ({
       {posts.map((post) => (
         <ProfilePostItem
           id={post.id}
-          images={post.postImages}
+          images={post.images}
           content={post.content || undefined}
           key={post.content}
           name={name}

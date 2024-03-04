@@ -1,9 +1,7 @@
 "use client";
 
-import { GetCommentsByParentId } from "@/actions/comment";
 import { LikeCmt } from "@/actions/likecmt";
 import { cn } from "@/lib/utils";
-import { BasicComment } from "@/types";
 import { Avatar, Image, Spinner } from "@nextui-org/react";
 import { PostCommentImage, PostCommentLike } from "@prisma/client";
 import { formatDistanceToNowStrict } from "date-fns";
@@ -13,6 +11,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ProfileCommentForm } from "./profile-comment-form";
 import { ProfileCommentsList } from "./profile-comments-list";
+import { PostCommentLib } from "@/types";
 
 interface ProfileCommentItemProps {
   postId: string;
@@ -46,16 +45,16 @@ export const ProfileCommentItem = ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [isPending, startTransition] = useTransition();
-  const [items, setItems] = useState<CommentLib[]>([]);
+  const [items, setItems] = useState<PostCommentLib[]>([]);
 
   const onLoad = async () => {
-    startTransition(() => {
-      GetCommentsByParentId(postId, id).then((res) => {
-        if (res) {
-          setItems(res);
-        }
-      });
-    });
+    // startTransition(() => {
+    //   GetCommentsByParentId(postId, id).then((res) => {
+    //     if (res) {
+    //       setItems(res);
+    //     }
+    //   });
+    // });
 
     setIsExpanded(true);
   };
