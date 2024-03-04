@@ -1,6 +1,7 @@
 "use server"
 import { db } from "@/lib/db"
 
+
 export const BiographyAdd = async (studentCode: string, content : string) => {
     try {
         const profile = await db.profile.findFirst({
@@ -8,10 +9,29 @@ export const BiographyAdd = async (studentCode: string, content : string) => {
                 user: {
                     studentCode
                 },
+            },
+            include: {
+                biography: true
             }
         })
         if (!profile) {
             return { error: "Khong tim thay profile"}
+        }
+        if(profile.biography) {
+            // update
+            await db.biography.update({
+                where:{
+                    profileId:profile.id
+                },
+                data:{
+                    content:content
+                }
+            })
+        }
+        else
+        {
+        return { success: "update biography thanh cong"}
+            
         }
         await db.biography.create({
             data:{

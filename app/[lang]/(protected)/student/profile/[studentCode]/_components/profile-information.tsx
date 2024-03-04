@@ -10,7 +10,7 @@ import { Cake, MapPin } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, startTransition, useState } from "react";
 
-interface ProfileInformationProps {
+interface ProfileInformationProps { 
   biography: Biography;
   address: string;
   dob: Date;
@@ -30,6 +30,7 @@ export const ProfileInformation = ({
 }: ProfileInformationProps) => {
   const [button, setButton] = useState(true);
   const [textValue, setTextValue] = useState(biography?.content)
+  const [loading, setLoading] = useState(false)
 
   const onAddBio = () =>
   {
@@ -46,11 +47,10 @@ export const ProfileInformation = ({
   const router = useRouter();
 
   const onBiography =  async () => {
-    startTransition(() => {
-      BiographyAdd(studentCode,textValue);
-      onAddBio
-    })
-    router.refresh();
+    setLoading(true)
+    await BiographyAdd(studentCode,textValue).finally(() => setLoading(false)) ;
+      setButton(prveButton => !prveButton);
+    router.refresh()
   }
 
   return (
@@ -106,6 +106,7 @@ export const ProfileInformation = ({
             {
               !button && (
                 <Button
+                isLoading = {loading}
                 onClick={onBiography}
                 color = "success"
                 size="md"
