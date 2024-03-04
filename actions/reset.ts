@@ -2,34 +2,30 @@
 
 import { ResetSchema } from "@/schemas";
 import * as z from "zod";
-import { getUserByEmail } from "@/data/user";
-import { sendPasswordResetEmail } from "@/lib/mail";
-import { generatePasswordResetToken } from "@/lib/tokens";
 
 export const reset = async (values: z.infer<typeof ResetSchema>) => {
-  const validatedFields = ResetSchema.safeParse(values);
+  try {
+    const req = await fetch(
+      `${process.env.NEXT_PUBLIC_API}/api/auth/reset-password`,
+      {
+        method: "POST",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      },
+    );
 
-  if (!validatedFields.success) {
-    return { error: "Invalid email!" };
+    const res = await req.json();
+
+    if (res.error) {
+      return { error: res.error };
+    }
+
+    return { success: "Reset pasword email sent" };
+  } catch (error) {
+    console.log("RESET PASSWORD ERROR", error);
+    return { error: "Failed to reset password" };
   }
-
-  const { email } = validatedFields.data;
-
-  const existingUser = await getUserByEmail(email);
-
-  if (!existingUser || !existingUser.email || !existingUser.password) {
-    return { error: "User not found!" };
-  }
-
-  const passwordResetToken = await generatePasswordResetToken(
-    existingUser.email,
-  );
-
-  await sendPasswordResetEmail(
-    existingUser.name,
-    passwordResetToken.email,
-    passwordResetToken.token,
-  );
-
-  return { success: "Reset email sent!" };
 };

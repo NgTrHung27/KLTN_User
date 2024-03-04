@@ -49,6 +49,7 @@ export function LanguageToggle({ className }: LanguageToggleProps) {
             className="emojiFlag text-2xl"
             countryCode={isEnglish ? "US" : "VN"}
             svg
+            alt="lang"
           />
           <span className="sr-only">Toggle theme</span>
         </Button>

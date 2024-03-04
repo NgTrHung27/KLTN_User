@@ -27,7 +27,8 @@ export const ProfileCommentForm = ({
   postId,
   parentId,
   onLoad,
-}: ProfileCommentFormProps) => {
+}: ProfileCommentFormProps) => 
+{
   const router = useRouter();
 
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);

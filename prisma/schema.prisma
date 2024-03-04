@@ -85,7 +85,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([email, name, studentCode, schoolId])
+  @@index([email])
+  @@index([studentCode])
+  @@index([name])
+  @@index([id])
 }
 
 model School {
@@ -94,19 +97,20 @@ model School {
   backgroundUrl String
   name          String  @unique
   description   String?
+  history       String?
   colorValue    String
   isPublished   Boolean @default(false)
 
   users User[]
 
   locations Location[]
-  history   History?
   programs  Program[]
   galleries Gallery[]
   blogs     SchoolBlog[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  History   History?
 
   @@index([name])
   @@index([id])
@@ -303,7 +307,7 @@ model Profile {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Status
-  status ProfileStatus?
+  status ProfileStatus @default(ONLINE)
 
   // Feeds
   posts Post[]
@@ -359,12 +363,12 @@ enum PostStatus {
 model Post {
   id String @id @default(cuid())
 
-  content    String?
-  postImages PostImage[]
-  comments   PostComment[]
-  likes      PostLike[]
-  shares     PostShare[]
-  saves      PostSave[]
+  content  String?
+  images   PostImage[]
+  comments PostComment[]
+  likes    PostLike[]
+  shares   PostShare[]
+  saves    PostSave[]
 
   status PostStatus @default(PUBLIC)
 
@@ -376,7 +380,7 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("Feed")
+  @@index([status])
 }
 
 model PostImage {
@@ -393,8 +397,8 @@ model PostComment {
 
   content String?
 
-  commentImage PostCommentImage?
-  isArchived   Boolean           @default(false)
+  image      PostCommentImage?
+  isArchived Boolean           @default(false)
 
   profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -439,14 +443,14 @@ model PostCommentLike {
 model PostLike {
   id String @id @default(cuid())
 
-  profileId String  
+  profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   postId String
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
+  @@unique([profileId, postId])
   @@index([profileId])
-@@unique([profileId, postId])
 }
 
 model PostShare {
@@ -464,7 +468,7 @@ model PostShare {
 model PostSave {
   id String @id @default(cuid())
 
-  profileId String  
+  profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   Post      Post?   @relation(fields: [postId], references: [id])
   postId    String?
@@ -475,9 +479,10 @@ model PostSave {
 
 model Biography {
   id String @id @default(cuid())
-  profileId String  @unique
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  content String
+
+  profileId String   @unique
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -7,11 +7,11 @@ export const getPostsByProfileId = async (id: string) => {
         profileId: id,
       },
       include: {
-        postImages: true,
+        images: true,
         comments: {
           include: {
             likes: true,
-            commentImage: true,
+            image: true,
             children: true,
           },
         },

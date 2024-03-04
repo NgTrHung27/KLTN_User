@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 
 const icons = {
-  chevron: <ChevronDown className="h-4 w-4" />,
+  chevron: <ChevronDown className="size-4" />,
   dashboard: <LayoutDashboard className="h-6 w-6" />,
   annoucement: <Megaphone className="h-6 w-6" />,
   schedule: <Calendar className="h-6 w-6" />,

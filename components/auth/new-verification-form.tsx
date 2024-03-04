@@ -1,36 +1,41 @@
 "use client";
 
-import { FormError } from "../form-error";
-import { FormSuccess } from "../form-success";
 import { CardWrapper } from "./card-wrapper";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import { newVerification } from "@/actions/new-verification";
+import { toast } from "sonner";
 
 export const NewVerificationForm = () => {
-  const [error, setError] = useState<string | undefined>();
-  const [success, setSuccess] = useState<string | undefined>();
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
 
   const token = searchParams.get("token");
 
-  const onSubmit = useCallback(() => {
-    if (success || error) return;
+  const onSubmit = useCallback(async () => {
     if (!token) {
-      setError("Missing token");
+      toast.error("Missing verification token");
       return;
     }
 
-    newVerification(token)
-      .then((data) => {
-        setSuccess(data.success);
-        setError(data.error);
+    setIsLoading(true);
+
+    await newVerification(token)
+      .then((res) => {
+        if (res.success) {
+          toast.success(res.success);
+
+          setTimeout(() => router.push("/auth/login"), 2000);
+        }
+
+        if (res.error) {
+          toast.error(res.error);
+        }
       })
-      .catch(() => {
-        setError("Something went wrong!");
-      });
-  }, [token, success, error]);
+      .finally(() => setIsLoading(false));
+  }, [token, router]);
 
   useEffect(() => {
     onSubmit();
@@ -43,9 +48,7 @@ export const NewVerificationForm = () => {
       backButtonHref="/auth/login"
     >
       <div className="flex w-full items-center justify-center">
-        {!success && !error && <BeatLoader />}
-        <FormSuccess message={success} />
-        {!success && <FormError message={error} />}
+        {isLoading && <BeatLoader />}
       </div>
     </CardWrapper>
   );

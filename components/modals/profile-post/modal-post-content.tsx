@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateNewProfilePost } from "@/actions/profile-post";
+import { CreatePost } from "@/actions/profile/post";
 import { IconPicker } from "@/components/IconPicker";
 import {
   FileState,
@@ -78,7 +78,7 @@ export const ModalPostContent = ({
     resolver: zodResolver(PostSchema),
     defaultValues: {
       content: "",
-      postImages: [],
+      images: [],
     },
   });
 
@@ -139,7 +139,7 @@ export const ModalPostContent = ({
               },
             });
 
-            values.postImages?.push(res.url);
+            values.images?.push(res.url);
           } catch (error) {
             uploadImageProgress(fileState.key, "ERROR");
           }
@@ -147,20 +147,22 @@ export const ModalPostContent = ({
       );
     }
 
-    await CreateNewProfilePost(values).then((res) => {
-      if (res.success) {
-        toast.success(res.success);
-      }
-      if (res.error) {
-        toast.error(res.error);
-      }
-    });
-
-    form.reset();
-    setIsLoading(false);
-    setFileStates([]);
-    onClose();
-    router.refresh();
+    await CreatePost(values)
+      .then((res) => {
+        if (res.success) {
+          toast.success(res.success);
+          router.refresh();
+        }
+        if (res.error) {
+          toast.error(res.error);
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+        form.reset();
+        setFileStates([]);
+        onClose();
+      });
   };
 
   return (
@@ -184,7 +186,7 @@ export const ModalPostContent = ({
                     startContent={currentStatus.icon}
                     size="sm"
                     variant="shadow"
-                    endContent={<ChevronDown className="h-4 w-4" />}
+                    endContent={<ChevronDown className="size-4" />}
                     className="gap-1"
                   >
                     {currentStatus.label}
@@ -237,7 +239,6 @@ export const ModalPostContent = ({
                   disabled={isLoading}
                   value={fileStates}
                   onChange={(files) => setFileStates(files)}
-                  onFilesAdded={() => {}}
                 />
               )}
             </ModalBody>

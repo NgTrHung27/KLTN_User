@@ -16,3 +16,22 @@ export const currentUser = async () => {
 
   return session?.user;
 };
+
+export const GetUserEmailLib = async (email: string) => {
+  try {
+    const req = await fetch(
+      `${process.env.NEXT_PUBLIC_API}/api/users/${email}`,
+    );
+
+    const res = await req.json();
+
+    if (res.error) {
+      return null;
+    }
+
+    return res;
+  } catch (error) {
+    console.log("GET USER ERROR", error);
+    return null;
+  }
+};

@@ -33,7 +33,7 @@ export const CreateNewProfilePost = async (
       return { error: "Profile not found" };
     }
 
-    const { postImages, ...value } = validatedFields.data;
+    const { images, ...value } = validatedFields.data;
 
     if (!value.status) {
       value.status = PostStatus.PUBLIC;
@@ -46,14 +46,14 @@ export const CreateNewProfilePost = async (
       },
       select: {
         id: true,
-        postImages: true,
+        images: true,
       },
     });
 
-    if (!postImages) {
+    if (!images) {
       return { success: "Create new post successfully" };
     } else {
-      for (const image of postImages) {
+      for (const image of images) {
         await db.postImage.create({
           data: {
             postId: post.id,

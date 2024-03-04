@@ -29,7 +29,7 @@ export const ProfileInformation = ({
   socials,
 }: ProfileInformationProps) => {
   const [button, setButton] = useState(true);
-  const [textValue, setTextValue] = useState("")
+  const [textValue, setTextValue] = useState(biography?.content)
 
   const onAddBio = () =>
   {
@@ -70,7 +70,7 @@ export const ProfileInformation = ({
           {!button && (  
             <Textarea 
             onChange={e => handleTextareaChange(e)}
-            value={biography?.content}
+            value={textValue}
             size="sm"
             variant="faded"
             />  
@@ -118,13 +118,13 @@ export const ProfileInformation = ({
           </div>
 
           <div className="flex items-center text-muted-foreground">
-            <MapPin className="mr-2 h-4 w-4" />
+            <MapPin className="mr-2 size-4" />
             <p className="">
               {address.split(",")[2]}, {address.split(",")[3]}
             </p>
           </div>
           <div className="flex items-center truncate text-muted-foreground">
-            <Cake className="mr-2 h-4 w-4" />
+            <Cake className="mr-2 size-4" />
             {format(dob, "dd, MMMM, yyyy", { locale: vi })}
           </div>
           <div className="flex items-center gap-2 truncate text-muted-foreground">

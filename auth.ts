@@ -1,9 +1,8 @@
-import NextAuth, { DefaultSession } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import NextAuth, { DefaultSession } from "next-auth";
 
-import { db } from "@/lib/db";
 import authConfig from "@/auth.config";
-import { getUserByEmail, getUserById } from "./data/user";
+import { db } from "@/lib/db";
 import {
   CertificateType,
   DegreeType,
@@ -11,8 +10,8 @@ import {
   GradeType,
   StudentStatus,
 } from "@prisma/client";
-import { sendVerificationEmail } from "./lib/mail";
-import { generateVerificationToken } from "./lib/tokens";
+import { GetUserEmailLib } from "./lib/user";
+import { UserEmailLib } from "./types";
 
 export type ExtendedUser = DefaultSession["user"] & {
   studentCode: string;
@@ -47,30 +46,6 @@ export const {
     error: "/auth/error",
   },
   callbacks: {
-    async signIn({ user }) {
-      const existingUser = await getUserByEmail(user.email!);
-
-      if (!existingUser) {
-        return false;
-      }
-
-      if (!existingUser?.emailVerified || !existingUser) {
-        const verificationToken = await generateVerificationToken(
-          existingUser.email,
-        );
-
-        await sendVerificationEmail(
-          existingUser.name,
-          process.env.NODE_SENDER_EMAIL!,
-          verificationToken.email,
-          verificationToken.token,
-        );
-
-        return false;
-      }
-
-      return true;
-    },
     async session({ token, session }) {
       if (session.user) {
         if (token.sub) {
@@ -122,30 +97,16 @@ export const {
       return session;
     },
     async jwt({ token }) {
-      if (!token.sub) return token;
+      if (!token.email || !token.sub) return token;
 
-      const existingUser = await getUserById(token.sub);
+      const existingUser: UserEmailLib = await GetUserEmailLib(token.email);
 
       if (!existingUser) {
         return token;
       }
 
+      token.sub = existingUser.id;
       token.studentCode = existingUser.studentCode;
-      token.dob = existingUser.dob;
-      token.gender = existingUser.gender;
-      token.phoneNumber = existingUser.phoneNumber;
-      token.idCardNumber = existingUser.idCardNumber;
-      token.address = existingUser.address;
-
-      token.degreeType = existingUser.degreeType;
-      token.certificateType = existingUser.certificateType;
-      token.certificateImg = existingUser.certificateImg;
-      token.gradeType = existingUser.gradeType;
-      token.gradeScore = existingUser.gradeScore;
-
-      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
-
-      token.status = existingUser.status;
 
       return token;
     },

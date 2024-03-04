@@ -1,39 +1,29 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { getUserByEmail } from "@/data/user";
-import { getVerificationTokenByToken } from "@/data/verification-token";
+export const newVerification = async (token?: string) => {
+  try {
+    const req = await fetch(
+      `${process.env.NEXT_PUBLIC_API}/api/auth/new-verification`,
+      {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(token),
+      },
+    );
 
-export const newVerification = async (token: string) => {
-  const existingToken = await getVerificationTokenByToken(token);
+    const res = await req.json();
 
-  if (!existingToken) {
-    return { error: "Token does not exist" };
+    if (res.error) {
+      return { error: res.error };
+    }
+
+    return { success: "Verified email successfully" };
+  } catch (error) {
+    console.log("VERIFICATION EMAIL ERROR", error);
+
+    return { error: "Failed to verify email" };
   }
-
-  const hasExpired = new Date(existingToken.expires) < new Date();
-
-  if (hasExpired) {
-    return { error: "Token has expired" };
-  }
-
-  const existingUser = await getUserByEmail(existingToken.email);
-
-  if (!existingUser) {
-    return { error: "Email does not exist" };
-  }
-
-  await db.user.update({
-    where: { id: existingUser.id },
-    data: {
-      emailVerified: new Date(),
-      email: existingToken.email,
-    },
-  });
-
-  await db.verificationToken.delete({
-    where: { id: existingToken.id },
-  });
-
-  return { success: "Email verified" };
 };

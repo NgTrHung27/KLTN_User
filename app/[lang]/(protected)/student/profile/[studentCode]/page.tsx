@@ -1,42 +1,41 @@
-import { getPostsByProfileId } from "@/data/posts";
-import { getProfileByStudentCode } from "@/data/profile";
-import { currentUser } from "@/lib/user";
+import { GetProfileLib } from "@/lib/profile/profile";
+import { PostLib, ProfileLib } from "@/types";
+import { ProfileInformation } from "./_components/profile-information";
 import { ProfilePosts } from "./_components/profile-post";
 import { ProfilePostsList } from "./_components/profile-posts-list";
-import { ProfileInformation } from "./_components/profile-information";
-import { getSchoolByUserId } from "@/data/school";
 import { CrispProvider } from "@/scripts/crisp-provider";
-
+import { GetPostsLib } from "@/lib/profile/post";
 const ProfileIdPage = async ({
   params: { studentCode },
 }: {
   params: { studentCode: string };
 }) => {
-  const user = await currentUser();
-  const school = await getSchoolByUserId(user?.id!);
-  const profile = await getProfileByStudentCode(studentCode);
-  const posts = await getPostsByProfileId(profile?.id!);
+  const profile: ProfileLib = await GetProfileLib(studentCode);
+  const posts: PostLib[] = await GetPostsLib();
 
   return (
     <div className="hidden gap-4 md:grid lg:grid-cols-12 relative">
       <div className="lg:col-span-3">
         <ProfileInformation
-          address={user?.address!}
-          dob={user?.dob!}
-          schoolLogo={school?.logoUrl!}
-          schoolName={school?.name!}
-          biography={profile?.biography}
+          address={profile.user?.address}
+          dob={profile.user?.dob}
+          schoolLogo={profile.user.school?.logoUrl}
+          schoolName={profile.user.school?.name}
+          biography={profile?.biography} 
         />
       </div>
       <div className="lg:col-span-9">
-        <ProfilePosts name={user?.name!} image={user?.image || ""} />
+        <ProfilePosts
+          name={profile.user?.name}
+          image={profile.user?.image || undefined}
+        />
         <div className="flex flex-col gap-4 text-primary">
           {posts?.length! > 0 && (
             <ProfilePostsList
-              posts={posts || []}
-              name={user?.name!}
-              logo={user?.image || ""}
-              profileId={profile?.id!}
+              posts={posts}
+              name={profile.user?.name}
+              logo={profile.user?.image || ""}
+              profileId={profile.id}
             />
             )}
            <CrispProvider />

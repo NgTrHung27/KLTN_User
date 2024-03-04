@@ -11,16 +11,18 @@ import {
   NavbarItem,
   NavbarMenu,
   NavbarMenuToggle,
+  User,
 } from "@nextui-org/react";
 import { UserButton } from "./user-button";
 import { ExtendedUser } from "@/auth";
-import { SearchIcon } from "lucide-react";
+import { CameraIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { ManagementDropdown } from "./management-dropdown";
 import { MobileManagementDropdown } from "./mobile-management-dropdown";
 import { DictionaryLanguage } from "@/data/dictionaries";
 import Image from "next/image";
+import { UserAvatar } from "../user-avatar";
 
 interface ProtectedNavbarProps {
   user: ExtendedUser;
@@ -120,17 +122,11 @@ export const ProtectedNavbar = ({ user, dict }: ProtectedNavbarProps) => {
       {/* Mobile Menu */}
       <NavbarMenu>
         <div className="flex items-center gap-x-4 py-1.5">
-          <Avatar
-            isBordered
-            color="secondary"
-            name={"Image"}
-            size="sm"
-            src={user.image || "/placeholder.webp"}
+          <UserAvatar
+            name={user.name!}
+            description={user.studentCode}
+            image={user.image || undefined}
           />
-          <div>
-            <p className="font-semibold text-primary">{user.name}</p>
-            <p className="font-semibold text-primary">{user.studentCode}</p>
-          </div>
         </div>
         <Divider />
         <MobileManagementDropdown />
