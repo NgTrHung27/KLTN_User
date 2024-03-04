@@ -46,7 +46,7 @@ export const CreateNewProfilePost = async (
       },
       select: {
         id: true,
-        postImages: true,
+        images: true,
       },
     });
 

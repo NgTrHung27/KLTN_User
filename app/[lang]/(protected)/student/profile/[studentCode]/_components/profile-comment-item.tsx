@@ -46,7 +46,7 @@ export const ProfileCommentItem = ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [isPending, startTransition] = useTransition();
-  const [items, setItems] = useState<BasicComment[]>([]);
+  const [items, setItems] = useState<CommentLib[]>([]);
 
   const onLoad = async () => {
     startTransition(() => {

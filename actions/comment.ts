@@ -90,7 +90,7 @@ export const GetCommentsByParentId = async (
       },
       include: {
         likes: true,
-        commentImage: true,
+        image: true,
         children: {
           select: {
             id: true,
