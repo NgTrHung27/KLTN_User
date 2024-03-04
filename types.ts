@@ -5,6 +5,9 @@ import {
   PostCommentLike,
   PostImage,
   PostLike,
+  PostSave,
+  PostShare,
+  Profile,
   Program,
   School,
 } from "@prisma/client";
@@ -13,6 +16,44 @@ export type SchoolLib = School & {
   programs: {
     name: string;
   }[];
+};
+
+export type ProfileLib = Profile & {
+  user: {
+    dob: Date;
+    address: string;
+    studentCode: string;
+    name: string;
+    image: string;
+    school: {
+      name: string;
+      logoUrl: string;
+    };
+  };
+};
+
+export type PostLib = Post & {
+  comments: PostCommentLib[];
+  likes: PostLike[];
+  images: PostImage[];
+  saves: PostSave[];
+  shares: PostShare[];
+};
+
+export type PostCommentLib = PostComment & {
+  image: PostCommentImage;
+  children: {
+    id: string;
+  }[];
+  likes: PostCommentLike[];
+};
+
+export type UserEmailLib = {
+  id: string;
+  name: string;
+  image?: string;
+  studentCode: string;
+  email: string;
 };
 
 export type Ward = {
@@ -47,22 +88,7 @@ export type BasicComment = PostComment & {
 };
 
 export type ExtendedPost = Post & {
-  postImages: PostImage[];
+  images: PostImage[];
   comments: BasicComment[];
   likes: PostLike[];
 };
-
-// ({
-//   postImages[];
-//   comments: ({
-//       commentImage: PostCommentImage | null;
-//       children: PostComment[];
-//   } & {
-//       id: string;
-//       content: string | null;
-//       ... 5 more ...;
-//       updatedAt: Date;
-//   })[];
-// } & {
-//   ...;
-// })

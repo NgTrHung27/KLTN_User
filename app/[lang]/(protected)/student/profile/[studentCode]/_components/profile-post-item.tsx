@@ -1,7 +1,7 @@
 "use client";
 
 import { Like } from "@/actions/like";
-import { BasicComment } from "@/types";
+import { PostCommentLib } from "@/types";
 import {
   Avatar,
   Button,
@@ -35,7 +35,7 @@ import { ProfileCommentsList } from "./profile-comments-list";
 interface ProfilePostItemProps {
   name: string;
   logo: string;
-  comments?: BasicComment[];
+  comments?: PostCommentLib[];
   likes?: PostLike[];
   id: string;
   createdAt: Date;
@@ -159,7 +159,7 @@ export const ProfilePostItem = ({
       </div>
       <CardFooter className="flex-col items-start justify-start gap-2">
         <ProfileCommentsList
-          comments={parentComments || []}
+          comments={parentComments}
           name={name}
           image={logo}
         />

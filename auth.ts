@@ -10,7 +10,8 @@ import {
   GradeType,
   StudentStatus,
 } from "@prisma/client";
-import { getUserById } from "./data/user";
+import { GetUserEmailLib } from "./lib/user";
+import { UserEmailLib } from "./types";
 
 export type ExtendedUser = DefaultSession["user"] & {
   studentCode: string;
@@ -96,30 +97,16 @@ export const {
       return session;
     },
     async jwt({ token }) {
-      if (!token.sub) return token;
+      if (!token.email || !token.sub) return token;
 
-      const existingUser = await getUserById(token.sub);
+      const existingUser: UserEmailLib = await GetUserEmailLib(token.email);
 
       if (!existingUser) {
         return token;
       }
 
+      token.sub = existingUser.id;
       token.studentCode = existingUser.studentCode;
-      token.dob = existingUser.dob;
-      token.gender = existingUser.gender;
-      token.phoneNumber = existingUser.phoneNumber;
-      token.idCardNumber = existingUser.idCardNumber;
-      token.address = existingUser.address;
-
-      token.degreeType = existingUser.degreeType;
-      token.certificateType = existingUser.certificateType;
-      token.certificateImg = existingUser.certificateImg;
-      token.gradeType = existingUser.gradeType;
-      token.gradeScore = existingUser.gradeScore;
-
-      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
-
-      token.status = existingUser.status;
 
       return token;
     },

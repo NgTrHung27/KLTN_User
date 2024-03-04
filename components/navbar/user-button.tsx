@@ -1,6 +1,8 @@
 "use client";
 
+import { logout } from "@/actions/logout";
 import { ExtendedUser } from "@/auth";
+import { DictionaryLanguage } from "@/data/dictionaries";
 import {
   Avatar,
   CircularProgress,
@@ -12,12 +14,10 @@ import {
   Link,
   Switch,
 } from "@nextui-org/react";
-import { DictionaryLanguage } from "@/data/dictionaries";
-import { useRouter } from "next/navigation";
-import { logout } from "@/actions/logout";
-import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 import { startTransition, useEffect, useState } from "react";
+import { UserAvatar } from "../user-avatar";
 
 interface UserButtonProps {
   user: ExtendedUser;
@@ -25,8 +25,6 @@ interface UserButtonProps {
 }
 
 export const UserButton = ({ user, dict }: UserButtonProps) => {
-  const router = useRouter();
-
   const [mounted, setMounted] = useState(false);
   const { setTheme, theme } = useTheme();
 
@@ -56,24 +54,17 @@ export const UserButton = ({ user, dict }: UserButtonProps) => {
           aria-label="Student"
         >
           <DropdownItem
+            as={Link}
             key="profile"
             aria-label="User with information"
             className="h-14 gap-4"
+            href={`/student/profile/${user.studentCode}`}
           >
-            <div className="flex items-center justify-between gap-x-4">
-              <div>
-                <p className="font-semibold text-primary">{user.name}</p>
-                <p className="font-semibold text-primary">{user.studentCode}</p>
-              </div>
-              <Switch
-                defaultSelected={theme === "light" ? true : false}
-                size="sm"
-                color="primary"
-                onValueChange={(isSelected) => {
-                  setTheme(isSelected ? "light" : "dark");
-                }}
-                startContent={<Sun />}
-                endContent={<Moon />}
+            <div className="p-1">
+              <UserAvatar
+                name={user.name!}
+                image={user.image || undefined}
+                description={user.studentCode}
               />
             </div>
           </DropdownItem>
@@ -88,6 +79,24 @@ export const UserButton = ({ user, dict }: UserButtonProps) => {
             key="help_and_feedback"
           >
             Help & Feedback
+          </DropdownItem>
+          <DropdownItem
+            key="theme"
+            className="text-primary"
+            endContent={
+              <Switch
+                defaultSelected={theme === "light" ? true : false}
+                size="sm"
+                color="primary"
+                onValueChange={(isSelected) => {
+                  setTheme(isSelected ? "light" : "dark");
+                }}
+                startContent={<Sun />}
+                endContent={<Moon />}
+              />
+            }
+          >
+            Theme
           </DropdownItem>
         </DropdownSection>
         <DropdownItem
