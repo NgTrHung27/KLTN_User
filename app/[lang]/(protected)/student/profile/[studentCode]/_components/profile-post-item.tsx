@@ -2,7 +2,6 @@
 
 import { Like } from "@/actions/like";
 import { Save } from "@/actions/save";
-import { BasicComment } from "@/types";
 import { PostCommentLib } from "@/types";
 import {
   Avatar,

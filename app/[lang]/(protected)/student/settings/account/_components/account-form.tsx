@@ -109,17 +109,18 @@ export const AccountForm = ({ user }: AccountFormProps) => {
           <form className="flex flex-col gap-y-8 text-primary">
             <div className="flex items-center justify-between">
               <h1 className="text-sm">Student status:</h1>
-              <Chip
+              {user.status && status[user.status] && ( <Chip
                 color={
                   status[user.status].color as
-                    | "warning"
+                     "warning"
                     | "primary"
                     | "default"
                     | "success"
                 }
               >
                 {status[user.status].label}
-              </Chip>
+              </Chip>) }
+             
             </div>
             <Input
               isDisabled

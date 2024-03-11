@@ -49,7 +49,7 @@ export const ProfileInformation = ({
   const onBiography =  async () => {
     setLoading(true)
     await BiographyAdd(studentCode,textValue).finally(() => setLoading(false)) ;
-      setButton(prveButton => !prveButton);
+    setButton(prveButton => !prveButton);
     router.refresh()
   }
 

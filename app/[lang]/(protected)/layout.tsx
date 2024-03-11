@@ -22,7 +22,6 @@ const ProtectedLayout = async ({
     <div className="h-full w-full">
       <ProtectedNavbar user={user!} dict={dict} />
       {children}
-      
     </div>
   );
 };
